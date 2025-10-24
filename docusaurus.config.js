@@ -93,28 +93,28 @@ const config = {
         style: "dark",
         links: [
           {
-            title: "Posts",
+            title: "Blog",
             items: [
               {
-                label: "Tutorial",
-                to: "/docs/intro",
+                label: "All Posts",
+                to: "/",
+              },
+              {
+                label: "Tags",
+                to: "/tags",
+              },
+              {
+                label: "Archive",
+                to: "/archive",
               },
             ],
           },
           {
-            title: "Community",
+            title: "Connect",
             items: [
               {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
-              },
-              {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
-              },
-              {
-                label: "X",
-                href: "https://x.com/docusaurus",
+                label: "GitHub",
+                href: "https://github.com/mrpbennett",
               },
             ],
           },
