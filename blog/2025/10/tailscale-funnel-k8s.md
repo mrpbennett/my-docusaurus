@@ -93,7 +93,7 @@ helm upgrade \
 ```
 For the funnel feature to work you will need to add a [node attribute](https://tailscale.com/kb/1223/funnel#requirements-and-limitations) to allow nodes created by the Kubernetes operator to use Funnel:
 
-```jsonc
+```json
 "nodeAttrs": [
   {
     "target": ["tag:k8s"], // tag that Tailscale Operator uses to tag proxies; defaults to 'tag:k8s'
@@ -103,6 +103,7 @@ For the funnel feature to work you will need to add a [node attribute](https://t
 ```
 :::note
 Note that even if your policy has the funnel attribute assigned to `autogroup:member` (the default), you still need to add it to the tag used by proxies because `autogroup:member` does not include tagged devices.
+:::
 
 Once the Operator is deployed and you have your policy set up configured, it's time to deploy the application.
 
