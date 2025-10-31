@@ -7,6 +7,10 @@ devops:
   label: devops
   permalink: /devops
 
+homelab:
+  label: homelap
+  permalink: /homelab
+
 go:
   label: go
   permalink: /go
