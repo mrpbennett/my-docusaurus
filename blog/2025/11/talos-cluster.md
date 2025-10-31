@@ -8,6 +8,8 @@ date: 2025-11-01T00:00
 
 So it begins again... I have started rebuilding my homelab, but instead of going bare metal, I am moving to [Proxmox](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview) mainly to reduce the number of physical machines as well as to experience working with a hypervisor. I have used Proxmox before, but this time I am going to try to get it as close to production-ready as I can.
 
+<!-- truncate -->
+
 I will be running three [Beelink EQi13 Pro Mini PC, Intel Core i5 13500H 12C/16T](https://www.bee-link.com/products/beelink-eqi13-pro) units as a high availability Proxmox cluster running Ceph. The main use will be running an HA [Talos](https://www.talos.dev/) cluster across 3 control plane nodes and 3 worker nodes, amongst other microservices. Each unit will be upgraded to 64GB of RAM over time. This would give me the following total compute resources:
 
 ```txt
