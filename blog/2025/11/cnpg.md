@@ -67,7 +67,7 @@ metadata:
 
 Therefore it would be practical to deploy all other applications that relied on the PostgreSQL cluster to deploy in wave 1 or wave 2. This way once the cluster is healthy and all of its databases are deployed. The other applications can be deployed and write to the databases. Something like this:
 
-![sync-wave argocd](imgs/db/cnpg.png)
+![sync-wave argocd](imgs/db/syncwave.png)
 
 <!--truncate>
 
