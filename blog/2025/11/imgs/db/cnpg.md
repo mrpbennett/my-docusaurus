@@ -67,7 +67,9 @@ metadata:
 
 Therefore it would be practical to deploy all other applications that relied on the PostgreSQL cluster to deploy in wave 1 or wave 2. This way once the cluster is healthy and all of its databases are deployed. The other applications can be deployed and write to the databases. Something like this:
 
-![sync-wave argocd](imgs/sync-wave-argocd.png)
+![sync-wave argocd](imgs/db/cnpg.png)
+
+<!--truncate>
 
 This is how I have set up my CloudNativePG cluster and it works pretty well. I am sure this is very basic but for me it works, you can find more about `sync-wave` or deploying `Databases` on the links below:
 
