@@ -8,6 +8,8 @@ date: 2025-11-05T00:00
 
 I love a bit of Kubernetes but I also hate it as I navigate the Kubernetes landscape and learning from doing. I have come across multiple gotyas. This is one of them, I run a CloudnativePG Cluster, Originally I only used this to play around with Postgres.
 
+<!--truncate-->
+
 However, the more applications I deployed to my cluster the more applications depended on storing things in Postgres. This made me spin up a Postgres instance via Docker on a VM, this way I could keep the instance up, in case I needed to tear down my cluster.
 
 This worked fine, but I wanted to migrate everything to within Kubernetes. Now with CNPG v1.25+ I and ArgoCDs `sync-wave` I can do just that.
@@ -65,7 +67,7 @@ metadata:
 
 Therefore it would be practical to deploy all other applications that relied on the PostgreSQL cluster to deploy in wave 1 or wave 2. This way once the cluster is healthy and all of its databases are deployed. The other applications can be deployed and write to the databases. Something like this:
 
-![sync-wave argocd](//images.ctfassets.net/53u3hzg2egeu/lEyHajPJ7P9HVLIQdA4mn/f14177e699474101cd70c2f7cfc4967f/syncwave-img.png)
+![sync-wave argocd](imgs/sync-wave-argocd.png)
 
 This is how I have set up my CloudNativePG cluster and it works pretty well. I am sure this is very basic but for me it works, you can find more about `sync-wave` or deploying `Databases` on the links below:
 
