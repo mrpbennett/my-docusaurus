@@ -107,10 +107,6 @@ const config = {
                 label: "Tags",
                 to: "/tags",
               },
-              {
-                label: "Archive",
-                to: "/archive",
-              },
             ],
           },
           {
