@@ -1,9 +1,13 @@
 ---
 slug: ah-with-slices-in-go
 title: Ah moment when using slices in Go!
-authors: [me]
 tags: [go]
-date: 2025-10-09T00:00
+keywords:
+  - go
+  - golang
+  - programming
+last_update:
+  date: 2025-10-09
 ---
 
 The slices package defines various functions useful with slices of any type. Below are some small examples I came across today. I wanted to see how I could remove a string from a slice. Below I have a slice called `names`.

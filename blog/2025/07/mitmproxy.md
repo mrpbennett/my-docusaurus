@@ -1,9 +1,13 @@
 ---
 slug: intercepting-ios-app-traffic-with-mitmproxy-cli-and-web-ui-guide
 title: Intercepting iOS App Traffic with mitmproxy CLI & Web UI Guide
-authors: [me]
 tags: [terminal]
-date: 2025-07-17T00:00
+keywords:
+  - proxy
+  - iOS
+  - mitmproxy
+last_updated:
+  date: 2025-07-17
 ---
 
 Intercepting HTTP(S) traffic from a real iOS device is a powerful way to understand what your app (or any third‑party app like Medscape) is sending and receiving—without Xcode, without re‑signing, and without touching a simulator. In this guide, we’ll walk through both the **command‑line interface (CLI)** and the **Web UI** (`mitmweb`) methods for capturing, filtering, modifying, and exporting your mobile traffic.

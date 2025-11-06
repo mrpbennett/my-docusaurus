@@ -1,9 +1,14 @@
 ---
 slug: talos-cluster-install
 title: Installing a Talos cluster in Proxmox
-authors: [me]
 tags: [kubernetes]
-date: 2025-11-01T00:00
+keywords:
+  - talos
+  - proxmox
+  - homelab
+  - kubernetes
+last_updated:
+  date: 2025-11-01
 ---
 
 So it begins again... I have started rebuilding my homelab, but instead of going bare metal, I am moving to [Proxmox](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview) mainly to reduce the number of physical machines as well as to experience working with a hypervisor. I have used Proxmox before, but this time I am going to try to get it as close to production-ready as I can.

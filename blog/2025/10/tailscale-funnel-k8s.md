@@ -1,9 +1,13 @@
 ---
 slug: exposing-with-tailscale-funnel-k8s
 title: Exposing Kubernetes Services with Tailscale Funnel
-authors: [me]
 tags: [kubernetes]
-date: 2025-10-27T16:19
+keywords:
+  - kubernetes
+  - tailscale
+  - homelab
+last_updated:
+  date: 2025-10-27
 ---
 
 I have been learning Go lately and wanted to try and expose a microservice using a Tailscale Funnel. I had a project inmind to build a small Go application that would build and deploy a Docker image to a private registry using a webhook. Therefore, I needed to figure out how to expose the application using Tailscale Funnel.

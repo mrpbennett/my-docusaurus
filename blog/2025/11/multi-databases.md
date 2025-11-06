@@ -1,9 +1,13 @@
 ---
-slug: deadling-with-databases-cnpg
 title: Managing multiple databases in CNPG
-authors: [me]
+slug: deadling-with-databases-cnpg
 tags: [kubernetes]
-date: 2025-11-05T00:00
+keywords:
+  - CNPG
+  - Kubernetes
+  - Postgres
+last_update:
+  date: 2025-11-05
 ---
 
 I love a bit of Kubernetes but I also hate it as I navigate the Kubernetes landscape and learning from doing. I have come across multiple gotyas. This is one of them, I run a CloudnativePG Cluster, Originally I only used this to play around with Postgres.

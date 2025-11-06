@@ -1,9 +1,10 @@
 ---
 slug: switching-themes-in-neovim
 title: Switching themes automatically in Neovim
-authors: [me]
 tags: [neovim]
-date: 2025-07-31T00:00
+keywor
+last_updated:
+  date: 2025-07-31
 ---
 
 We're going to be using [Catppuccin](https://github.com/catppuccin/nvim) and this setup is generally for MacOS but this idea will work on Linux too. On **macOS**, you can run this shell command in Lua to get the current system appearance:

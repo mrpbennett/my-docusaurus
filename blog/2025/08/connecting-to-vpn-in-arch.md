@@ -1,9 +1,14 @@
 ---
 slug: connecting-to-a-vpn-in-omarchy
 title: Connecting to Forticlient in Omarchy with openfortivpn
-authors: [me]
 tags: [omarchy, linux]
-date: 2025-08-15T00:00
+keywords:
+  - omarchy
+  - linux
+  - vpn client
+  - openfortivpn
+last_updated:
+  date: 2025-08-15
 ---
 
 I have found a love for window tile management whether that be [Aerospace](https://nikitabobko.github.io/AeroSpace/guide) for MacOs or [Hyprland](https://hypr.land/) for Arch. They suit my workflow especially on a large 32" screen, I have been playing with [Omarchy](https://omarchy.org/) An opinionated Arch + Hyprland Setup by [DHH](https://dhh.dk/)

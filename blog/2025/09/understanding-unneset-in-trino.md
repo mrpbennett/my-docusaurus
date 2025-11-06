@@ -1,9 +1,13 @@
 ---
 slug: unnest-in-trino
 title: Why you need CROSS JOIN with an UNNEST in Trino
-authors: [me]
 tags: [trino, sql]
-date: 2025-09-30T00:00
+keywords:
+  - SQL
+  - trino
+  - data engineering
+last_updated:
+  date: 2025-09-30
 ---
 
 If you've worked with arrays or delimited strings in Trino, you've probably encountered the need to "explode" them into separate rows. This is where `UNNEST` comes in. But there's a catch: unlike some other SQL databases, Trino requires you to use `CROSS JOIN UNNEST` rather than just `UNNEST` in your `SELECT` clause. Let's explore why.

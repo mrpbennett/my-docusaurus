@@ -1,9 +1,13 @@
 ---
 slug: window-swapping-with-vim
 title: Using vim bindings for window swapping with Omarchy
-authors: [me]
 tags: [linux, omarchy]
-date: 2025-10-24T00:00
+keywords:
+  - lazyvim
+  - omarchy
+  - linux
+last_updated:
+  date: 2025-10-24
 ---
 
 I have been using [Omarchy](https://omarchy.org) for a good while now at the time of writing this, my OS is 19 days old and I have gone many installs since v1. One thing I struggled with being on a keyboard without dedicated arrow keys was window navigation. With [LazyVim](https://lazyvim.org) being my main editor I have got use to using vim motions for navigation. Therefore behold my keybindings for window navigation in Omarchy.

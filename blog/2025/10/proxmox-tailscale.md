@@ -1,9 +1,14 @@
 ---
 slug: setting-proxmox-with-tailscale
 title: Quick way to setup Proxmox with Tailscale for remote access
-authors: [me]
 tags: [homelab]
-date: 2025-10-31T16:19
+keywords:
+  - homelab
+  - proxmox
+  - tailscale
+  - homelab
+last_updated:
+  date: 2025-10-31
 ---
 
 I sometimes work remotely (away from my cosy home office) and I need to access my homelab from any location. Accessing Proxmox using Tailscale is super easy. First you will need to install Tailscale on your Proxmox nodes.

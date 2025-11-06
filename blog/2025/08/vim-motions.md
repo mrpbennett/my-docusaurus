@@ -1,9 +1,13 @@
 ---
 slug: attempt-to-master-vim-motions
 title: Attempting to Master Vim Motions
-authors: [me]
 tags: [neovim]
-date: 2025-08-15T00:00
+keywords:
+  - nvim
+  - neovim
+  - vim motions
+last_updated:
+  date: 2025-08-15
 ---
 
 I am not a professional developer, but I am a hobbyist one, who knows what the future holds. As a Lead Solution Engineer, I do get to tinker with code in my day-to-day. But it's not my main role, more of a side quest. However, outside of my role I do love to tinker with code and homelabbing. Before I became a Solution Engineer, I spent some time in IT, which meant a lot of time in the terminal.

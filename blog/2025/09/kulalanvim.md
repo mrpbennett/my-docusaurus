@@ -1,9 +1,14 @@
 ---
 slug: kulala-in-neovim
 title: Supercharge your API workflow with Kulala in Neovim
-authors: [me]
 tags: [neovim]
-date: 2025-09-27T00:00
+keywords:
+  - http
+  - kulala
+  - nvim
+  - lazyvim
+last_updated:
+  date: 2025-09-27
 ---
 
 If you're a developer like me who lives in Neovim and frequently works with APIs, you've probably bounced between different tools for testing HTTP requests. Maybe you've used Postman, httpie, or curl commands scattered across your terminal history. But what if I told you there's a better way—one that keeps you in your favorite editor and treats your API requests as code?
