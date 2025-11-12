@@ -128,7 +128,7 @@ After doing some googling, I came across this [awesome post](https://www.reddit.
   {
     "context": "Workspace",
     "bindings": {
-      "ctrl-/": "workspace::ToggleBottomDock"
+      "space f t": "workspace::ToggleBottomDock"
     }
   },
   // Window's navigation
@@ -373,13 +373,19 @@ This would open the Lazygit TUI within your terminal window.
 ```json
 // tasks.json
 [
+  // task for starting lazygit
   {
     "label": "start lazygit",
-    "command": "lazygit -p $ZED_WORKTREE_ROOT"
+    "command": "lazygit -p $ZED_WORKTREE_ROOT",
+    "reveal": "always",
+    "hide": "on_success"
   },
+  // task for starting k9s
   {
     "label": "start k9s",
-    "command": "k9s"
+    "command": "k9s",
+    "reveal": "always",
+    "hide": "on_success"
   }
 ]
 ```
