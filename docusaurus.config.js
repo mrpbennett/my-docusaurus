@@ -126,6 +126,8 @@ const config = {
         darkTheme: prismThemes.dracula,
       },
     }),
+
+  plugins: ["./src/plugins/tailwind-config.js"],
 };
 
 export default config;
