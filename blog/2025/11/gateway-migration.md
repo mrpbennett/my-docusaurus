@@ -16,6 +16,8 @@ As of now Ingress NGINX is being retired, sad times all around. As per the blog 
 
 But where would the fun be in that? Although I can tell you now, I should have left my setup the way it is... but nope, this is me migrating to the Gateway API. So let's get started!
 
+<!-- truncate -->
+
 ## Why Gateway API?
 
 Before diving into the migration, let's understand why Gateway API is a significant improvement over traditional Ingress resources:
