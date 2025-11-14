@@ -128,8 +128,7 @@ const config = {
     }),
 
   plugins: [
-    // tailwind config
-    "./src/plugins/tailwind-config.js",
+    // "./src/plugins/tailwind-config.js",
   ],
 };
 
