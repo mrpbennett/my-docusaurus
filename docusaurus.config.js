@@ -127,7 +127,10 @@ const config = {
       },
     }),
 
-  plugins: ["./src/plugins/tailwind-config.js"],
+  plugins: [
+    // tailwind config
+    "./src/plugins/tailwind-config.js",
+  ],
 };
 
 export default config;
