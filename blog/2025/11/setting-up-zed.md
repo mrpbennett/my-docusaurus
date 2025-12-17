@@ -8,7 +8,7 @@ keywords:
   - rust
   - kubernetes
 last_update:
-  date: 2025-11-06
+  date: 2025-12-17
 ---
 
 I love trying out new text editors, don't ask me why because when I get used to one, something new comes out that I want to try—that's just the way it goes, I guess.
@@ -193,14 +193,15 @@ After doing some googling, I came across this [awesome post](https://www.reddit.
   {
     "context": "EmptyPane || SharedScreen",
     "bindings": {
-      // Open file finder
-      "space space": "file_finder::Toggle",
       // New file
       "space f n": "workspace::NewFile",
       // Open recent project
       "space f p": "projects::OpenRecent",
       // Search in all the files
-      "space s g": "workspace::NewSearch",
+      "space s g": [
+        "task::Spawn",
+        { "task_name": "grep_search", "reveal_target": "center" },
+      ],
       // Quit zed
       "space q q": "zed::Quit"
     }
@@ -223,6 +224,26 @@ After doing some googling, I came across this [awesome post](https://www.reddit.
       ]
     }
   },
+  // Fuzzy Finder
+  {
+    "context": "Workspace",
+    "bindings": {
+      "space space": [
+        "task::Spawn",
+        { "task_name": "file_finder", "reveal_target": "center" },
+      ],
+    },
+  },
+  // Grep Search
+    {
+      "context": "Workspace",
+      "bindings": {
+        "space s g": [
+          "task::Spawn",
+          { "task_name": "grep_search", "reveal_target": "center" },
+        ],
+      },
+    },
   {
     "context": "Editor && VimControl && !VimWaiting && !menu",
     "bindings": {
@@ -277,7 +298,10 @@ After doing some googling, I came across this [awesome post](https://www.reddit.
       // Search in the current buffer
       "space s b": "vim::Search",
       // Search in all the files
-      "space s g": "workspace::NewSearch",
+      "space s g": [
+        "task::Spawn",
+        { "task_name": "grep_search", "reveal_target": "center" },
+      ],
       "space f n": "workspace::NewFile",
       // Search
       "space /": "workspace::NewSearch",
@@ -293,7 +317,6 @@ After doing some googling, I came across this [awesome post](https://www.reddit.
       "space e": "workspace::ToggleLeftDock",
       // Telescope
       "space f f": "file_finder::Toggle",
-      "space space": "file_finder::Toggle",
       // Quit zed
       "space q q": "zed::Quit",
       // Terminal
@@ -386,11 +409,33 @@ This would open the Lazygit TUI within your terminal window.
     "command": "k9s",
     "reveal": "always",
     "hide": "on_success"
-  }
+  },
+  //fuzzy finder
+  {
+    "label": "file_finder",
+    "command": "zed \"$(tv files)\"",
+    "hide": "always",
+    "allow_concurrent_runs": true,
+    "use_new_terminal": true,
+    "shell": {
+      "program": "/bin/zsh",
+    },
+  },
+  // grep search
+  {
+    "label": "grep_search",
+    // Use the command with the --exact flag to disable fuzzy search so it only gives you exact matches
+    "command": "zed \"$(tv --exact text)\"",
+    "hide": "always",
+    "allow_concurrent_runs": true,
+    "use_new_terminal": true,
+    "shell": {
+      "program": "/bin/sh",
+    },
 ]
 ```
 
-Below are a couple of screenshots of how [K9s](https://k9scli.io/) and [Lazygit](https://github.com/jesseduffield/lazygit) look when they're opened within Zed.
+Below are a couple of screenshots of how [K9s](https://k9scli.io/) and [Lazygit](https://github.com/jesseduffield/lazygit) look when they're opened within Zed. Folloing on from this [Github Discussion](https://github.com/zed-industries/zed/discussions/22581) you're able to add fuzzy finder and grep search similar to what is provided by LazyVim. By using an app called [telvision](https://github.com/alexpasmantier/television). Screen shots below:
 
 #### Lazygit
 
@@ -403,6 +448,16 @@ Keymapping: `space g g`
 Keymapping: `space k 8`
 
 ![k9s](imgs/zed/k9s.png)
+
+#### Fuzzy Finder & Grep Search
+
+Keymapping: `space space`
+
+![fuzzy](imgs/zed/fuzzy.png)
+
+Keymapping: `space s g`
+
+![grep](imgs/zed/grep.png)
 
 ## Next steps
 
