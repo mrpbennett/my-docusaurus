@@ -5,27 +5,82 @@
  */
 /*@import "tailwindcss";*/
 
-/* You can override the default Infima variables here. */
+/* Claude Code Theme - Light Mode */
 :root {
-    --ifm-color-primary: #2e8555;
-    --ifm-color-primary-dark: #29784c;
-    --ifm-color-primary-darker: #277148;
-    --ifm-color-primary-darkest: #205d3b;
-    --ifm-color-primary-light: #33925d;
-    --ifm-color-primary-lighter: #359962;
-    --ifm-color-primary-lightest: #3cad6e;
-    --ifm-code-font-size: 95%;
-    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  /* Primary brand color - Claude Code orange/coral */
+  --ifm-color-primary: #cc785c;
+  --ifm-color-primary-dark: #c66345;
+  --ifm-color-primary-darker: #c35937;
+  --ifm-color-primary-darkest: #a1462a;
+  --ifm-color-primary-light: #d28d73;
+  --ifm-color-primary-lighter: #d59781;
+  --ifm-color-primary-lightest: #dfb1a4;
+
+  /* Background colors */
+  --ifm-background-color: #ffffff;
+  --ifm-background-surface-color: #f8f8f8;
+
+  /* Text colors */
+  --ifm-font-color-base: #1a1a1a;
+  --ifm-color-emphasis-600: #4a4a4a;
+
+  /* Code styling */
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(204, 120, 92, 0.1);
+
+  /* Navbar */
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  /* Footer */
+  --ifm-footer-background-color: #f8f8f8;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Claude Code Theme - Dark Mode */
 [data-theme="dark"] {
-    --ifm-color-primary: #25c2a0;
-    --ifm-color-primary-dark: #21af90;
-    --ifm-color-primary-darker: #1fa588;
-    --ifm-color-primary-darkest: #1a8870;
-    --ifm-color-primary-light: #29d5b0;
-    --ifm-color-primary-lighter: #32d8b4;
-    --ifm-color-primary-lightest: #4fddbf;
-    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* Primary brand color - Claude Code orange/coral (slightly brighter for dark mode) */
+  --ifm-color-primary: #e8957d;
+  --ifm-color-primary-dark: #e4806a;
+  --ifm-color-primary-darker: #e2755d;
+  --ifm-color-primary-darkest: #dd5536;
+  --ifm-color-primary-light: #ecaa90;
+  --ifm-color-primary-lighter: #eeb59d;
+  --ifm-color-primary-lightest: #f4d5c4;
+
+  /* Background colors - deep dark theme */
+  --ifm-background-color: #0f0f0f;
+  --ifm-background-surface-color: #1a1a1a;
+
+  /* Text colors */
+  --ifm-font-color-base: #e5e5e5;
+  --ifm-color-emphasis-600: #b8b8b8;
+
+  /* Code styling */
+  --docusaurus-highlighted-code-line-bg: rgba(232, 149, 125, 0.15);
+
+  /* Navbar */
+  --ifm-navbar-background-color: #0f0f0f;
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+
+  /* Footer */
+  --ifm-footer-background-color: #1a1a1a;
+
+  /* Card backgrounds */
+  --ifm-card-background-color: #1a1a1a;
+}
+
+/* Global heading styles */
+h2 {
+  font-size: 2rem !important;
+}
+.markdown {
+  font-family: monospace !important;
+  font-size: 14px;
+}
+blockquote > p {
+  font-style: italic;
+}
+table,
+.alert {
+  font-family: sans-serif;
 }
