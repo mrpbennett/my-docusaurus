@@ -7,7 +7,7 @@ export default function Hello() {
     <Layout title="Hello" description="Hello React Page">
       <div class="container mx-auto prose font-serif text-2xl max-w-3/4">
         <h1>Hey 👋</h1>
-        <p>
+        <h2>hello</h2>       <p>
           I'm Paul a Software Writer based in Dorset. I enjoy mastering Vim,
           tinkering with my homelab using Kubernetes. Main language of choice is
           Python and SQL, while learning Go at the moment. Currently a Lead
