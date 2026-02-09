@@ -1,6 +1,5 @@
 ---
-title: Helix with Yazi -
-slug: helix-and-yazi
+title: How to Make Yazi and Helix Play Nice
 tags: [terminal]
 keywords:
   - Helix
@@ -10,9 +9,9 @@ last_updated:
   date: 2026-02-09
 ---
 
-# How to Make Yazi and Helix Play Nice (Without Terminal Multiplexer Shenanigans)
-
 Look, I love Helix. It's fast, it's modal, and it doesn't make me feel like I'm piloting a 747 just to edit some code. But you know what it was missing? A solid file manager integration that didn't require me to spawn Zellij or tmux just to browse directories without leaving my editor.
+
+<!-- truncate -->
 
 Enter Yazi—the blazingly fast terminal file manager written in Rust (because of course it is). And thanks to some absolute wizardry from the Yazi maintainer himself, we can now run Yazi directly inside Helix without all the multiplexer overhead.
 
