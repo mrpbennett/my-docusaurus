@@ -5,17 +5,15 @@ import Gopher from "../img/pages/about/dancing-gopher.gif";
 export default function About() {
   return (
     <Layout title="About" description="About Paul Bennett">
-      <main className="max-w-[760px] mx-auto px-6 py-16 font-mono prose prose-lg dark:prose-invert">
-        {/* Terminal prompt header */}
+      <main className="about-main">
         <p
-          className="text-xs mb-10 tracking-wide"
-          style={{ color: "var(--ifm-color-primary)", marginTop: "2.5rem" }}
+          className="about-prompt"
+          style={{ color: "var(--ifm-color-primary)" }}
         >
           mrpbennett@homelab:~/about $ cat README.md
         </p>
 
-        {/* Bio — let prose handle h1 and paragraph colours */}
-        <div className="mb-16 mt-10">
+        <div className="about-section">
           <p>
             Software Writer based in Dorset. I enjoy mastering Vim, tinkering
             with my homelab using Kubernetes. Main language of choice is Python
@@ -33,16 +31,15 @@ export default function About() {
           </p>
         </div>
 
-        {/* Tools — not-prose prevents list indentation conflicts */}
-        <div className="not-prose mb-14">
+        <div className="about-section">
           <p
-            className="text-xs mb-5 tracking-wide"
+            className="about-section-title"
             style={{ color: "var(--ifm-color-primary)" }}
           >
             $ ls ~/tools
           </p>
-          <ul className="text-sm space-y-3 list-none p-0 m-0">
-            <li className="flex gap-3">
+          <ul className="about-list">
+            <li>
               <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
               <span>
                 <strong>Editor</strong>:{" "}
@@ -50,7 +47,7 @@ export default function About() {
                 <a href="https://www.jetbrains.com/datagrip/">DataGrip</a>
               </span>
             </li>
-            <li className="flex gap-3">
+            <li>
               <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
               <span>
                 <strong>Keyboard</strong>:{" "}
@@ -58,7 +55,7 @@ export default function About() {
                 ambient switches
               </span>
             </li>
-            <li className="flex gap-3">
+            <li>
               <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
               <span>
                 <strong>OS</strong>: MacOS
@@ -67,25 +64,23 @@ export default function About() {
           </ul>
         </div>
 
-        {/* Links */}
-        <div className="not-prose mb-14">
+        <div className="about-section">
           <p
-            className="text-xs mb-5 tracking-wide"
+            className="about-section-title"
             style={{ color: "var(--ifm-color-primary)" }}
           >
             $ cat links.txt
           </p>
-          <ul className="text-sm space-y-3 list-none p-0 m-0">
-            <li className="flex gap-3">
+          <ul className="about-list">
+            <li>
               <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
               <a href="https://github.com/mrpbennett">github.com/mrpbennett</a>
             </li>
           </ul>
         </div>
 
-        {/* Gopher at bottom */}
-        <div className="not-prose  flex justify-center">
-          <img src={Gopher} alt="Dancing Gopher" className="w-24" />
+        <div className="about-gopher">
+          <img src={Gopher} alt="Dancing Gopher" />
         </div>
       </main>
     </Layout>

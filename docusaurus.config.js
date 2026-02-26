@@ -137,9 +137,7 @@ const config = {
       },
     }),
 
-  plugins: [
-    "./src/plugins/tailwind-config.js",
-  ],
+  plugins: [],
 };
 
 export default config;
