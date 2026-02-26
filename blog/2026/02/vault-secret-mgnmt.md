@@ -1,110 +1,156 @@
 ---
+
 slug: kubernetes-secrets-vault-vso
 title: Managing Kubernetes Secrets the GitOps Way with Vault and VSO
 tags: [kubernetes]
 keywords:
-  - kubernetes
-  - vault
-  - secrets
-  - gitops
-  - homelab
-last_updated:
+
+- kubernetes
+- vault
+- secrets
+- gitops
+- homelab
+  last_updated:
   date: 2026-02-26
 ---
 
-If you're running GitOps with something like ArgoCD or Flux, everything lives in Git — your manifests, Helm charts, configs, all of it. But there's one thing you absolutely do not want sitting in a Git repo, no matter how private it is: secrets. API keys, database passwords, S3 credentials — none of that belongs in version control.
+GitOps is great right up until you need to store a secret. Everything else lives in Git — manifests, Helm charts, ArgoCD app definitions — but the moment you need a database password or an S3 key, you've got a problem. You absolutely cannot put credentials in a repository, no matter how private it is.
 
-<!-- truncate -->
+<!--truncate-->
 
-I ran into this pretty quickly with my homelab. I had secrets scattered across sealed secrets and manually applied Kubernetes secrets, and it was a mess. So I started looking at HashiCorp Vault as an external source of truth for secret values, with something to bridge the gap between Vault and my cluster. That bridge turned out to be the Vault Secrets Operator (VSO).
+That's the constraint. And solving it properly took me longer than I'd like to admit.
 
-## The tension
+The answer is [HashiCorp Vault](https://www.vaultproject.io/). Vault holds the actual secret values while your Git repo holds only a _reference_ to them. The bridge between the two is the Vault Secrets Operator (VSO) — it reads those references from your cluster, fetches the real values from Vault, and creates native Kubernetes secrets that your pods consume without knowing anything has changed.
 
-The fundamental problem is straightforward. GitOps says the desired state of your infrastructure lives in Git. Security says never put secrets in Git. You need to satisfy both at the same time.
+## The Secret Zero Problem
 
-The pattern that solves this is actually pretty simple. Git stores a *reference* to the secret (safe to commit), Vault stores the actual secret values, and an operator running in your cluster reads the reference, fetches from Vault, and creates a native Kubernetes secret that your pods consume normally.
+The tension here is simple: GitOps says the desired state of your infrastructure lives in Git. Security says never put secrets in Git. You need something that satisfies both at once.
 
-## Why VSO over External Secrets Operator?
+The pattern is: Git stores a reference to the secret (safe to commit), Vault stores the actual values, and an operator running in your cluster bridges the gap. Your pods just see a normal Kubernetes secret and don't care where it came from.
 
-There are a few options for bridging Vault and Kubernetes. The External Secrets Operator (ESO) is the most popular and is provider-agnostic — it works with AWS Secrets Manager, GCP, Azure, and Vault alike. There's also the Vault Agent Injector which uses sidecar containers to inject secrets into pods at runtime.
+## Why VSO?
 
-VSO is HashiCorp's own Kubernetes-native operator, purpose-built for Vault. If Vault is your only secrets backend (which it is for me), VSO offers a tighter integration with fewer moving parts. The killer feature is automatic pod rollout restarts when secrets change — something you'd need to bolt on a tool like Reloader to achieve with ESO. VSO also has first-class support for Vault's dynamic secrets, where Vault generates short-lived credentials on the fly rather than storing long-lived passwords.
+There are other tools that solve this problem. The External Secrets Operator (ESO) is the most popular — it's provider-agnostic and works with AWS Secrets Manager, GCP, Azure, and Vault alike. The Vault Agent Injector uses sidecar containers to push secrets into pods at runtime.
 
-## Setting up Vault
+I went with VSO because Vault is my only secrets backend, and VSO is HashiCorp's own Kubernetes-native operator purpose-built for it. Fewer moving parts, and it has one feature I really wanted: automatic pod rollout restarts when a secret changes. With ESO you'd need to bolt on a separate tool like Reloader to get that. With VSO it's built in.
+
+VSO also has first-class support for Vault's dynamic secrets, where Vault generates short-lived credentials on the fly rather than storing long-lived passwords — but that's a rabbit hole for another post.
+
+## Setting Up Vault
 
 ### Deploying Vault
 
-For a homelab or learning environment, the Helm chart with dev mode is the quickest path:
+For a homelab or learning environment, the Helm chart with dev mode gets you going quickly:
 
 ```bash
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm install vault hashicorp/vault --set "server.dev.enabled=true"
 ```
 
-Dev mode means no unsealing ceremony and no TLS — it just works. For production you'd want HA mode with auto-unseal, but dev mode removes friction while you're learning the workflow.
+Dev mode means no unsealing ceremony and no TLS — it just works. You'd want HA mode with auto-unseal for production, but dev mode removes all the friction while you're learning the setup.
 
-### Enabling a secrets engine
+### Enabling a Secrets Engine
 
-Vault organises secrets into engines. For static key-value secrets (which covers most application config), you want the KV engine, version 2. Version 2 gives you versioning, soft delete, and metadata at no extra complexity.
+Vault organises secrets into engines. For static key-value secrets — which covers most application config — you want the **KV** engine. When you first open the Vault UI and navigate to Secrets Engines, you'll see a list that includes KV, Kubernetes, LDAP, PKI Certificates, and more. Pick **KV**. The Kubernetes engine is something else entirely; it generates Kubernetes service account tokens dynamically, which is a more advanced use case.
+
+Choose **Version 2** when enabling KV — you get versioning, soft delete, and metadata at no extra complexity.
+
+Or via the CLI:
 
 ```bash
 vault secrets enable -path=kv kv-v2
 ```
 
-You can also do this through the Vault UI at `http://your-vault-address:8200/ui` — navigate to Secrets Engines, click "Enable new engine", and select KV. Choose version 2 when prompted.
+### Creating Secrets in the Vault UI
 
-### Creating secrets
+You don't need to shell into the Vault pod to create secrets. The UI is perfectly fine for this, and it's the most intuitive way when you're getting started.
 
-You don't need to shell into the Vault pod to create secrets. The UI is perfectly fine for this, and honestly it's the most intuitive way when you're getting started.
+Navigate into your KV engine and click "Create secret." You'll fill in two things:
 
-Navigate into your KV engine, click "Create secret", and you'll see two fields. The **path** defines a hierarchical location — think of it like a folder structure. Something like `myapp/config` or `rustfs/vault-test`. Below that, you add key-value pairs for the actual secret data.
+**Path** — a hierarchical location for your secret, like a folder structure. Something like `rustfs/vault-test` or `homelab/grafana`. This is the path your VSO resources will reference later.
 
-For example, an S3 configuration secret at path `rustfs/vault-test` might contain:
+**Secret data** — key-value pairs below the path. For example, an S3 configuration secret might look like:
 
-- `AWS_ACCESS_KEY_ID` → your access key
-- `AWS_SECRET_ACCESS_KEY` → your secret key
-- `S3_BUCKET` → your bucket name
+| Key                     | Value            |
+| ----------------------- | ---------------- |
+| `AWS_ACCESS_KEY_ID`     | your access key  |
+| `AWS_SECRET_ACCESS_KEY` | your secret key  |
+| `S3_BUCKET`             | your bucket name |
 
-Grouping related secrets under a single path is a good practice. It means one VSO resource can pull all of them into a single Kubernetes secret, and your deployments can mount them all at once with `envFrom`.
+Grouping related secrets under a single path is good practice — one VSO resource can pull them all into a single Kubernetes secret, and your deployments can mount everything at once with `envFrom`.
 
-Beyond the UI, you can manage secrets via the Vault CLI from your local machine (just set `VAULT_ADDR` and `VAULT_TOKEN`), the REST API with curl, or Terraform if you want secret *structure* managed as code.
+Beyond the UI, you can also manage secrets via the Vault CLI (set `VAULT_ADDR` and `VAULT_TOKEN`), the REST API, or Terraform for a fully declarative approach — more on that at the end.
 
-### A quick note on cubbyhole
+### A Quick Note on Cubbyhole
 
-You'll notice Vault has a special engine called cubbyhole. This isn't where you store application secrets — that's what KV is for. Cubbyhole is scoped entirely to a single Vault token. Only that exact token can read its cubbyhole, and when the token expires, the cubbyhole is destroyed.
+Vault has a special engine called cubbyhole. This is _not_ where you store application secrets — that's what KV is for. Cubbyhole is scoped entirely to a single Vault token. Only that exact token can read its own cubbyhole, not even root can peek in, and when the token expires the cubbyhole is gone with it.
 
-Its main use case is secure secret introduction via response wrapping — a one-time-use delivery mechanism. Think of KV as the filing cabinet and cubbyhole as a self-destructing envelope.
+Its main use case is secure secret introduction via response wrapping. An admin wraps a secret with a short TTL, hands the wrapping token to an application, and the application can unwrap it exactly once. If anyone intercepts and unwraps it first, the legitimate attempt fails — so you know it's been compromised. Think of KV as the filing cabinet and cubbyhole as a self-destructing envelope.
 
-## Configuring Vault authentication
+## Configuring Vault Authentication
 
-Before VSO can fetch secrets, Vault needs to trust your Kubernetes cluster. The Kubernetes auth method lets pods authenticate using their service accounts:
+Before VSO can fetch anything, Vault needs to trust your Kubernetes cluster. This is the step that's easy to overlook and will result in `403 permission denied` errors if it's missing.
+
+### Enabling Kubernetes Auth
+
+Check if it's already enabled:
+
+```bash
+vault auth list
+```
+
+If you only see `token/` in the list, Kubernetes auth isn't enabled. You can enable it through the UI under **Access → Auth Methods → Enable new method → Kubernetes**, or via the CLI:
 
 ```bash
 vault auth enable kubernetes
+```
 
+### Configuring the Auth Method
+
+Once enabled, Vault needs to know how to talk to the Kubernetes API. In the UI, go to **Access → Authentication Methods → kubernetes → Configure** and set the **Kubernetes host** to:
+
+```
+https://kubernetes.default.svc.cluster.local:443
+```
+
+You can leave the CA certificate and Token Reviewer JWT fields blank if Vault is running as a pod in your cluster — it'll pick up the CA cert and service account JWT automatically from its own pod mount.
+
+Via the CLI (port-forward if needed):
+
+```bash
+kubectl port-forward svc/vault -n vault 8200:8200
+
+export VAULT_ADDR="http://127.0.0.1:8200"
 vault write auth/kubernetes/config \
-  kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"
+  kubernetes_host="https://kubernetes.default.svc.cluster.local:443"
 ```
 
-Then create a role that binds a service account to a policy:
+### Creating Policies
 
-```bash
-vault write auth/kubernetes/role/vso-role \
-  bound_service_account_names=default \
-  bound_service_account_namespaces=rustfs \
-  policies=rustfs-read \
-  ttl=1h
-```
+Policies control what secrets a role can access. Create one per application or group of secrets. In the UI, go to **Policies → Create ACL policy**:
 
-And a policy that grants read access to the relevant paths:
+- **Name:** `rustfs-read`
+- **Policy:**
 
-```bash
-vault policy write rustfs-read - <<EOF
+```hcl
 path "kv/data/rustfs/*" {
   capabilities = ["read"]
 }
-EOF
 ```
+
+Don't be tempted to use the `default` policy for this. The `default` policy is attached to every token in Vault, so adding secret paths to it means every token in your cluster can access those secrets — the opposite of least-privilege.
+
+### Creating Roles
+
+Roles bind Kubernetes service accounts to Vault policies. In the UI, go to **Access → kubernetes → Create role**:
+
+- **Name:** `vso-role`
+- **Bound service account names:** `default`
+- **Bound service account namespaces:** each namespace where you'll use VSO (e.g. `cnpg`, `rustfs`, `default`)
+- **Token policies:** `rustfs-read`
+- **Token TTL:** `3600`
+
+This tells Vault: "when a pod using the `default` service account in the `cnpg` namespace presents a JWT, give it a token with the `rustfs-read` policy."
 
 ## Installing VSO
 
@@ -115,30 +161,38 @@ helm install vault-secrets-operator hashicorp/vault-secrets-operator \
   -n vault-secrets-operator-system --create-namespace
 ```
 
-## The GitOps manifests
+Verify the CRDs it installed:
 
-This is where it all comes together. You need three custom resources, and they all go in your **workload namespace** — not the Vault namespace, not the VSO namespace. VSO watches across namespaces, just like how Flux runs in `flux-system` but manages resources everywhere.
+```bash
+kubectl get crds | grep vault
+```
 
-### VaultConnection — where is Vault?
+As of VSO 1.3.0 you'll see `vaultconnections`, `vaultauths`, `vaultstaticsecrets`, and `vaultdynamicsecrets`. Note that `ClusterVaultConnection` isn't available in this version — you'll use namespace-scoped resources instead. A small amount of repetition across namespaces, but it keeps things explicit and easy to reason about.
+
+## The GitOps Manifests
+
+This is where it all comes together. You need three custom resources, and they all go in your **workload namespace** — not the Vault namespace, not the VSO namespace. VSO watches across namespaces just like how Flux runs in `flux-system` but manages resources everywhere.
+
+### VaultConnection — Where is Vault?
 
 ```yaml
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultConnection
 metadata:
   name: vault-connection
-  namespace: rustfs
+  namespace: cnpg
 spec:
   address: http://vault.vault.svc.cluster.local:8200
 ```
 
-### VaultAuth — how do I authenticate?
+### VaultAuth — How do I authenticate?
 
 ```yaml
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
   name: vault-auth
-  namespace: rustfs
+  namespace: cnpg
 spec:
   method: kubernetes
   mount: kubernetes
@@ -148,79 +202,248 @@ spec:
   vaultConnectionRef: vault-connection
 ```
 
-### VaultStaticSecret — what do I fetch and where do I put it?
+### VaultStaticSecret — What do I fetch and where do I put it?
 
 ```yaml
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultStaticSecret
 metadata:
-  name: rustfs-secrets
-  namespace: rustfs
+  name: rustfs-cloudnativepg
+  namespace: cnpg
 spec:
   vaultAuthRef: vault-auth
   mount: kv
   type: kv-v2
-  path: rustfs/vault-test
+  path: rustfs/cloudnativepg
   refreshAfter: 60s
   destination:
-    name: rustfs-k8s-secret
+    name: rustfs-cloudnativepg
     create: true
   rolloutRestartTargets:
     - kind: Deployment
-      name: rustfs
+      name: my-app
 ```
 
-The `rolloutRestartTargets` field is one of VSO's standout features. When the secret changes in Vault, VSO updates the Kubernetes secret and automatically triggers a rolling restart of the specified deployment. No need for Reloader or any additional tooling.
+A few things worth calling out here:
 
-### Using the secret in your deployment
+**`mount: kv`** must match the path where you mounted the KV engine in Vault. If you see `kv/` in the Vault UI breadcrumb, use `kv` here.
+
+**`destination.name`** is the name of the Kubernetes secret VSO will create — this is what your deployments reference. It doesn't need to match the Vault path; name it whatever makes sense for your workloads.
+
+**`destination.create: true`** tells VSO it's allowed to create the secret if it doesn't already exist.
+
+### Understanding rolloutRestartTargets
+
+This is one of VSO's standout features. When you update a secret in Vault, VSO will detect the change and update the Kubernetes secret — but your running pods still have the old values loaded in memory. Without something to restart them, they'll keep using stale credentials until the next deploy.
+
+`rolloutRestartTargets` solves this by telling VSO to automatically trigger a rolling restart of the specified workloads whenever the secret changes. Update your `AWS_SECRET_ACCESS_KEY` in the Vault UI, and within 60 seconds (based on `refreshAfter`) VSO picks up the change, updates the Kubernetes secret, and rolls new pods with the fresh values. No manual intervention, no Reloader, nothing extra needed.
+
+You can target multiple workloads if the same secret is shared across them:
 
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: rustfs
-  namespace: rustfs
-spec:
-  template:
-    spec:
-      containers:
-        - name: rustfs
-          envFrom:
-            - secretRef:
-                name: rustfs-k8s-secret
+rolloutRestartTargets:
+  - kind: Deployment
+    name: rustfs
+  - kind: Deployment
+    name: another-app
+  - kind: StatefulSet
+    name: some-database
 ```
 
-All of these manifests live in your Git repository and get synced to the cluster by Flux or ArgoCD. The actual secret values never touch Git.
+It's optional — leave it out and VSO will still keep the Kubernetes secret in sync; you'd just need to restart pods yourself to pick up changes.
 
-## Reducing boilerplate
+## Real-World Example: CloudNativePG Backups
 
-Three resources per application sounds like a lot, but in practice you share the connection and auth resources across apps in the same namespace.
-
-For the `VaultConnection`, you can go one step further and use a `ClusterVaultConnection` — a cluster-scoped resource defined once and referenced from any namespace:
+Here's how this fits together in practice. CloudNativePG needs S3 credentials for WAL archiving and backups. The CNPG cluster spec expects a secret with specific key names:
 
 ```yaml
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: ClusterVaultConnection
-metadata:
-  name: vault-connection
-spec:
-  address: http://vault.vault.svc.cluster.local:8200
+backup:
+  retentionPolicy: "1d"
+  barmanObjectStore:
+    destinationPath: s3://cloudnativepg-dev-backup
+    endpointURL: http://rustfs-svc.rustfs.svc.cluster.local:9000
+    s3Credentials:
+      accessKeyId:
+        name: rustfs-cloudnativepg
+        key: access_key
+      secretAccessKey:
+        name: rustfs-cloudnativepg
+        key: access_secret_key
 ```
 
-With that in place, the per-namespace overhead is just a `VaultAuth` (because auth should be scoped per namespace for least-privilege) and a `VaultStaticSecret` per secret. Adding a second app to the same namespace? That's just one more `VaultStaticSecret` file.
+The things that need to match are the secret **name** (`rustfs-cloudnativepg`) and the **key names** (`access_key`, `access_secret_key`). So in Vault, create a secret at path `rustfs/cloudnativepg` with exactly those key names. Then the `VaultStaticSecret` with `destination.name: rustfs-cloudnativepg` creates the Kubernetes secret that CNPG can consume directly — no changes needed on the CNPG side.
 
-## How it all flows
+## Reducing Boilerplate
+
+Three resource types per namespace sounds like a lot, but in practice you share the `VaultConnection` and `VaultAuth` across all apps within the same namespace. You only need one `VaultStaticSecret` per secret path.
+
+```
+cnpg namespace:
+  ├── VaultConnection  (one per namespace)
+  ├── VaultAuth        (one per namespace)
+  ├── VaultStaticSecret - rustfs-cloudnativepg
+  ├── VaultStaticSecret - another-secret
+  └── VaultStaticSecret - yet-another-secret
+```
+
+Each `VaultStaticSecret` references the same `vaultAuthRef: vault-auth`. Adding a new secret to an existing namespace is just one more file.
+
+For a brand new namespace, you need the `VaultConnection` and `VaultAuth` too — two extra files. And don't forget to add the namespace to your Vault role's `bound_service_account_namespaces`.
+
+## Common Pitfalls
+
+Working through this setup for the first time, a few things caught me out.
+
+### "permission denied" on login (403)
+
+This almost always means Kubernetes auth isn't configured properly — or isn't enabled at all. Run `vault auth list` and check if `kubernetes/` appears. If it doesn't, enable it. If it does, verify the Kubernetes host is set correctly in the auth config.
+
+### "invalid role name" (400)
+
+You've enabled Kubernetes auth but haven't created the role yet. The auth method exists, but Vault doesn't know what `vso-role` is. Create the role via the UI (Access → kubernetes → Create role) or CLI.
+
+### "VaultAuth not found"
+
+The `VaultAuth` and `VaultConnection` resources must be in the **same namespace** as your `VaultStaticSecret`. They don't go in the Vault namespace or the VSO operator namespace.
+
+### Can't reach Vault from the CLI
+
+If `vault login` fails with a network error, you're probably trying to hit Vault over an external URL that isn't routable from your machine. Use port-forwarding:
+
+```bash
+kubectl port-forward svc/vault -n vault 8200:8200
+export VAULT_ADDR="http://127.0.0.1:8200"
+vault login
+```
+
+### ClusterVaultConnection not found
+
+If you try to use a `ClusterVaultConnection` and get a CRD not found error, your version of VSO doesn't support it. As of VSO 1.3.0, this CRD isn't available. Use namespace-scoped `VaultConnection` resources instead.
+
+## Managing Vault Configuration with Terraform
+
+Once you've been through the manual setup and understand how the pieces fit together, the natural next step is managing Vault's configuration declaratively with Terraform. Auth methods, policies, roles, and secret paths all become version-controlled — which is exactly where you want them in a GitOps setup.
+
+### Provider Setup
+
+```hcl
+terraform {
+  required_providers {
+    vault = {
+      source  = "hashicorp/vault"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "vault" {
+  address = "http://127.0.0.1:8200"
+  # Token supplied via VAULT_TOKEN env var
+}
+```
+
+### Secrets Engine
+
+```hcl
+resource "vault_mount" "kv" {
+  path        = "kv"
+  type        = "kv"
+  options     = { version = "2" }
+  description = "KV v2 secrets engine"
+}
+```
+
+### Kubernetes Auth
+
+```hcl
+resource "vault_auth_backend" "kubernetes" {
+  type = "kubernetes"
+}
+
+resource "vault_kubernetes_auth_backend_config" "config" {
+  backend         = vault_auth_backend.kubernetes.path
+  kubernetes_host = "https://kubernetes.default.svc.cluster.local:443"
+}
+```
+
+### Policies
+
+```hcl
+resource "vault_policy" "rustfs_read" {
+  name   = "rustfs-read"
+  policy = <<EOT
+path "kv/data/rustfs/*" {
+  capabilities = ["read"]
+}
+EOT
+}
+```
+
+### Roles
+
+```hcl
+resource "vault_kubernetes_auth_backend_role" "vso_role" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "vso-role"
+  bound_service_account_names      = ["default"]
+  bound_service_account_namespaces = ["cnpg", "rustfs", "default"]
+  token_ttl                        = 3600
+  token_policies                   = ["rustfs-read"]
+}
+```
+
+### Secrets
+
+```hcl
+resource "vault_kv_secret_v2" "rustfs_cloudnativepg" {
+  mount = vault_mount.kv.path
+  name  = "rustfs/cloudnativepg"
+
+  data_json = jsonencode({
+    access_key        = var.cnpg_access_key
+    access_secret_key = var.cnpg_secret_access_key
+  })
+}
+
+variable "cnpg_access_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "cnpg_secret_access_key" {
+  type      = string
+  sensitive = true
+}
+```
+
+The actual values get supplied via environment variables or a `terraform.tfvars` file that stays out of Git:
+
+```bash
+export TF_VAR_cnpg_access_key="your-access-key"
+export TF_VAR_cnpg_secret_access_key="your-secret-key"
+export VAULT_TOKEN="your-root-token"
+
+terraform apply
+```
+
+The entire Vault configuration — auth methods, policies, roles, secret paths — is now declarative and version-controlled. The only things not in Git are the actual secret values and the Vault token. As your homelab grows, adding a new application's secrets is just a few more Terraform resources.
+
+## The End-to-End Flow
 
 Putting it all together:
 
-1. You create or update a secret in the Vault UI (or CLI, or API, or Terraform)
+1. Create or update a secret in the Vault UI (or CLI, API, or Terraform)
 2. Your Git repo contains the VaultConnection, VaultAuth, VaultStaticSecret, and Deployment manifests
 3. Flux or ArgoCD syncs these manifests to the cluster
-4. VSO picks up the VaultStaticSecret, authenticates to Vault, and fetches the real values
+4. VSO picks up the VaultStaticSecret, authenticates to Vault via the Kubernetes auth method, and fetches the real values
 5. VSO creates a native Kubernetes secret in the workload namespace
 6. Your pods consume it like any other Kubernetes secret
-7. If the secret changes in Vault, VSO detects it on the next refresh cycle, updates the Kubernetes secret, and restarts your pods
+7. If the secret changes in Vault, VSO detects it on the next refresh cycle, updates the Kubernetes secret, and restarts your pods if you've configured `rolloutRestartTargets`
 
-The key insight is that Git remains the single source of truth for *what* secrets your application needs and *where* they come from, while Vault remains the single source of truth for the secret *values* themselves. Neither responsibility bleeds into the other.
+Git remains the single source of truth for _what_ secrets your application needs and _where_ they come from. Vault remains the single source of truth for the secret _values_. Neither bleeds into the other.
 
-Once you're comfortable with this pattern, there are natural next steps. Dynamic secrets let Vault generate short-lived database credentials on the fly. Vault's PKI engine can act as your own certificate authority. And transit encryption lets your applications encrypt and decrypt data through Vault's API without ever handling encryption keys directly. But for getting secrets out of your Git repo and into your cluster safely, VSO with static KV secrets is a solid foundation.
+## What's Next
+
+Once this pattern is comfortable, there are natural next steps. Dynamic secrets let Vault generate short-lived database credentials on the fly using `VaultDynamicSecret` resources — no more long-lived passwords. Vault's PKI engine can act as your own certificate authority. Transit encryption lets your applications encrypt and decrypt data through Vault's API without ever handling encryption keys directly.
+
+For getting secrets out of your Git repo and into your cluster safely though, VSO with static KV secrets is a solid foundation that scales well as your homelab grows.
