@@ -298,6 +298,13 @@ Working through this setup for the first time, a few things caught me out.
 
 This almost always means Kubernetes auth isn't configured properly — or isn't enabled at all. Run `vault auth list` and check if `kubernetes/` appears. If it doesn't, enable it. If it does, verify the Kubernetes host is set correctly in the auth config.
 
+One important debugging tip: **check the VSO controller logs directly**, not just the resource status. The `describe` output on a `VaultStaticSecret` often shows a generic `permission denied` on the secret read, which points you at the wrong thing. The actual VSO logs will tell you the real failure — for instance, `namespace not authorized` on the *login* step, which is a completely different issue than a missing read policy. To get them:
+
+```bash
+kubectl logs -n vault-secrets-operator-system \
+  deployment/vault-secrets-operator-controller-manager
+```
+
 ### "invalid role name" (400)
 
 You've enabled Kubernetes auth but haven't created the role yet. The auth method exists, but Vault doesn't know what `vso-role` is. Create the role via the UI (Access → kubernetes → Create role) or CLI.
@@ -316,6 +323,27 @@ export VAULT_ADDR="http://127.0.0.1:8200"
 vault login
 ```
 
+### Wildcard namespace binding silently fails
+
+If your Vault role has `bound_service_account_namespaces` set to `"*"` (with quotes), no namespace will ever match. This can happen when configuring the role through the Vault UI — it stores a literal quoted string rather than the wildcard. Every VSO login attempt will return `namespace not authorized` even though the auth method and policy are correct.
+
+Via the CLI:
+
+```bash
+vault read auth/kubernetes/role/vso-role
+```
+
+Check the `bound_service_account_namespaces` field. If you see `"*"` rather than `*`, update the role. This is exactly the kind of subtle drift that Terraform catches automatically — it would flag the difference in `terraform plan` before you ever apply.
+
+### VSO caches auth failures aggressively
+
+If you fix a Vault-side misconfiguration (wrong policy name, bad namespace binding, missing secret path) but the `VaultStaticSecret` still won't sync, the VSO controller may be caching the earlier failure and has stopped retrying. Restarting it clears the state:
+
+```bash
+kubectl rollout restart deployment -n vault-secrets-operator-system \
+  vault-secrets-operator-controller-manager
+```
+
 ### ClusterVaultConnection not found
 
 If you try to use a `ClusterVaultConnection` and get a CRD not found error, your version of VSO doesn't support it. As of VSO 1.3.0, this CRD isn't available. Use namespace-scoped `VaultConnection` resources instead.
@@ -323,6 +351,20 @@ If you try to use a `ClusterVaultConnection` and get a CRD not found error, your
 ## Managing Vault Configuration with Terraform
 
 Once you've been through the manual setup and understand how the pieces fit together, the natural next step is managing Vault's configuration declaratively with Terraform. Auth methods, policies, roles, and secret paths all become version-controlled — which is exactly where you want them in a GitOps setup.
+
+The manual setup taught me an important lesson the hard way: the Vault UI introduces subtle bugs that are nearly impossible to spot. Setting `bound_service_account_namespaces` to `*` in the UI stored it as the literal string `"*"` — which means no namespace ever matches. Every VSO login failed with `namespace not authorized`, and the only way I found the issue was digging through the operator logs and then running `vault read auth/kubernetes/role/vso-role` to inspect the raw values. `terraform plan` would have flagged this immediately.
+
+After that incident I moved the entire Vault configuration to Terraform. If you already have a manual setup, you can import it rather than recreating from scratch:
+
+```bash
+terraform import vault_mount.kv kv
+terraform import vault_auth_backend.kubernetes kubernetes
+terraform import vault_policy.rustfs_read rustfs-read
+terraform import vault_kubernetes_auth_backend_role.vso_role auth/kubernetes/role/vso-role
+terraform import vault_kubernetes_auth_backend_config.config auth/kubernetes/config
+```
+
+Then `terraform plan` will surface any drift between your actual Vault config and the desired state — wrong policy names, quoted wildcards, missing secrets — before it becomes a runtime problem.
 
 ### Provider Setup
 
