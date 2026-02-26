@@ -1,16 +1,14 @@
 ---
-
 slug: kubernetes-secrets-vault-vso
 title: Managing Kubernetes Secrets the GitOps Way with Vault and VSO
 tags: [kubernetes]
 keywords:
-
-- kubernetes
-- vault
-- secrets
-- gitops
-- homelab
-  last_updated:
+  - kubernetes
+  - vault
+  - secrets
+  - gitops
+  - homelab
+last_updated:
   date: 2026-02-26
 ---
 
@@ -298,7 +296,7 @@ Working through this setup for the first time, a few things caught me out.
 
 This almost always means Kubernetes auth isn't configured properly — or isn't enabled at all. Run `vault auth list` and check if `kubernetes/` appears. If it doesn't, enable it. If it does, verify the Kubernetes host is set correctly in the auth config.
 
-One important debugging tip: **check the VSO controller logs directly**, not just the resource status. The `describe` output on a `VaultStaticSecret` often shows a generic `permission denied` on the secret read, which points you at the wrong thing. The actual VSO logs will tell you the real failure — for instance, `namespace not authorized` on the *login* step, which is a completely different issue than a missing read policy. To get them:
+One important debugging tip: **check the VSO controller logs directly**, not just the resource status. The `describe` output on a `VaultStaticSecret` often shows a generic `permission denied` on the secret read, which points you at the wrong thing. The actual VSO logs will tell you the real failure — for instance, `namespace not authorized` on the _login_ step, which is a completely different issue than a missing read policy. To get them:
 
 ```bash
 kubectl logs -n vault-secrets-operator-system \

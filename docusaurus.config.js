@@ -11,6 +11,14 @@ import { themes as prismThemes } from "prism-react-renderer";
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "mrpbennett.dev",
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {},
+      innerHTML:
+        "window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){window.dataLayer.push(arguments);};",
+    },
+  ],
   tagline: "Dinosaurs are cool",
   favicon: "img/favicon.ico",
 
@@ -82,7 +90,9 @@ const config = {
           src: "img/logo.svg",
         },
         items: [
+          { to: "/", label: "Posts", position: "left" },
           { to: "/tags", label: "Tags", position: "left" },
+          { to: "/about", label: "About", position: "left" },
           {
             href: "https://github.com/mrpbennett",
             logo: {
@@ -128,7 +138,7 @@ const config = {
     }),
 
   plugins: [
-    // "./src/plugins/tailwind-config.js",
+    "./src/plugins/tailwind-config.js",
   ],
 };
 
