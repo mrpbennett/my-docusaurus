@@ -10,20 +10,16 @@ export default function About() {
           className="about-prompt"
           style={{ color: "var(--ifm-color-primary)" }}
         >
-          mrpbennett@homelab:~/about $ cat README.md
+          mrpbennett@dino:~/about $ cat README.md
         </p>
 
         <div className="about-section">
           <p>
-            Software Writer based in Dorset. I enjoy mastering Vim, tinkering
-            with my homelab using Kubernetes. Main language of choice is Python
-            and SQL, while learning Go at the moment. Currently a Lead Solution
-            Engineer in AdTech.
-          </p>
-          <p>
-            I like to keep track of things I learn in my{" "}
-            <a href="https://github.com/mrpbennett">TIL repo</a> — I often find
-            myself looking back through it as a refresher.
+            I'm Paul a Software Writer based in Dorest who loves the terminal. I
+            enjoy building applications with AI and tinkering with my homelab
+            using Kubernetes. Main languages of choice are Python and SQL,
+            whilst trying to learn Go. Currently a Lead Solution Engineer in
+            AdTech.
           </p>
           <p>
             My life's work is to make technology easy to understand and
@@ -58,7 +54,62 @@ export default function About() {
             <li>
               <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
               <span>
+                <strong>Terminal</strong>:
+                <a href="https://ghostty.org"> Ghostty</a>
+              </span>
+            </li>
+            <li>
+              <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
+              <span>
+                <strong>Multiplexer</strong>:
+                <a href="https://zellij.dev"> Zellij</a>
+              </span>
+            </li>
+            <li>
+              <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
+              <span>
                 <strong>OS</strong>: MacOS
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="about-section">
+          <p
+            className="about-section-title"
+            style={{ color: "var(--ifm-color-primary)" }}
+          >
+            $ ls ~/projects
+          </p>
+          <ul className="about-list">
+            <li>
+              <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
+              <span>
+                <a href="https://github.com/mrpbennett/bucky">Bucky</a> - A
+                beautiful TUI for managing S3/SFTP/GCP storage
+              </span>
+            </li>
+            <li>
+              <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
+              <span>
+                <a href="https://github.com/mrpbennett/melon">Melon</a> - An
+                alternative to the past fig.io
+              </span>
+            </li>
+            <li>
+              <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
+              <span>
+                <a href="https://github.com/mrpbennett/fastapi.nvim">
+                  fastapi.nvim
+                </a>{" "}
+                - Port of the official FastAPI plugin for VSC
+              </span>
+            </li>
+            <li>
+              <span style={{ color: "var(--ifm-color-primary)" }}>▸</span>
+              <span>
+                <a href="https://github.com/booberrytheme">BooBerry Themes</a> -
+                Ports from the popular Helix theme
               </span>
             </li>
           </ul>
