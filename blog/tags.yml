@@ -2,54 +2,46 @@ databases:
   label: databases
   permalink: /databases
   description: Posts about databases
-
+ai:
+  label: ai
+  permalink: /ai
 devops:
   label: devops
   permalink: /devops
-
 editor:
   label: editor
   permalink: /editor
-
 homelab:
   label: homelap
   permalink: /homelab
-
 go:
   label: go
   permalink: /go
   description: Posts about Go
-
 linux:
   label: linux
   permalink: /linux
   description: Posts about Linux
-
 kubernetes:
   label: kubernetes
   permalink: /kubernetes
   description: Posts about kubernetes
-
 omarchy:
   label: omarchy
   permalink: /omarchy
   description: Posts about Omarchy
-
 neovim:
   label: neovim
   permalink: /neovim
   description: Posts about Neovim
-
 sql:
   label: sql
   permalink: /sql
   description: Posts about SQL
-
 terminal:
   label: terminal
   permalink: /terminal
   description: Posts related to all things terminal
-
 trino:
   label: trino
   permalink: /trino
