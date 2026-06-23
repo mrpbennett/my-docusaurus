@@ -23,7 +23,7 @@ export default function About() {
           </p>
           <p>
             My life's work is to make technology easy to understand and
-            interesting to learn about. Husband, doggo dad.
+            interesting to learn about. Husband, doggo dad and biker.
           </p>
         </div>
 

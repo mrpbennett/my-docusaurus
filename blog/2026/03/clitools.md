@@ -8,7 +8,7 @@ keywords:
   - tui
   - tooling
 last_updated:
-  date: 2026-03-07
+  date: 2026-06-23
 ---
 
 Since finding the site [terminaltrove](https://terminaltrove.com/) I have realised that I have accumulated a lot of CLI tools. Tools that help me in my workflow day to day or tools that are just awesome to use.
@@ -37,6 +37,7 @@ Any thing missing, let me know. I am always on the look for new CLI / TUI tools.
 - [lazygit](https://github.com/jesseduffield/lazygit) - A simple terminal UI for git commands, written in Go
 - [gh](https://github.com/cli/cli) - GitHub command-line tool
 - [gh-dash](https://github.com/dlvhdr/gh-dash) - A rich terminal UI for GitHub PRs that doesn't break your flow.
+- [hunk](https://github.com/modem-dev/hunk) - Review-first terminal diff viewer
 - [worktrunk](https://github.com/max-sixty/worktrunk) - Git worktree management, designed for parallel AI agent workflows
 
 ### Process Management

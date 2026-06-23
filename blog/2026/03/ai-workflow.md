@@ -13,7 +13,7 @@ keywords:
   - worktrees
   - workflow
 last_updated:
-  date: 2026-03-25
+  date: 2026-06-23
 ---
 
 AI agents are getting better at an absurd pace, and if I am honest, it can feel impossible to keep up. One week there is a new model, the next week there is a new coding tool, and then suddenly everyone has a strong opinion about how you should be working.
@@ -26,13 +26,29 @@ That said, this is also what makes the space fun. It still feels like one big on
 
 Here are the main tools I have been reaching for lately to get consistently better results.
 
-**[get-shit-done](https://github.com/gsd-build/get-shit-done)**
+**[superpowers](https://github.com/superpowers-sh/superpowers)**
 
-This is a lightweight but surprisingly powerful meta-prompting, context engineering, and spec-driven development system for Claude Code and other agents. The big thing it helps with is context rot, which is where the quality of an agent's output slowly falls apart as the conversation gets longer and muddier.
+This is a skill and context system for Claude Code that has become the backbone of how I work with agents. The core problem it solves is context rot — the slow degradation in output quality that happens as a conversation gets longer, muddier, and further from the original intent.
 
-What I like about `get-shit-done` is that it pushes you toward a more disciplined workflow. Instead of throwing a vague request at an agent and hoping for the best, it nudges you into planning, writing clearer specs, and validating the work properly.
+What I like about superpowers is that it gives the agent a library of specialised skills to draw on. Rather than relying on a general system prompt and hoping the model figures out the right approach, you invoke a skill that already knows what good looks like for that kind of task. Planning a feature, debugging a tricky issue, doing a thorough code review — there is a skill for each, and they wire in the right structure automatically.
 
-For example, if I want an agent to add a feature to a side project, I no longer start with something lazy like "build me a settings page". I will use a more structured flow so the agent first works out the plan, writes down the assumptions, and only then starts implementing. That one change alone usually gives me better output than jumping straight into code generation.
+For example, if I want an agent to add a feature, it no longer just starts generating code. It invokes a brainstorming skill first, works out the approach, surfaces assumptions, and only then moves to implementation. That one shift alone gives me noticeably better output than jumping straight into code generation.
+
+**[codegraph](https://github.com/colbymchenry/codegraph)**
+
+This one surprised me more than anything else I have added to the workflow recently. Codegraph builds a pre-indexed knowledge graph of your codebase — locally, using tree-sitter to parse the ASTs — and exposes it to the agent via MCP. Instead of burning a chunk of context watching the agent grep and read files trying to figure out how things connect, it can just ask the graph directly.
+
+The benchmark numbers are genuinely striking: 58% fewer tool calls, 22% faster, and file reads dropped to near zero. In practice that means the agent spends less time on discovery and more time on the actual problem. It also auto-syncs when the code changes, so it stays accurate without you having to think about it.
+
+The thing I appreciate most is that it is completely local. No sending code to an external service, no setup beyond running `codegraph init`. It just works.
+
+**[ponytail](https://github.com/DietrichGebert/ponytail)**
+
+Ponytail is one of those tools that makes you wonder how you tolerated the alternative. It makes your agent think like the laziest senior developer in the room — and I mean that as a genuine compliment.
+
+The idea is a decision ladder the agent runs before writing any code. Does this need to exist at all? Is it already in the codebase? Does the stdlib do it? Can it be one line? Only if none of those rungs hold does it write something new. The result is that you stop getting over-engineered solutions to simple problems, stop accumulating unnecessary abstractions, and stop having agents add layers of scaffolding for use cases that will never arrive.
+
+The motto is "the best code is the code you never wrote", and once you have worked with an agent that actually operates that way, it is hard to go back. It is not about being careless — validation, security, and error handling at real boundaries are never on the chopping block. It is about defaulting to simplicity everywhere else.
 
 **[agency-agents](https://github.com/msitarzewski/agency-agents)**
 
@@ -61,10 +77,12 @@ This is probably the biggest shift in my workflow overall: I no longer think of 
 The rough flow for me usually looks like this:
 
 1. Start with a rough idea or problem I want to solve.
-2. Use a structured system like `get-shit-done` to shape the task properly.
-3. Spin up a dedicated agent, or a more specialised one from `agency-agents`, depending on what I need.
-4. Do the work in an isolated worktree using `worktrunk` so I can compare, throw away, or merge changes cleanly.
+2. Let `superpowers` guide the agent into the right structure for the task — planning, spec, or review depending on what it is.
+3. Let `codegraph` handle codebase orientation so the agent is not burning context on discovery before it even starts.
+4. Trust `ponytail` to keep the output tight — no unnecessary abstractions, no scaffolding for hypothetical future requirements.
+5. Spin up a dedicated agent, or a more specialised one from `agency-agents`, depending on what the work actually calls for.
+6. Do everything in an isolated worktree using `worktrunk` so I can compare, throw away, or merge changes cleanly.
 
-That combination has made AI feel much more useful to me. Not because any one tool is magic, but because the workflow has a bit more structure. The better I get at setting context, isolating work, and choosing the right kind of agent for the job, the better the results tend to be.
+That combination has made AI feel much more useful to me. Not because any one tool is magic, but because the workflow has a bit more structure. The better I get at setting context, isolating work, and keeping output quality high, the better the results tend to be.
 
 I am sure this setup will change again in a few months, because the whole space moves too fast for anything to stay still. But right now this is the workflow that feels the most practical for how I like to work: a bit opinionated, a bit experimental, and very focused on keeping the chaos under control.
