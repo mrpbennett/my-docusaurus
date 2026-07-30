@@ -88,12 +88,10 @@ const config = {
         logo: {
           alt: "My Site Logo",
           src: "img/logo.svg",
-          href: "/blog",
         },
         items: [
           { to: "/blog", label: "Posts", position: "left" },
           { to: "/blog/tags", label: "Tags", position: "left" },
-          { to: "/about", label: "About", position: "left" },
           {
             href: "https://github.com/mrpbennett",
             logo: {
