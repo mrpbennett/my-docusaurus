@@ -21,19 +21,19 @@ module.exports = function () {
         const raw = await fs.readFile(filePath, 'utf-8');
         const { data } = matter(raw);
 
-        // Date from directory structure: blog/YYYY/MM/slug.md
-        // Docusaurus route pattern:
-        //   - No custom slug → /blog/YYYY/MM/fileSlug
-        //   - Custom slug (differs from filename) → /blog/customSlug
         const parts = relPath.split(path.sep);
         const fileSlug = path.basename(filePath, path.extname(filePath));
-        let date;
+        const postDate = data.date
+          ? new Date(data.date)
+          : parts.length >= 3
+            ? new Date(`${parts[0]}-${parts[1]}-01`)
+            : null;
+
         let permalink;
-        if (parts.length >= 3) {
-          date = new Date(`${parts[0]}-${parts[1]}-01`);
-          permalink = data.slug && data.slug !== fileSlug
-            ? `/blog/${data.slug}`
-            : `/blog/${parts[0]}/${parts[1]}/${fileSlug}`;
+        if (data.slug && data.slug !== fileSlug) {
+          permalink = `/blog/${data.slug.replace(/^\//, '')}`;
+        } else if (parts.length >= 3) {
+          permalink = `/blog/${parts[0]}/${parts[1]}/${fileSlug}`;
         } else {
           permalink = `/blog/${fileSlug}`;
         }
@@ -41,14 +41,15 @@ module.exports = function () {
         posts.push({
           title: data.title || fileSlug,
           description: data.description || '',
-          date: date ? date.toISOString() : '',
+          date: postDate ? postDate.toISOString() : '',
           permalink,
           tags: data.tags || [],
         });
       }
 
-      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-      return { recentPosts: posts.slice(0, 5) };
+      const dated = posts.filter((p) => p.date);
+      dated.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return { recentPosts: dated.slice(0, 5) };
     },
 
     async contentLoaded({ content, actions }) {

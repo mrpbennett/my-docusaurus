@@ -27,6 +27,8 @@ export default function Home() {
           </p>
         </div>
 
+        {recentPosts.length > 0 && (
+          <>
         <p className="home-section-title" style={{ color: 'var(--ifm-color-primary)' }}>
           $ ls ~/posts | tail -5
         </p>
@@ -54,6 +56,8 @@ export default function Home() {
         <Link to="/blog" className="home-view-all">
           View all posts →
         </Link>
+          </>
+        )}
 
         <p className="home-prompt" style={{ color: 'var(--ifm-color-primary)' }}>
           $
