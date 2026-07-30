@@ -138,7 +138,7 @@ const config = {
       },
     }),
 
-  plugins: [],
+  plugins: ['./src/plugins/recent-posts.js'],
 };
 
 export default config;
