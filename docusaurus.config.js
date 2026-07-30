@@ -52,7 +52,7 @@ const config = {
       ({
         docs: false,
         blog: {
-          routeBasePath: "/",
+          routeBasePath: "/blog",
           blogTitle: "ramblings from mrpbennett",
           blogDescription: "lalalalalala",
           showReadingTime: true,
@@ -90,9 +90,8 @@ const config = {
           src: "img/logo.svg",
         },
         items: [
-          { to: "/", label: "Posts", position: "left" },
-          { to: "/tags", label: "Tags", position: "left" },
-          { to: "/about", label: "About", position: "left" },
+          { to: "/blog", label: "Posts", position: "left" },
+          { to: "/blog/tags", label: "Tags", position: "left" },
           {
             href: "https://github.com/mrpbennett",
             logo: {
@@ -111,11 +110,11 @@ const config = {
             items: [
               {
                 label: "All Posts",
-                to: "/",
+                to: "/blog",
               },
               {
                 label: "Tags",
-                to: "/tags",
+                to: "/blog/tags",
               },
             ],
           },
@@ -137,7 +136,7 @@ const config = {
       },
     }),
 
-  plugins: [],
+  plugins: ['./src/plugins/recent-posts.js'],
 };
 
 export default config;
