@@ -5,7 +5,10 @@ import styles from "./styles.module.css";
 // One post in a list: date, title, excerpt, reading time and tags. The whole
 // row is clickable via the title link's ::after overlay; tag links sit above
 // it so they stay independently clickable.
-export default function PostRow({ post, as: Tag = "li" }) {
+// `headingLevel` keeps the outline valid: 2 directly under a page h1 (blog
+// lists), 3 under a section h2 (homepage).
+export default function PostRow({ post, as: Tag = "li", headingLevel = 3 }) {
+  const Heading = `h${headingLevel}`;
   const { title, permalink, date, description, readingTime, tags = [] } = post;
   const isoDate = String(date).slice(0, 10);
 
@@ -15,11 +18,11 @@ export default function PostRow({ post, as: Tag = "li" }) {
         {isoDate}
       </time>
       <div>
-        <h3 className={styles.title}>
+        <Heading className={styles.title}>
           <Link to={permalink} className={styles.link}>
             {title}
           </Link>
-        </h3>
+        </Heading>
         {description && <p className={styles.excerpt}>{description}</p>}
         <div className={styles.meta}>
           {readingTime !== undefined && (

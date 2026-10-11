@@ -241,6 +241,15 @@ a:hover {
   text-decoration-color: currentColor;
 }
 
+/* Links inside running text are underlined, so they're distinguishable by
+   more than colour (WCAG 1.4.1). Navigation, chips and cards opt out by
+   being outside these contexts or setting their own decoration. */
+.markdown a:not(.hash-link),
+main p a,
+main li > a:not([class]) {
+  text-decoration-line: underline;
+}
+
 /* Visible, consistent focus rings for keyboard users only */
 :focus-visible {
   outline: 2px solid var(--c-accent);
@@ -308,9 +317,10 @@ a:hover {
   text-decoration: none;
 }
 
+/* Same muted colour as the label (no opacity) so the count keeps AA contrast */
 .tag-chip__count {
   margin-left: 6px;
-  opacity: 0.65;
+  color: var(--c-text-muted);
 }
 
 .todo-flag {
@@ -433,6 +443,14 @@ a:hover {
 .blog-post-page .avatar__photo {
   width: 32px;
   height: 32px;
+}
+
+/* Author social icons: meet the 24px minimum target size (WCAG 2.5.8) */
+.blog-post-page [class*="authorSocialLink"] {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  min-height: 24px;
 }
 
 .blog-post-page .avatar__name {

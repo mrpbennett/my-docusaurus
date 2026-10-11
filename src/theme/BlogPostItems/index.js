@@ -9,7 +9,7 @@ export default function BlogPostItems({ items }) {
   return (
     <ol className={styles.rows}>
       {items.map(({ content: { metadata } }) => (
-        <PostRow key={metadata.permalink} post={metadata} />
+        <PostRow key={metadata.permalink} post={metadata} headingLevel={2} />
       ))}
     </ol>
   );

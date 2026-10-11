@@ -233,7 +233,7 @@ const config = {
           },
         ],
         // Rendered as HTML. The AI note shows on every page by design.
-        copyright: `<span>© ${new Date().getFullYear()} Paul Bennett</span><span class="footer-ai-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>Some content is created with AI assistance. <a href="/about#ai">Read more</a></span>`,
+        copyright: `<span>© ${new Date().getFullYear()} Paul Bennett</span><span class="footer-ai-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>Some content is created with AI assistance. <a href="/about#ai">Read more<span class="sr-only"> about how I use AI</span></a></span>`,
       },
       prism: {
         theme: catppuccin,
