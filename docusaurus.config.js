@@ -4,9 +4,21 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import { themes as prismThemes } from "prism-react-renderer";
+import catppuccin from "./src/prism/catppuccin.js";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+
+const fontFaces = [
+  ["Inter", "inter-latin-wght", "100 900"],
+  ["JetBrains Mono", "jetbrains-mono-latin-wght", "100 800"],
+]
+  .flatMap(([family, file, weight]) =>
+    ["normal", "italic"].map(
+      (style) =>
+        `@font-face{font-family:"${family}";font-style:${style};font-weight:${weight};font-display:swap;src:url(/fonts/${file}-${style}.woff2) format("woff2")}`,
+    ),
+  )
+  .join("");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -18,6 +30,26 @@ const config = {
       innerHTML:
         "window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){window.dataLayer.push(arguments);};",
     },
+    // Self-hosted fonts. Declared here rather than in custom.css so webpack
+    // doesn't fingerprint the URLs and they match the preload links below.
+    {
+      tagName: "style",
+      attributes: {},
+      innerHTML: fontFaces,
+    },
+    // Preload the two fonts used above the fold so text doesn't reflow on load
+    ...["inter-latin-wght-normal", "jetbrains-mono-latin-wght-normal"].map(
+      (font) => ({
+        tagName: "link",
+        attributes: {
+          rel: "preload",
+          href: `/fonts/${font}.woff2`,
+          as: "font",
+          type: "font/woff2",
+          crossorigin: "anonymous",
+        },
+      }),
+    ),
   ],
   tagline: "Dinosaurs are cool",
   favicon: "img/favicon.ico",
@@ -81,7 +113,8 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       colorMode: {
-        respectPrefersColorScheme: true,
+        defaultMode: "dark",
+        respectPrefersColorScheme: false,
       },
       navbar: {
         title: "mrpbennett.dev",
@@ -131,8 +164,19 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} mrpbennett.dev. Built with Docusaurus.`,
       },
       prism: {
-        theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        theme: catppuccin,
+        darkTheme: catppuccin,
+        additionalLanguages: [
+          "bash",
+          "sql",
+          "http",
+          "hcl",
+          "toml",
+          "lua",
+          "ini",
+          "docker",
+          "ignore",
+        ],
       },
     }),
 

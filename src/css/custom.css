@@ -1,164 +1,392 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * mrpbennett.dev design system
+ *
+ * Layers:
+ *   1. --ctp-*  raw Catppuccin palette (Latte in :root, Mocha in [data-theme="dark"])
+ *   2. --c-*    semantic tokens used by our own components
+ *   3. --ifm-*  Infima variables mapped onto the semantic tokens so stock
+ *               Docusaurus components pick the design up without overrides
  */
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap");
 
+/* Fonts: @font-face lives in docusaurus.config.js headTags (self-hosted from
+   /static/fonts, preloaded, kept out of webpack so URLs match the preload). */
+
+/* ── 1. Palette: Catppuccin Latte (light) ─────────────────────────────────── */
 :root {
-  /* Primary brand color - Claude Code orange/coral */
-  --ifm-color-primary: #cc785c;
-  --ifm-color-primary-dark: #c66345;
-  --ifm-color-primary-darker: #c35937;
-  --ifm-color-primary-darkest: #a1462a;
-  --ifm-color-primary-light: #d28d73;
-  --ifm-color-primary-lighter: #d59781;
-  --ifm-color-primary-lightest: #dfb1a4;
+  --ctp-base: #eff1f5;
+  --ctp-mantle: #e6e9ef;
+  --ctp-crust: #dce0e8;
+  --ctp-surface0: #ccd0da;
+  --ctp-surface1: #bcc0cc;
+  --ctp-surface2: #acb0be;
+  --ctp-overlay0: #9ca0b0;
+  --ctp-overlay1: #8c8fa1;
+  --ctp-subtext0: #6c6f85;
+  --ctp-subtext1: #5c5f77;
+  --ctp-text: #4c4f69;
+  /* Latte accents darkened for text use: each passes WCAG AA (>= 4.5:1) on
+     base, mantle, crust and the raised surface. */
+  --ctp-mauve: #7a2fd8;
+  --ctp-green: #246b18;
+  --ctp-peach: #a8420a;
+  --ctp-blue: #1a56d6;
+  --ctp-red: #b80d32;
+  --ctp-yellow: #8a5a0b;
+  --ctp-teal: #0f6f74;
+  --ctp-lavender: #4d5fd6;
+  /* Untouched Latte hues for non-text decoration (window dots etc.) */
+  --ctp-dot-red: #d20f39;
+  --ctp-dot-yellow: #df8e1d;
+  --ctp-dot-green: #40a02b;
 
-  /* Background colors */
-  --ifm-background-color: #ffffff;
-  --ifm-background-surface-color: #f8f8f8;
+  /* ── 2. Semantic tokens ── */
+  --c-bg: var(--ctp-base);
+  --c-bg-raised: #f7f8fa;
+  --c-bg-sunken: var(--ctp-mantle);
+  --c-border: var(--ctp-surface0);
+  --c-border-strong: var(--ctp-surface1);
+  --c-text: var(--ctp-text);
+  --c-text-muted: var(--ctp-subtext1);
+  --c-heading: #33354a;
+  --c-accent: var(--ctp-mauve);
+  --c-accent-soft: color-mix(in srgb, var(--ctp-mauve) 10%, transparent);
+  --c-prompt: var(--ctp-green);
+  --c-code-bg: var(--ctp-mantle);
 
-  /* Text colors */
-  --ifm-font-color-base: #1a1a1a;
-  --ifm-color-emphasis-600: #4a4a4a;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
 
-  /* Code styling */
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(204, 120, 92, 0.1);
+  /* Fluid type scale */
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.85rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.4vw, 1.35rem);
+  --step-2: clamp(1.45rem, 1.3rem + 0.7vw, 1.75rem);
+  --step-3: clamp(1.8rem, 1.5rem + 1.3vw, 2.4rem);
 
-  /* Navbar */
-  --ifm-navbar-background-color: #ffffff;
-  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
 
-  /* Footer */
-  --ifm-footer-background-color: #f8f8f8;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 8px 30px -12px rgb(76 79 105 / 0.25);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 160ms;
+  --measure: 70ch;
+  --content-width: 1080px;
+
+  /* ── 3. Infima mapping ── */
+  --ifm-color-primary: var(--c-accent);
+  --ifm-color-primary-dark: #6c22c7;
+  --ifm-color-primary-darker: #651fbb;
+  --ifm-color-primary-darkest: #531a9a;
+  --ifm-color-primary-light: #8a45df;
+  --ifm-color-primary-lighter: #9152e2;
+  --ifm-color-primary-lightest: #a674e8;
+
+  --ifm-background-color: var(--c-bg);
+  --ifm-background-surface-color: var(--c-bg-sunken);
+  --ifm-font-color-base: var(--c-text);
+  --ifm-font-color-secondary: var(--c-text-muted);
+  --ifm-heading-color: var(--c-heading);
+  --ifm-color-content: var(--c-text);
+  --ifm-color-content-secondary: var(--c-text-muted);
+  --ifm-color-emphasis-100: var(--ctp-mantle);
+  --ifm-color-emphasis-200: var(--ctp-surface0);
+  --ifm-color-emphasis-300: var(--ctp-surface1);
+  --ifm-color-emphasis-400: var(--ctp-surface2);
+  --ifm-color-emphasis-500: var(--ctp-overlay1);
+  --ifm-color-emphasis-600: var(--ctp-subtext1);
+  --ifm-color-emphasis-700: var(--ctp-text);
+  --ifm-color-emphasis-800: var(--c-heading);
+  --ifm-color-emphasis-900: var(--c-heading);
+
+  --ifm-font-family-base: var(--font-sans);
+  --ifm-font-family-monospace: var(--font-mono);
+  --ifm-heading-font-family: var(--font-mono);
+  --ifm-font-size-base: 100%;
+  --ifm-line-height-base: 1.7;
+  --ifm-heading-font-weight: 600;
+  --ifm-heading-line-height: 1.25;
+  --ifm-h1-font-size: var(--step-3);
+  --ifm-h2-font-size: var(--step-2);
+  --ifm-h3-font-size: var(--step-1);
+  --ifm-h4-font-size: var(--step-0);
+
+  --ifm-link-color: var(--c-accent);
+  --ifm-link-hover-color: var(--c-accent);
+  --ifm-link-hover-decoration: underline;
+  --ifm-global-radius: var(--radius-sm);
+  --ifm-global-shadow-lw: var(--shadow-sm);
+  --ifm-global-shadow-md: var(--shadow-md);
+  --ifm-hr-border-color: var(--c-border);
+  --ifm-toc-border-color: var(--c-border);
+  --ifm-card-background-color: var(--c-bg-raised);
+  --ifm-container-width-xl: var(--content-width);
+
+  --ifm-code-font-size: 0.875em;
+  --ifm-code-background: var(--c-bg-sunken);
+  --ifm-code-border-radius: 5px;
+  --ifm-code-padding-horizontal: 0.4em;
+  --ifm-pre-background: var(--c-code-bg);
+  --ifm-pre-line-height: 1.7;
+  --ifm-pre-padding: var(--space-4);
+  --docusaurus-highlighted-code-line-bg: var(--c-accent-soft);
+
+  --ifm-navbar-height: 3.75rem;
+  --ifm-navbar-background-color: color-mix(in srgb, var(--c-bg) 85%, transparent);
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-link-color: var(--c-text-muted);
+  --ifm-navbar-link-hover-color: var(--c-heading);
+  --ifm-navbar-link-active-color: var(--c-heading);
+  --ifm-navbar-item-padding-horizontal: 0.65rem;
+
+  --ifm-footer-background-color: var(--c-bg-sunken);
+  --ifm-footer-color: var(--c-text);
+  --ifm-footer-link-color: var(--c-text);
+  --ifm-footer-link-hover-color: var(--c-accent);
+  --ifm-footer-title-color: var(--c-text-muted);
+
+  --ifm-table-border-color: var(--c-border);
+  --ifm-table-head-background: var(--c-bg-sunken);
+  --ifm-table-stripe-background: transparent;
+
+  --ifm-menu-color: var(--c-text-muted);
+  --ifm-menu-color-active: var(--c-accent);
+  --ifm-menu-color-background-hover: var(--c-bg-sunken);
+  --ifm-menu-color-background-active: var(--c-accent-soft);
+
+  --ifm-transition-fast: var(--dur);
+  --ifm-transition-timing-default: var(--ease);
+  --ifm-tabs-color-active: var(--c-accent);
 }
 
-/* Claude Code Theme - Dark Mode */
+/* ── 1. Palette: Catppuccin Mocha (dark, default) ─────────────────────────── */
 [data-theme="dark"] {
-  /* Primary brand color - Claude Code orange/coral (slightly brighter for dark mode) */
-  --ifm-color-primary: #e8957d;
-  --ifm-color-primary-dark: #e4806a;
-  --ifm-color-primary-darker: #e2755d;
-  --ifm-color-primary-darkest: #dd5536;
-  --ifm-color-primary-light: #ecaa90;
-  --ifm-color-primary-lighter: #eeb59d;
-  --ifm-color-primary-lightest: #f4d5c4;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+  --ctp-surface0: #313244;
+  --ctp-surface1: #45475a;
+  --ctp-surface2: #585b70;
+  --ctp-overlay0: #6c7086;
+  --ctp-overlay1: #7f849c;
+  --ctp-subtext0: #a6adc8;
+  --ctp-subtext1: #bac2de;
+  --ctp-text: #cdd6f4;
+  --ctp-mauve: #cba6f7;
+  --ctp-green: #a6e3a1;
+  --ctp-peach: #fab387;
+  --ctp-blue: #89b4fa;
+  --ctp-red: #f38ba8;
+  --ctp-yellow: #f9e2af;
+  --ctp-teal: #94e2d5;
+  --ctp-lavender: #b4befe;
+  --ctp-dot-red: #f38ba8;
+  --ctp-dot-yellow: #f9e2af;
+  --ctp-dot-green: #a6e3a1;
 
-  /* Background colors - deep dark theme */
-  --ifm-background-color: #0f0f0f;
-  --ifm-background-surface-color: #1a1a1a;
+  --c-bg-raised: #232334;
+  --c-text-muted: var(--ctp-subtext0);
+  --c-heading: #e2e8ff;
+  --c-accent-soft: color-mix(in srgb, var(--ctp-mauve) 12%, transparent);
+  --shadow-md: 0 12px 40px -16px rgb(0 0 0 / 0.6);
 
-  /* Text colors */
-  --ifm-font-color-base: #e5e5e5;
-  --ifm-color-emphasis-600: #b8b8b8;
-
-  /* Code styling */
-  --docusaurus-highlighted-code-line-bg: rgba(232, 149, 125, 0.15);
-
-  /* Navbar */
-  --ifm-navbar-background-color: #0f0f0f;
-  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-
-  /* Footer */
-  --ifm-footer-background-color: #1a1a1a;
-
-  /* Card backgrounds */
-  --ifm-card-background-color: #1a1a1a;
+  --ifm-color-primary-dark: #b886f4;
+  --ifm-color-primary-darker: #af76f3;
+  --ifm-color-primary-darkest: #9246ef;
+  --ifm-color-primary-light: #dec6fa;
+  --ifm-color-primary-lighter: #e7d6fb;
+  --ifm-color-primary-lightest: #f8f2fe;
 }
 
-/* Global heading styles */
-h2 {
-  font-size: 2rem !important;
-}
-.markdown {
-  font-family: monospace !important;
-  font-size: 16px;
-}
-blockquote > p {
-  font-style: italic;
-}
-table,
-.alert {
-  font-family: sans-serif;
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Center navbar items */
-.navbar__items:not(.navbar__items--right) {
-  flex: 1 1 auto;
-  justify-content: center;
+body {
+  font-size: var(--step-0);
 }
 
-/* Homepage styles */
-.home-main {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 4rem 1.5rem;
-  font-family: "JetBrains Mono", monospace;
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
 }
 
-.home-prompt {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  margin-bottom: 2.5rem;
+a {
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+  transition: color var(--dur) var(--ease),
+    text-decoration-color var(--dur) var(--ease);
 }
 
-.home-blurb p {
-  font-size: 1.125rem;
-  line-height: 1.75;
-  margin-bottom: 1.5rem;
+a:hover {
+  text-decoration-color: currentColor;
 }
 
-.home-section-title {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
+/* Visible, consistent focus rings for keyboard users only */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-.home-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-bottom: 2rem;
+::selection {
+  background: color-mix(in srgb, var(--ctp-mauve) 30%, transparent);
 }
 
-.home-post-title {
-  font-size: 1.25rem;
+/* Skip link (Docusaurus' SkipToContent) */
+[class*="skipToContent"] {
+  background: var(--c-accent);
+  color: var(--ctp-crust);
+  border-radius: var(--radius-sm);
   font-weight: 600;
-  margin-bottom: 0.25rem;
 }
 
-.home-post-title a {
-  color: var(--ifm-font-color-base);
+/* Shared helpers for our own components */
+.ps1 {
+  color: var(--c-prompt);
+  user-select: none;
+}
+
+.ps1-path {
+  color: var(--ctp-blue);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  background: var(--c-bg);
+  color: var(--c-text-muted);
+  font: 500 12px/1 var(--font-mono);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.tag-chip::before {
+  content: "#";
+  opacity: 0.55;
+  margin-right: 1px;
+}
+
+.tag-chip:hover {
+  color: var(--c-accent);
+  border-color: color-mix(in srgb, var(--c-accent) 50%, transparent);
   text-decoration: none;
 }
 
-.home-post-title a:hover {
-  color: var(--ifm-color-primary);
+.tag-chip__count {
+  margin-left: 6px;
+  opacity: 0.65;
 }
 
-.home-post-desc {
-  font-size: 0.875rem;
-  color: var(--ifm-color-emphasis-600);
-  margin-bottom: 0.25rem;
-  line-height: 1.5;
+.todo-flag {
+  font: 500 10px/1.4 var(--font-mono);
+  color: var(--ctp-peach);
+  border: 1px dashed currentColor;
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-left: 4px;
 }
 
-.home-post-date {
-  font-size: 0.75rem;
-  color: var(--ifm-color-emphasis-400);
+/* ── Navbar ───────────────────────────────────────────────────────────────── */
+.navbar {
+  border-bottom: 1px solid var(--c-border);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
 }
 
-.home-view-all {
-  display: inline-block;
-  margin-top: 1rem;
-  font-size: 0.875rem;
-  color: var(--ifm-color-primary);
-  text-decoration: none;
+.navbar__title {
+  font: 600 15px var(--font-mono);
+  color: var(--c-heading);
 }
 
-.home-view-all:hover {
-  text-decoration: underline;
+.navbar__logo {
+  height: 26px;
+  margin-right: var(--space-2);
+}
+
+.navbar__link {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.navbar__items:not(.navbar__items--right) .navbar__link:hover {
+  background: var(--c-bg-sunken);
+}
+
+.header-github-link {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+
+.header-github-link::before {
+  content: "";
+  width: 17px;
+  height: 17px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z'/%3E%3C/svg%3E")
+    no-repeat center / contain;
+}
+
+.header-github-link:hover {
+  background: var(--c-bg-sunken);
+}
+
+/* Colour-mode toggle + search sit in the same 34px rhythm */
+.navbar [class*="colorModeToggle"] button {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Code ─────────────────────────────────────────────────────────────────── */
+:not(pre) > code {
+  border: 1px solid var(--c-border);
+  color: var(--c-heading);
+  vertical-align: baseline;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--c-border);
+  font-size: 14px;
+}
+
+/* ── Reduced motion: kill non-essential transitions everywhere ────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
