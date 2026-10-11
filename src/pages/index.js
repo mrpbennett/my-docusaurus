@@ -2,75 +2,169 @@ import React from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import { usePluginData } from "@docusaurus/useGlobalData";
+import PostRow from "@site/src/components/PostRow";
+import styles from "./index.module.css";
 
-export default function Home() {
-  const { recentPosts } = usePluginData("recent-posts");
+// Tags surfaced in the hero's `ls`, in display order. Any that don't exist
+// (yet) are skipped, so this never produces a broken link.
+const HERO_TAGS = ["terminal", "homelab", "kubernetes", "ai", "sql", "go"];
+
+function Prompt() {
+  return (
+    <span className="ps1" aria-hidden="true">
+      ❯ <span className="ps1-path">~</span>{" "}
+    </span>
+  );
+}
+
+function Hero({ tags }) {
+  const heroTags = HERO_TAGS.map((label) =>
+    tags.find((tag) => tag.label === label),
+  ).filter(Boolean);
 
   return (
-    <Layout title="Home" description="mrpbennett.dev">
-      <main className="home-main">
-        <p
-          className="home-prompt"
-          style={{ color: "var(--ifm-color-primary)" }}
-        >
-          mrpbennett@rdev:~ $ cat README.md
-        </p>
-
-        <div className="home-blurb">
-          <p>
-            I'm Paul a Software Writer based in Dorest who loves the terminal. I
-            enjoy building applications with AI and tinkering with my homelab
-            using Kubernetes. Main languages of choice are Python and SQL,
-            whilst trying to learn Go. Currently a Lead Solution Engineer in
-            AdTech.
-          </p>
-          <p>
-            My life's work is to make technology easy to understand and
-            interesting to learn about. Husband, doggo dad and biker.
-          </p>
+    <section className={`container ${styles.hero}`} aria-label="Introduction">
+      <div className={styles.term}>
+        <div className={styles.termBar} aria-hidden="true">
+          <span className={`${styles.dot} ${styles.dotRed}`} />
+          <span className={`${styles.dot} ${styles.dotYellow}`} />
+          <span className={`${styles.dot} ${styles.dotGreen}`} />
+          <span className={styles.termTitle}>paul@dorset: ~</span>
         </div>
+        <div className={styles.termBody}>
+          <p className={styles.line}>
+            <Prompt />
+            <span className={`${styles.cmd} ${styles.typed}`}>whoami</span>
+          </p>
+          <div className={styles.reveal}>
+            <h1 className={`${styles.out} ${styles.outMono}`}>
+              Paul Bennett — Lead Solutions Engineer, AdTech
+            </h1>
 
-        {recentPosts.length > 0 && (
-          <>
-            <p
-              className="home-section-title"
-              style={{ color: "var(--ifm-color-primary)" }}
-            >
-              $ ls ~/posts | tail -5
+            <p className={styles.line}>
+              <Prompt />
+              <span className={styles.cmd}>cat README.md</span>
             </p>
-
-            <div className="home-posts">
-              {recentPosts.map((post) => (
-                <article key={post.permalink} className="home-post">
-                  <h3 className="home-post-title">
-                    <Link to={post.permalink}>{post.title}</Link>
-                  </h3>
-                  {post.description && (
-                    <p className="home-post-desc">{post.description}</p>
-                  )}
-                  <time className="home-post-date" dateTime={post.date}>
-                    {new Date(post.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </time>
-                </article>
-              ))}
+            <div className={styles.out}>
+              <p>
+                I'm Paul, a Lead Solutions Engineer in AdTech based in{" "}
+                <strong>Dorset, UK</strong>. I live in the terminal, write
+                mostly <strong>Python</strong> and <strong>SQL</strong> (and
+                I'm learning <strong>Go</strong>), build things with AI, and
+                tinker with my <strong>Kubernetes homelab</strong>.
+              </p>
+              <p>
+                I like making technology easy to understand and interesting to
+                learn about. Husband, dog dad and biker.
+              </p>
             </div>
 
-            <Link to="/blog" className="home-view-all">
-              View all posts →
-            </Link>
-          </>
-        )}
+            {heroTags.length > 0 && (
+              <>
+                <p className={styles.line}>
+                  <Prompt />
+                  <span className={styles.cmd}>ls ~/writes-about</span>
+                </p>
+                <ul
+                  className={`${styles.out} ${styles.outMono} ${styles.ls}`}
+                  aria-label="Topics I write about"
+                >
+                  {heroTags.map((tag) => (
+                    <li key={tag.permalink}>
+                      <Link to={tag.permalink}>{tag.label}/</Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-        <p
-          className="home-prompt"
-          style={{ color: "var(--ifm-color-primary)" }}
+            <p className={styles.line}>
+              <Prompt />
+              <span className={styles.cursor} aria-hidden="true" />
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionHead({ id, command, label, link }) {
+  return (
+    <div className={styles.sectionHead}>
+      <h2 id={id} className={styles.sectionTitle}>
+        <span aria-hidden="true">
+          <span className="ps1">❯</span> {command}
+        </span>
+        <span className="sr-only">{label}</span>
+      </h2>
+      {link && <Link to={link.to}>{link.label} →</Link>}
+    </div>
+  );
+}
+
+export default function Home() {
+  const { recentPosts, tags } = usePluginData(
+    "docusaurus-plugin-content-blog",
+  );
+
+  return (
+    <Layout
+      title="Paul Bennett — terminal, data, AI and a Kubernetes homelab"
+      description="Paul Bennett's blog: notes on the terminal, Python, SQL and Go, AI-assisted development, and running a Kubernetes homelab."
+    >
+      <main>
+        <Hero tags={tags} />
+
+        <section
+          className={`container ${styles.section}`}
+          aria-labelledby="latest-posts"
         >
-          $
-        </p>
+          <SectionHead
+            id="latest-posts"
+            command={`ls -t ~/posts | head -${recentPosts.length}`}
+            label="Latest posts"
+            link={{ to: "/blog", label: "All posts" }}
+          />
+          {recentPosts.length > 0 ? (
+            <ol className={styles.rows}>
+              {recentPosts.map((post) => (
+                <PostRow key={post.permalink} post={post} />
+              ))}
+            </ol>
+          ) : (
+            <p className={styles.empty}>No posts yet.</p>
+          )}
+        </section>
+
+        {tags.length > 0 && (
+          <section
+            className={`container ${styles.section}`}
+            aria-labelledby="topics"
+          >
+            <SectionHead
+              id="topics"
+              command="ls ~/tags"
+              label="Topics"
+              link={{ to: "/blog/tags", label: "All tags" }}
+            />
+            <ul className={styles.tagCloud}>
+              {tags.map((tag) => (
+                <li key={tag.permalink}>
+                  <Link className="tag-chip" to={tag.permalink}>
+                    {tag.label}
+                    <span className="tag-chip__count">
+                      {tag.count}
+                      <span className="sr-only">
+                        {tag.count === 1 ? " post" : " posts"}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </main>
     </Layout>
   );

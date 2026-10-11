@@ -133,6 +133,7 @@
   --ifm-hr-border-color: var(--c-border);
   --ifm-toc-border-color: var(--c-border);
   --ifm-card-background-color: var(--c-bg-raised);
+  --ifm-container-width: var(--content-width);
   --ifm-container-width-xl: var(--content-width);
 
   --ifm-code-font-size: 0.875em;
@@ -260,6 +261,18 @@ a:hover {
 }
 
 /* Shared helpers for our own components */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .ps1 {
   color: var(--c-prompt);
   user-select: none;
@@ -314,6 +327,12 @@ a:hover {
   border-bottom: 1px solid var(--c-border);
   backdrop-filter: saturate(1.4) blur(10px);
   -webkit-backdrop-filter: saturate(1.4) blur(10px);
+}
+
+/* Align navbar contents with the page's content column */
+.navbar__inner {
+  max-width: calc(var(--content-width) - 2 * var(--ifm-spacing-horizontal));
+  margin-inline: auto;
 }
 
 .navbar__title {

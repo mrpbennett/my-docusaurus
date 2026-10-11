@@ -1,23 +1,221 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+/* ── Hero terminal ─────────────────────────────────────────────────────── */
+.hero {
+  padding-block: var(--space-12) var(--space-8);
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+@media (min-width: 768px) {
+  .hero {
+    padding-block: var(--space-16) var(--space-12);
   }
 }
 
-.buttons {
+.term {
+  max-width: 760px;
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-bg-sunken);
+  box-shadow: var(--shadow-md);
+}
+
+.termBar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-bg-raised);
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.dotRed {
+  background: var(--ctp-dot-red);
+}
+
+.dotYellow {
+  background: var(--ctp-dot-yellow);
+}
+
+.dotGreen {
+  background: var(--ctp-dot-green);
+}
+
+.termTitle {
+  flex: 1;
+  margin-right: 45px;
+  text-align: center;
+  font: 500 12px var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+.termBody {
+  padding: var(--space-6) var(--space-4) var(--space-8);
+  font: 400 14px/1.75 var(--font-mono);
+}
+
+@media (min-width: 768px) {
+  .termBody {
+    padding: var(--space-8);
+    font-size: 15px;
+  }
+}
+
+.line {
+  margin: 0;
+}
+
+.cmd {
+  color: var(--c-heading);
+}
+
+.out {
+  max-width: 62ch;
+  margin: var(--space-1) 0 var(--space-6);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.7;
+}
+
+.out p {
+  margin: 0 0 0.75em;
+}
+
+.out p:last-child {
+  margin-bottom: 0;
+}
+
+.out strong {
+  color: var(--c-heading);
+  font-weight: 600;
+}
+
+/* h1 styled as terminal output */
+h1.out {
+  letter-spacing: 0;
+}
+
+.outMono {
+  font: inherit;
+  color: var(--c-heading);
+}
+
+.ls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.ls a {
+  color: var(--ctp-blue);
+  font-weight: 500;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.15em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
+  background: var(--c-heading);
+}
+
+/* Typed-in effect: CSS only, and only when the user hasn't asked for reduced
+   motion. Without it everything renders statically. Kept short so the bio
+   (the largest paint) appears quickly. */
+.typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cursor {
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  .typed {
+    width: 0;
+    animation: type 0.45s steps(6, end) 0.1s forwards;
+  }
+
+  .reveal {
+    animation: reveal 0.25s var(--ease) 0.55s both;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes type {
+  to {
+    width: 6ch;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Sections ──────────────────────────────────────────────────────────── */
+.section {
+  padding-block: var(--space-8);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.sectionHead a {
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--c-text-muted);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty {
+  color: var(--c-text-muted);
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }

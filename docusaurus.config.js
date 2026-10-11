@@ -83,19 +83,9 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: false,
-        blog: {
-          routeBasePath: "/blog",
-          blogTitle: "ramblings from mrpbennett",
-          blogDescription: "lalalalalala",
-          showReadingTime: true,
-          feedOptions: {
-            type: ["rss", "atom"],
-            xslt: true,
-          },
-          onInlineTags: "warn",
-          onInlineAuthors: "warn",
-          onUntruncatedBlogPosts: "warn",
-        },
+        // The blog is registered below via ./src/plugins/blog-plugin.js, a
+        // wrapper that also exposes homepage data.
+        blog: false,
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -180,7 +170,24 @@ const config = {
       },
     }),
 
-  plugins: ['./src/plugins/recent-posts.js'],
+  plugins: [
+    [
+      "./src/plugins/blog-plugin.js",
+      {
+        routeBasePath: "/blog",
+        blogTitle: "ramblings from mrpbennett",
+        blogDescription: "lalalalalala",
+        showReadingTime: true,
+        feedOptions: {
+          type: ["rss", "atom"],
+          xslt: true,
+        },
+        onInlineTags: "warn",
+        onInlineAuthors: "warn",
+        onUntruncatedBlogPosts: "warn",
+      },
+    ],
+  ],
 };
 
 export default config;

@@ -1,0 +1,115 @@
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1) var(--space-6);
+  margin: 0 calc(-1 * var(--space-3));
+  padding: var(--space-4) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background var(--dur) var(--ease);
+}
+
+/* Dividers are inset pseudo-elements so they align with the text column and
+   can fade out around the hovered row. */
+.row + .row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--space-3);
+  right: var(--space-3);
+  border-top: 1px solid var(--c-border);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.row:hover {
+  background: var(--c-bg-raised);
+}
+
+.row:hover::before,
+.row:hover + .row::before {
+  opacity: 0;
+}
+
+.row:focus-within {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+  }
+}
+
+.date {
+  font: 400 13px/1.9 var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+.title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--step-0);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.link {
+  color: var(--c-heading);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--c-heading);
+  text-decoration: none;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* The row's focus-within ring replaces the link's own ring */
+.link:focus-visible {
+  outline: none;
+}
+
+.excerpt {
+  margin: 0 0 var(--space-2);
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--c-text-muted);
+  /* Excerpts default to the post's opening paragraph; keep rows scannable */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font: 400 12.5px var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Above the row's link overlay */
+.tag {
+  position: relative;
+  z-index: 1;
+}
