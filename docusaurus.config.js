@@ -178,6 +178,8 @@ const config = {
         blogTitle: "ramblings from mrpbennett",
         blogDescription: "lalalalalala",
         showReadingTime: true,
+        // Navigation lives in the navbar; no left "recent posts" sidebar
+        blogSidebarCount: 0,
         feedOptions: {
           type: ["rss", "atom"],
           xslt: true,

@@ -392,6 +392,270 @@ a:hover {
   vertical-align: baseline;
 }
 
+/* ── Blog post page ───────────────────────────────────────────────────────── */
+.blog-post-page article > header h1 {
+  font-size: var(--step-3);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0;
+}
+
+.blog-post-page article > header time,
+.blog-post-page article > header [class*="container_"] {
+  font: 400 13px var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+.blog-post-page .avatar__photo {
+  width: 32px;
+  height: 32px;
+}
+
+.blog-post-page .avatar__name {
+  font-size: 14px;
+}
+
+.blog-post-page .avatar__subtitle {
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+/* ── Prose (post body) ────────────────────────────────────────────────────── */
+.markdown {
+  --ifm-paragraph-margin-bottom: 1.25em;
+  --ifm-h2-font-size: var(--step-2);
+  --ifm-h3-font-size: var(--step-1);
+  --ifm-h4-font-size: var(--step-0);
+  max-width: var(--measure);
+  margin-top: var(--space-8);
+  font-size: var(--step-0);
+  line-height: 1.75;
+}
+
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + var(--space-4));
+}
+
+.markdown h2 {
+  margin-top: 2.4em;
+}
+
+.markdown img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+}
+
+.markdown hr {
+  margin-block: var(--space-12);
+}
+
+.markdown li + li {
+  margin-top: 0.35em;
+}
+
+:root {
+  --ifm-blockquote-border-color: var(--c-border-strong);
+  --ifm-blockquote-color: var(--c-text-muted);
+  --ifm-blockquote-font-size: inherit;
+  --ifm-blockquote-padding-horizontal: var(--space-6);
+}
+
+/* Tables: rounded frame, mono headers, horizontal scroll on small screens */
+.markdown table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-size: 0.92em;
+}
+
+.markdown table thead tr {
+  border-bottom: 0;
+}
+
+.markdown table th,
+.markdown table td {
+  border: 0;
+  border-bottom: 1px solid var(--c-border);
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.markdown table tr:last-child td {
+  border-bottom: 0;
+}
+
+.markdown table th {
+  font: 600 12.5px var(--font-mono);
+  color: var(--c-text-muted);
+  background: var(--c-bg-sunken);
+}
+
+/* ── Code blocks ──────────────────────────────────────────────────────────── */
+.theme-code-block {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  --ifm-pre-border-radius: var(--radius-md);
+}
+
+.theme-code-block pre {
+  font-size: 13.5px;
+}
+
+/* Filename bar (```lang title="file.ext") */
+.theme-code-block [class*="codeBlockTitle"] {
+  padding: 0.55rem var(--space-4);
+  border-bottom: 1px solid var(--c-border);
+  font: 500 12.5px var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+/* Copy / wrap buttons: always discoverable (not hover-only) */
+.theme-code-block [class*="buttonGroup"] button {
+  opacity: 0.55;
+  border-color: var(--c-border);
+  background: var(--c-bg);
+  color: var(--c-text-muted);
+}
+
+.theme-code-block-highlighted-line {
+  box-shadow: inset 3px 0 var(--c-accent);
+}
+
+/* ── Admonitions / callouts ───────────────────────────────────────────────── */
+.alert {
+  --ifm-alert-border-width: 1px;
+  --ifm-alert-border-left-width: 1px;
+  --ifm-alert-border-radius: var(--radius-md);
+  --ifm-alert-shadow: none;
+  --ifm-alert-foreground-color: var(--c-text);
+  --admonition-accent: var(--ctp-overlay1);
+  --ifm-alert-background-color: color-mix(in srgb, var(--admonition-accent) 7%, transparent);
+  --ifm-alert-background-color-highlight: color-mix(in srgb, var(--admonition-accent) 14%, transparent);
+  --ifm-alert-border-color: color-mix(in srgb, var(--admonition-accent) 38%, var(--c-border));
+}
+
+.alert--success {
+  --admonition-accent: var(--ctp-green);
+}
+
+.alert--info {
+  --admonition-accent: var(--ctp-blue);
+}
+
+.alert--warning {
+  --admonition-accent: var(--ctp-peach);
+}
+
+.alert--danger {
+  --admonition-accent: var(--ctp-red);
+}
+
+.theme-admonition {
+  font-size: 15px;
+}
+
+.theme-admonition [class*="admonitionHeading"] {
+  font: 600 12.5px var(--font-mono);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--c-heading);
+}
+
+.theme-admonition [class*="admonitionIcon"] svg {
+  fill: var(--admonition-accent);
+}
+
+/* ── Table of contents ────────────────────────────────────────────────────── */
+.table-of-contents {
+  padding: 0;
+  border-left: 1px solid var(--c-border);
+  font-size: inherit;
+}
+
+.table-of-contents ul {
+  padding-left: var(--space-3);
+}
+
+.table-of-contents__link {
+  display: block;
+  margin-left: -1px;
+  padding: 3px 0 3px 14px;
+  border-left: 1px solid transparent;
+  color: var(--c-text-muted);
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.table-of-contents ul .table-of-contents__link {
+  margin-left: calc(-1px - var(--space-3));
+  padding-left: calc(14px + var(--space-3));
+}
+
+.table-of-contents li {
+  margin: 0;
+}
+
+.table-of-contents__link:hover {
+  color: var(--c-heading);
+  text-decoration: none;
+}
+
+.table-of-contents__link--active {
+  color: var(--c-accent);
+  border-left-color: var(--c-accent);
+}
+
+/* Mobile collapsible TOC */
+.theme-doc-toc-mobile,
+[class*="tocCollapsible_"] {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+[class*="tocCollapsibleButton"] {
+  font: 500 13px var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+/* ── Prev / next + list pagination ────────────────────────────────────────── */
+.pagination-nav {
+  margin-top: var(--space-8);
+  gap: var(--space-4);
+}
+
+.pagination-nav__link {
+  padding: var(--space-4) var(--space-6);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.pagination-nav__link:hover {
+  border-color: var(--c-accent);
+  background: var(--c-bg-raised);
+}
+
+.pagination-nav__sublabel {
+  font: 500 12px var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+.pagination-nav__label {
+  color: var(--c-heading);
+  font-weight: 600;
+}
+
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 .footer {
   border-top: 1px solid var(--c-border);

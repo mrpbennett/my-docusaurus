@@ -1,0 +1,46 @@
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-12);
+  padding-block: var(--space-12) var(--space-16);
+}
+
+.main {
+  min-width: 0;
+}
+
+@media (min-width: 997px) {
+  .withToc {
+    grid-template-columns: minmax(0, var(--measure)) 220px;
+    justify-content: space-between;
+  }
+}
+
+.toc {
+  display: none;
+}
+
+/* The whole rail (title + links) is sticky, so the TOC's own stickiness is
+   turned off below. */
+@media (min-width: 997px) {
+  .toc {
+    display: block;
+    position: sticky;
+    top: calc(var(--ifm-navbar-height) + var(--space-8));
+    align-self: start;
+    font-size: 13.5px;
+  }
+
+  .toc > div {
+    position: static;
+    max-height: calc(100vh - var(--ifm-navbar-height) - 8rem);
+  }
+}
+
+.tocTitle {
+  margin: 0 0 var(--space-3);
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}

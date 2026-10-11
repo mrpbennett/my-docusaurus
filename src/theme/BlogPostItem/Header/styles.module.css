@@ -1,0 +1,13 @@
+.aiLabel {
+  margin-top: var(--space-3);
+}
+
+.mobileToc {
+  margin-top: var(--space-8);
+}
+
+@media (min-width: 997px) {
+  .mobileToc {
+    display: none;
+  }
+}
