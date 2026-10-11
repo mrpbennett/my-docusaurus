@@ -20,9 +20,35 @@ const fontFaces = [
   )
   .join("");
 
+const SITE_URL = "https://mrpbennett.dev";
+const DESCRIPTION =
+  "Paul Bennett on the terminal, Python, SQL and Go, AI-assisted development, and running a Kubernetes homelab.";
+
+// Site owner, used for site-wide Person JSON-LD and as the fallback author in
+// each post's BlogPosting data (src/theme/BlogPostPage/StructuredData).
+const PERSON = {
+  "@type": "Person",
+  "@id": `${SITE_URL}/#paul`,
+  name: "Paul Bennett",
+  url: `${SITE_URL}/about`,
+  jobTitle: "Lead Solutions Engineer",
+  image: "https://avatars.githubusercontent.com/u/1844080?v=4",
+  address: {
+    "@type": "PostalAddress",
+    addressRegion: "Dorset",
+    addressCountry: "GB",
+  },
+  sameAs: [
+    "https://github.com/mrpbennett",
+    "https://x.com/mrpbennett",
+    "https://www.linkedin.com/in/paulandrewbennett",
+  ],
+};
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "mrpbennett.dev",
+  customFields: { person: PERSON },
   headTags: [
     {
       tagName: "script",
@@ -50,8 +76,31 @@ const config = {
         },
       }),
     ),
+    // Icons beyond the favicon.ico configured below
+    { tagName: "link", attributes: { rel: "icon", type: "image/svg+xml", href: "/img/favicon.svg" } },
+    { tagName: "link", attributes: { rel: "apple-touch-icon", href: "/img/apple-touch-icon.png" } },
+    { tagName: "link", attributes: { rel: "manifest", href: "/site.webmanifest" } },
+    {
+      tagName: "script",
+      attributes: { type: "application/ld+json" },
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          PERSON,
+          {
+            "@type": "WebSite",
+            "@id": `${SITE_URL}/#website`,
+            url: SITE_URL,
+            name: "mrpbennett.dev",
+            description: DESCRIPTION,
+            inLanguage: "en-GB",
+            author: { "@id": PERSON["@id"] },
+          },
+        ],
+      }),
+    },
   ],
-  tagline: "Dinosaurs are cool",
+  tagline: DESCRIPTION,
   favicon: "img/favicon.ico",
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -60,7 +109,7 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: "https://mrpbennett.dev",
+  url: SITE_URL,
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
@@ -89,6 +138,10 @@ const config = {
         theme: {
           customCss: "./src/css/custom.css",
         },
+        sitemap: {
+          lastmod: "date",
+          ignorePatterns: ["/search/**", "/search"],
+        },
         gtag: {
           trackingID: "G-SX53WB34GC",
           anonymizeIP: true,
@@ -100,8 +153,19 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: "img/docusaurus-social-card.jpg",
+      // Default social card; regenerate with scripts/images/build-images.sh
+      image: "img/og-card.png",
+      metadata: [
+        // Fallback for pages that don't set their own description
+        { name: "description", content: DESCRIPTION },
+        { name: "author", content: "Paul Bennett" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:site", content: "@mrpbennett" },
+        { name: "twitter:creator", content: "@mrpbennett" },
+        { property: "og:site_name", content: "mrpbennett.dev" },
+        { property: "og:locale", content: "en_GB" },
+        { name: "theme-color", content: "#1e1e2e" },
+      ],
       colorMode: {
         defaultMode: "dark",
         respectPrefersColorScheme: false,
@@ -210,14 +274,19 @@ const config = {
       "./src/plugins/blog-plugin.js",
       {
         routeBasePath: "/blog",
-        blogTitle: "ramblings from mrpbennett",
-        blogDescription: "lalalalalala",
+        blogTitle: "Posts",
+        blogDescription:
+          "Every post on mrpbennett.dev: the terminal, Python, SQL and Go, AI-assisted development, and a Kubernetes homelab.",
         showReadingTime: true,
         // Navigation lives in the navbar; no left "recent posts" sidebar
         blogSidebarCount: 0,
         feedOptions: {
           type: ["rss", "atom"],
           xslt: true,
+          title: "mrpbennett.dev",
+          description: DESCRIPTION,
+          copyright: `© ${new Date().getFullYear()} Paul Bennett`,
+          language: "en-GB",
         },
         onInlineTags: "warn",
         onInlineAuthors: "warn",

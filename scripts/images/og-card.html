@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- Source for static/img/og-card.png (1200x630). Rendered by build-images.sh. -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "JetBrains Mono"; font-weight: 100 800; src: url("../../static/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 100 900; src: url("../../static/fonts/inter-latin-wght-normal.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    display: grid; place-items: center;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgb(203 166 247 / .16), transparent 60%),
+      radial-gradient(700px 400px at -10% 110%, rgb(166 227 161 / .10), transparent 60%),
+      #11111b;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .term {
+    width: 1040px; height: 490px;
+    border: 1.5px solid #313244; border-radius: 22px;
+    background: #1e1e2e;
+    box-shadow: 0 40px 80px -30px rgb(0 0 0 / .7);
+    overflow: hidden;
+  }
+  .bar { display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 24px; background: #232334; border-bottom: 1.5px solid #313244; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; }
+  .title { flex: 1; text-align: center; margin-right: 80px; color: #a6adc8; font-size: 19px; }
+  .body { padding: 50px 56px; }
+  .line { font-size: 30px; color: #cdd6f4; }
+  .ps1 { color: #a6e3a1; } .path { color: #89b4fa; }
+  h1 { margin: 22px 0 18px; font-size: 76px; font-weight: 700; letter-spacing: -0.03em; color: #e2e8ff; }
+  p { font-family: "Inter", sans-serif; font-size: 31px; line-height: 1.45; color: #bac2de; max-width: 880px; }
+  p b { color: #cba6f7; font-weight: 600; }
+  .cursor { display: inline-block; width: 18px; height: 34px; vertical-align: -6px; background: #cdd6f4; margin-left: 4px; }
+  .foot { margin-top: 34px; font-size: 26px; color: #cdd6f4; }
+</style>
+</head>
+<body>
+  <div class="term">
+    <div class="bar">
+      <span class="dot" style="background:#f38ba8"></span>
+      <span class="dot" style="background:#f9e2af"></span>
+      <span class="dot" style="background:#a6e3a1"></span>
+      <span class="title">paul@dorset: ~</span>
+    </div>
+    <div class="body">
+      <div class="line"><span class="ps1">❯ <span class="path">~</span></span> whoami</div>
+      <h1>mrpbennett.dev</h1>
+      <p>Paul Bennett on the <b>terminal</b>, <b>data</b>, <b>AI-assisted development</b> and a <b>Kubernetes homelab</b>.</p>
+      <div class="foot"><span class="ps1">❯ <span class="path">~</span></span><span class="cursor"></span></div>
+    </div>
+  </div>
+</body>
+</html>
