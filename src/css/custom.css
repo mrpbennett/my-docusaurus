@@ -385,6 +385,30 @@ a:hover {
   border-radius: var(--radius-sm);
 }
 
+/* Local search box (@easyops-cn/docusaurus-search-local) */
+.navbar__search-input {
+  height: 34px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--c-bg-sunken);
+  color: var(--c-text);
+  font: 13px var(--font-sans);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.navbar__search-input::placeholder {
+  color: var(--c-text-muted);
+  opacity: 1;
+}
+
+.navbar__search-input:hover {
+  border-color: var(--c-border-strong);
+}
+
+.navbar__search-input:focus {
+  border-color: var(--c-accent);
+}
+
 /* ── Code ─────────────────────────────────────────────────────────────────── */
 :not(pre) > code {
   border: 1px solid var(--c-border);
@@ -658,8 +682,66 @@ a:hover {
 
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 .footer {
+  margin-top: var(--space-16);
+  padding-block: var(--space-12) var(--space-8);
   border-top: 1px solid var(--c-border);
   font-size: 14px;
+}
+
+.footer .container {
+  max-width: var(--content-width);
+}
+
+.footer__title {
+  margin-bottom: var(--space-3);
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+.footer__item {
+  padding-block: 3px;
+}
+
+.footer__link-item {
+  text-decoration: none;
+}
+
+.footer__link-item:hover {
+  text-decoration: none;
+}
+
+/* Hide the external-link arrow; the columns already say "Elsewhere" */
+.footer__link-item svg {
+  display: none;
+}
+
+.footer__bottom {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--c-border);
+  text-align: left;
+}
+
+.footer__copyright {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.footer-ai-note {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-2);
+}
+
+.footer-ai-note svg {
+  color: var(--c-accent);
 }
 
 /* ── Reduced motion: kill non-essential transitions everywhere ────────────── */

@@ -108,50 +108,68 @@ const config = {
       },
       navbar: {
         title: "mrpbennett.dev",
+        hideOnScroll: false,
         logo: {
-          alt: "My Site Logo",
+          alt: "mrpbennett.dev home",
           src: "img/logo.svg",
+          width: 26,
+          height: 26,
         },
         items: [
-          { to: "/blog", label: "Posts", position: "left" },
+          { to: "/", label: "Home", position: "left", activeBaseRegex: "^/$" },
+          {
+            to: "/blog",
+            label: "Posts",
+            position: "left",
+            // Highlight for posts and archive, but not the tags pages
+            activeBaseRegex: "^/blog(?!/tags)",
+          },
           { to: "/blog/tags", label: "Tags", position: "left" },
+          { to: "/about", label: "About", position: "left" },
+          { type: "search", position: "right" },
           {
             href: "https://github.com/mrpbennett",
-            logo: {
-              src: "img/logo.svg",
-              alt: "GitHub Logo",
-            },
             position: "right",
+            className: "header-github-link",
+            "aria-label": "GitHub profile",
           },
         ],
       },
       footer: {
-        style: "dark",
+        style: "light",
         links: [
           {
-            title: "Blog",
+            title: "Site",
             items: [
-              {
-                label: "All Posts",
-                to: "/blog",
-              },
-              {
-                label: "Tags",
-                to: "/blog/tags",
-              },
+              { label: "Posts", to: "/blog" },
+              { label: "Tags", to: "/blog/tags" },
+              { label: "Archive", to: "/blog/archive" },
+              { label: "About", to: "/about" },
             ],
           },
           {
-            title: "Connect",
+            title: "Elsewhere",
             items: [
+              { label: "GitHub", href: "https://github.com/mrpbennett" },
+              { label: "X", href: "https://x.com/mrpbennett" },
               {
-                label: "GitHub",
-                href: "https://github.com/mrpbennett",
+                label: "LinkedIn",
+                href: "https://www.linkedin.com/in/paulandrewbennett",
               },
+              // TODO(paul): add more links here (e.g. Mastodon, Bluesky, email)
+            ],
+          },
+          {
+            title: "Subscribe",
+            items: [
+              // Plain hrefs: feeds aren't React routes
+              { label: "RSS", href: "pathname:///blog/rss.xml" },
+              { label: "Atom", href: "pathname:///blog/atom.xml" },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} mrpbennett.dev. Built with Docusaurus.`,
+        // Rendered as HTML. The AI note shows on every page by design.
+        copyright: `<span>© ${new Date().getFullYear()} Paul Bennett</span><span class="footer-ai-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>Some content is created with AI assistance. <a href="/about#ai">Read more</a></span>`,
       },
       prism: {
         theme: catppuccin,
@@ -169,6 +187,23 @@ const config = {
         ],
       },
     }),
+
+  themes: [
+    [
+      "@easyops-cn/docusaurus-search-local",
+      /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
+      ({
+        hashed: true,
+        indexDocs: false,
+        indexBlog: true,
+        blogRouteBasePath: "/blog",
+        indexPages: true,
+        explicitSearchResultPath: true,
+        searchBarShortcutHint: true,
+        searchResultLimits: 8,
+      }),
+    ],
+  ],
 
   plugins: [
     [

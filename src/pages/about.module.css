@@ -1,0 +1,75 @@
+.page {
+  padding-block: var(--space-12) var(--space-16);
+}
+
+.page > * {
+  max-width: var(--measure);
+}
+
+.section + .section {
+  margin-top: var(--space-12);
+}
+
+.command {
+  margin: 0 0 var(--space-1);
+  font: 400 var(--step--1) var(--font-mono);
+  color: var(--c-text-muted);
+}
+
+.title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--step-2);
+}
+
+.body {
+  line-height: 1.75;
+}
+
+.body p {
+  margin: 0 0 1em;
+}
+
+.body li + li {
+  margin-top: 0.35em;
+}
+
+.aiCard {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  background: var(--c-bg-raised);
+}
+
+.aiCard p:last-child {
+  margin-bottom: 0;
+}
+
+.aiIcon {
+  flex: none;
+  margin-top: 4px;
+  color: var(--c-accent);
+}
+
+.links {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+}
+
+.links li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+}
+
+.linkLabel {
+  min-width: 6rem;
+  color: var(--c-text-muted);
+}

@@ -55,7 +55,8 @@ function Hero({ tags }) {
               </p>
               <p>
                 I like making technology easy to understand and interesting to
-                learn about. Husband, dog dad and biker.
+                learn about. Husband, dog dad and biker.{" "}
+                <Link to="/about">More about me →</Link>
               </p>
             </div>
 
