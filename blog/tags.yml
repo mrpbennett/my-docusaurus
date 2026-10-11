@@ -12,7 +12,7 @@ editor:
   label: editor
   permalink: /editor
 homelab:
-  label: homelap
+  label: homelab
   permalink: /homelab
 go:
   label: go

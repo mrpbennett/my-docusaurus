@@ -7,10 +7,14 @@ import { SparkIcon } from "@site/src/components/AiDisclosure";
 import styles from "./about.module.css";
 
 // TODO(paul): add a contact email (or remove the row) once you've picked one.
-const CONTACT_EMAIL = null;
+const CONTACT_EMAIL = "pbennett.uk@outlook.com";
 
 const LINKS = [
-  { label: "GitHub", handle: "mrpbennett", href: "https://github.com/mrpbennett" },
+  {
+    label: "GitHub",
+    handle: "mrpbennett",
+    href: "https://github.com/mrpbennett",
+  },
   { label: "X", handle: "@mrpbennett", href: "https://x.com/mrpbennett" },
   {
     label: "LinkedIn",
@@ -57,8 +61,8 @@ export default function About() {
           </p>
           <p>
             My life's work is to make technology easy to understand and
-            interesting to learn about. This site is where I write up the
-            tools I use and the problems I've worked through.
+            interesting to learn about. This site is where I write up the tools
+            I use and the problems I've worked through.
           </p>
           <p>Away from the keyboard I'm a husband, dog dad and biker.</p>
         </Section>
@@ -67,9 +71,8 @@ export default function About() {
           <ul>
             <li>
               Running my homelab cluster on Talos Linux, managed GitOps-style
-              with Argo CD. See the{" "}
-              <Link to="/blog/tags/homelab">homelab</Link> and{" "}
-              <Link to="/blog/tags/kubernetes">kubernetes</Link> posts.
+              with Argo CD. See the <Link to="/blog/tags/homelab">homelab</Link>{" "}
+              and <Link to="/blog/tags/kubernetes">kubernetes</Link> posts.
             </li>
             <li>
               Refining my <Link to="/blog/tags/ai">AI-assisted workflow</Link>{" "}
@@ -93,9 +96,9 @@ export default function About() {
               </p>
               <p>
                 I review, test and edit everything before publishing. Posts
-                where AI played a
-                meaningful part are marked <strong>AI-assisted</strong> under
-                the title, with a short note at the end.
+                where AI played a meaningful part are marked{" "}
+                <strong>AI-assisted</strong> under the title, with a short note
+                at the end.
               </p>
             </div>
           </div>
@@ -117,7 +120,7 @@ export default function About() {
               {CONTACT_EMAIL ? (
                 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
               ) : (
-                <span className="todo-flag">TODO: contact email</span>
+                <span className="todo-flag">{CONTACT_EMAIL}</span>
               )}
             </li>
             <li>
