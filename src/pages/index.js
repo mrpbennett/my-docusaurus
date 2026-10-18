@@ -5,17 +5,9 @@ import { usePluginData } from "@docusaurus/useGlobalData";
 import PostRow from "@site/src/components/PostRow";
 import styles from "./index.module.css";
 
-// Tags surfaced in the hero's `ls`, in display order. Any that don't exist
+// Tags surfaced in the hero, in display order. Any that don't exist
 // (yet) are skipped, so this never produces a broken link.
 const HERO_TAGS = ["terminal", "homelab", "kubernetes", "ai", "sql", "go"];
-
-function Prompt() {
-  return (
-    <span className="ps1" aria-hidden="true">
-      ❯ <span className="ps1-path">~</span>{" "}
-    </span>
-  );
-}
 
 function Hero({ tags }) {
   const heroTags = HERO_TAGS.map((label) =>
@@ -24,68 +16,31 @@ function Hero({ tags }) {
 
   return (
     <section className={`container ${styles.hero}`} aria-label="Introduction">
-      <div className={styles.term}>
-        <div className={styles.termBar} aria-hidden="true">
-          <span className={`${styles.dot} ${styles.dotRed}`} />
-          <span className={`${styles.dot} ${styles.dotYellow}`} />
-          <span className={`${styles.dot} ${styles.dotGreen}`} />
-          <span className={styles.termTitle}>paul@dorset: ~</span>
-        </div>
-        <div className={styles.termBody}>
-          <p className={styles.line}>
-            <Prompt />
-            <span className={`${styles.cmd} ${styles.typed}`}>whoami</span>
-          </p>
-          <div className={styles.reveal}>
-            <h1 className={`${styles.out} ${styles.outMono}`}>
-              Paul Bennett — Lead Solutions Engineer, AdTech
-            </h1>
-
-            <p className={styles.line}>
-              <Prompt />
-              <span className={styles.cmd}>cat README.md</span>
-            </p>
-            <div className={styles.out}>
-              <p>
-                I'm Paul, a Lead Solutions Engineer in AdTech based in{" "}
-                <strong>Dorset, UK</strong>. I live in the terminal, write
-                mostly <strong>Python</strong> and <strong>SQL</strong> (and
-                I'm learning <strong>Go</strong>), build things with AI, and
-                tinker with my <strong>Kubernetes homelab</strong>.
-              </p>
-              <p>
-                I like making technology easy to understand and interesting to
-                learn about. Husband, dog dad and biker.{" "}
-                <Link to="/about">More about me →</Link>
-              </p>
-            </div>
-
-            {heroTags.length > 0 && (
-              <>
-                <p className={styles.line}>
-                  <Prompt />
-                  <span className={styles.cmd}>ls ~/writes-about</span>
-                </p>
-                <ul
-                  className={`${styles.out} ${styles.outMono} ${styles.ls}`}
-                  aria-label="Topics I write about"
-                >
-                  {heroTags.map((tag) => (
-                    <li key={tag.permalink}>
-                      <Link to={tag.permalink}>{tag.label}/</Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-
-            <p className={styles.line}>
-              <Prompt />
-              <span className={styles.cursor} aria-hidden="true" />
-            </p>
-          </div>
-        </div>
+      <h1 className={styles.name}>Paul Bennett</h1>
+      <p className={styles.role}>Lead Solutions Engineer, AdTech</p>
+      <div className={styles.bio}>
+        <p>
+          I'm Paul, a Lead Solutions Engineer in AdTech based in{" "}
+          <strong>Dorset, UK</strong>. I live in the terminal, write mostly{" "}
+          <strong>Python</strong> and <strong>SQL</strong> (and I'm learning{" "}
+          <strong>Go</strong>), build things with AI, and tinker with my{" "}
+          <strong>Kubernetes homelab</strong>.
+        </p>
+        <p>
+          I like making technology easy to understand and interesting to learn
+          about. Husband, dog dad and biker.{" "}
+          <Link to="/about">More about me →</Link>
+        </p>
       </div>
+      {heroTags.length > 0 && (
+        <ul className={styles.topics} aria-label="Topics I write about">
+          {heroTags.map((tag) => (
+            <li key={tag.permalink}>
+              <Link to={tag.permalink}>{tag.label}</Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -105,9 +60,7 @@ function SectionHead({ id, command, label, link }) {
 }
 
 export default function Home() {
-  const { recentPosts, tags } = usePluginData(
-    "docusaurus-plugin-content-blog",
-  );
+  const { recentPosts, tags } = usePluginData("docusaurus-plugin-content-blog");
 
   return (
     <Layout
