@@ -1,3 +1,9 @@
+/* Narrow, centred column: every .container on this page picks up the width */
+.page {
+  --ifm-container-width: 680px;
+  --ifm-container-width-xl: 680px;
+}
+
 /* ── Hero ─────────────────────────────────────────────────────── */
 .hero {
   padding-block: var(--space-12) var(--space-8);
@@ -75,11 +81,19 @@
 }
 
 .sectionTitle {
+  min-width: 0;
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: var(--step--1);
   font-weight: 500;
   letter-spacing: 0;
   color: var(--c-text-muted);
+}
+
+.sectionNumber {
+  margin-right: var(--space-3);
+  font-size: 11px;
+  color: var(--ctp-peach);
 }
 
 .rows {

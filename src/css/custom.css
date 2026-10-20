@@ -751,6 +751,14 @@ main li > a:not([class]) {
   color: var(--c-text-muted);
 }
 
+.footer-top-link {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 .footer-ai-note {
   display: inline-flex;
   flex-wrap: wrap;

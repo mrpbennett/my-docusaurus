@@ -16,14 +16,14 @@ function Hero({ tags }) {
 
   return (
     <section className={`container ${styles.hero}`} aria-label="Introduction">
-      <h1 className={styles.name}>Paul Bennett</h1>
+      <h1 className={styles.name}>Hi I'm Paul.</h1>
       <p className={styles.role}>Lead Solutions Engineer, AdTech</p>
       <div className={styles.bio}>
         <p>
-          I'm Paul, a Lead Solutions Engineer in AdTech based in{" "}
+          A Lead Solutions Engineer in AdTech based in{" "}
           <strong>Dorset, UK</strong>. I live in the terminal, write mostly{" "}
-          <strong>Python</strong> and <strong>SQL</strong> (and I'm learning{" "}
-          <strong>Go</strong>), build things with AI, and tinker with my{" "}
+          <strong>Python</strong>, <strong>SQL</strong> and{" "}
+          <strong>Go</strong>, build things with AI, and tinker with my{" "}
           <strong>Kubernetes homelab</strong>.
         </p>
         <p>
@@ -45,17 +45,21 @@ function Hero({ tags }) {
   );
 }
 
-function SectionHead({ id, command, label, link }) {
+function Section({ id, number, label, command, link, children }) {
   return (
-    <div className={styles.sectionHead}>
-      <h2 id={id} className={styles.sectionTitle}>
-        <span aria-hidden="true">
-          <span className="ps1">❯</span> {command}
-        </span>
-        <span className="sr-only">{label}</span>
-      </h2>
-      {link && <Link to={link.to}>{link.label} →</Link>}
-    </div>
+    <section className={`container ${styles.section}`} aria-labelledby={id}>
+      <div className={styles.sectionHead}>
+        <h2 id={id} className={styles.sectionTitle}>
+          <span aria-hidden="true">
+            <span className={styles.sectionNumber}>{number}</span>
+            <span className="ps1">❯</span> {command}
+          </span>
+          <span className="sr-only">{label}</span>
+        </h2>
+        {link && <Link to={link.to}>{link.label} →</Link>}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -67,19 +71,16 @@ export default function Home() {
       title="Paul Bennett — terminal, data, AI and a Kubernetes homelab"
       description="Paul Bennett's blog: notes on the terminal, Python, SQL and Go, AI-assisted development, and running a Kubernetes homelab."
     >
-      <main>
+      <main className={styles.page}>
         <Hero tags={tags} />
 
-        <section
-          className={`container ${styles.section}`}
-          aria-labelledby="latest-posts"
+        <Section
+          id="latest-posts"
+          number="01"
+          label="Latest posts"
+          command={`ls -t ~/posts | head -${recentPosts.length}`}
+          link={{ to: "/blog", label: "All posts" }}
         >
-          <SectionHead
-            id="latest-posts"
-            command={`ls -t ~/posts | head -${recentPosts.length}`}
-            label="Latest posts"
-            link={{ to: "/blog", label: "All posts" }}
-          />
           {recentPosts.length > 0 ? (
             <ol className={styles.rows}>
               {recentPosts.map((post) => (
@@ -89,19 +90,16 @@ export default function Home() {
           ) : (
             <p className={styles.empty}>No posts yet.</p>
           )}
-        </section>
+        </Section>
 
         {tags.length > 0 && (
-          <section
-            className={`container ${styles.section}`}
-            aria-labelledby="topics"
+          <Section
+            id="topics"
+            number="02"
+            label="Topics"
+            command="ls ~/tags"
+            link={{ to: "/blog/tags", label: "All tags" }}
           >
-            <SectionHead
-              id="topics"
-              command="ls ~/tags"
-              label="Topics"
-              link={{ to: "/blog/tags", label: "All tags" }}
-            />
             <ul className={styles.tagCloud}>
               {tags.map((tag) => (
                 <li key={tag.permalink}>
@@ -117,7 +115,7 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-          </section>
+          </Section>
         )}
       </main>
     </Layout>
