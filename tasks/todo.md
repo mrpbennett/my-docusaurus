@@ -1,3 +1,61 @@
+# mrpbennett.dev v3 redesign — "Field notes"
+
+Mockup: `docs/design/mockup-v2.html` (toolbar: Home / Post / About / Dark; also `#post-dark` etc. in the URL).
+Inspiration: workspaces.xyz (tokens pulled from its CSS: paper `#fbfaf6`, ink `#1a1916`, line `#e4e2db`,
+muted `#6b6960`, sage `#dbe7d0`, IBM Plex Serif/Sans, 0 radius).
+
+## Design direction
+- **Ethos**: three pillars across the whole site — Infrastructure · Developer · Product design.
+  Existing tags map onto a pillar (homelab/kubernetes → Infra; terminal/ai/go/sql/python → Developer).
+- **Palette** (moved away from Workspaces' warm cream + sage, per Paul). Two candidates in the mockup, toggle "Palette A/B":
+  - A "Ink & Violet": cool stone `#f6f5f2`, ink `#17171b`, lavender tint `#e6e1f7`, violet accent `#5b3fc4`; dark `#111114` / accent `#ab96ff`.
+  - B "Graphite & Signal": cool grey `#f4f5f6`, ink `#14171b`, peach tint `#ffe4d1`, orange accent `#b93e0a`; dark `#0f1113` / accent `#ff8f55`.
+  - Green `--ok` reserved for the status dot only. All text pairs ≥ 4.5:1 in all four modes (checked).
+- **Type**: IBM Plex Serif (light 300 display headings), Plex Sans (body), Plex Mono (eyebrows, meta, code).
+  Self-hosted woff2, replacing Inter + JetBrains Mono. Catppuccin Prism → a muted ink/sage Prism theme.
+- **Engineering flavour**: status strip under the nav, numbered posts ("No. 028"), a per-post **spec sheet** rail
+  (the counterpart to Workspaces' gear list), mono metadata, typographic grid "plates" as covers when a post has no image,
+  an About "Changelog".
+
+## Implementation (one commit per step, user approval before each commit)
+- [x] 1. Tokens + fonts: swap fonts, rewrite `--c-*`/Infima mapping in `src/css/custom.css`, new Prism theme, 0 radius, both modes. Default to light? (Q1)
+- [x] 2. Navbar (Index / Writing / Topics / About — no Uses) + status strip + footer. Strip: `homelab 3 nodes · k8s v1.37 · Talos v1.14.5`
+      from `customFields`, plus **home-ops last commit** (sha · message · relative time → commit URL): fetched from
+      `api.github.com/repos/mrpbennett/home-ops/commits/main` at build time in the blog plugin (SSR, no flash), refreshed
+      client-side on load; keeps the build value on failure/rate limit (60 req/h unauthenticated)
+- [x] 3. Blog plugin: expose post number (chronological index), pillar per post/tag, post index → global data
+- [x] 4. Home: masthead, pillars, Latest feature, Recently cards, Topics, Index, feed CTA (`src/pages/index.js`)
+- [x] 5. Post page: header (eyebrow/dek/byline/AI chip), hero plate/cover, 2-col body + sticky rail (Contents, Filed under), prev/next
+- [x] 6. Blog list / tags / archive restyled to match the Index rows and Topics tiles
+- [x] 7. About page rebuild (portrait = GitHub avatar URL so it tracks the profile picture, prose, three pillars, numbers, changelog, AI disclosure, contact)
+- [x] 8. Verify: build, URL diff vs baseline (no permalink changes), contrast check, screenshots at 390/768/1366 both modes, Lighthouse
+
+## Decisions (Paul, 2026-11-12)
+- Palette **B "Graphite & Signal"** (orange). **Dark is the default** mode.
+- **No `stack:` frontmatter**, so no spec sheet. Rail = Contents + Filed under.
+- Status strip home-ops item: **"home-ops last commit · 2 days ago"** only (no hash, no message).
+- Portrait + byline avatar = GitHub avatar URL. "Uses" dropped.
+- Pillars from existing tags: Infra = homelab, kubernetes, devops · Developer = terminal, ai, go, sql, databases,
+  trino, editor, neovim, linux, omarchy · Product design = none yet (shown honestly as "first posts soon").
+- No new frontmatter. Covers are generated plates (post number / `~/tag`), or `image:` if a post sets one.
+
+## Review (2026-11-12)
+Implemented, uncommitted (awaiting Paul's approval). `npm run build` clean (no broken links), the URL set is
+identical to the previous build (52 pages), no browser console errors on the main pages, and screenshots checked
+at 1366 and 390 px in both modes. Every text and syntax colour pair is >= 4.5:1.
+- Tokens/fonts: `src/css/custom.css` rewritten on the same 3 layers; IBM Plex Sans/Serif/Mono self-hosted
+  (Inter/JetBrains removed); `src/prism/graphite.js` replaces Catppuccin.
+- Status strip: `src/theme/Navbar` wrapper + `src/components/StatusStrip`; `src/plugins/status-plugin.js` fetches
+  the home-ops last commit at build (optional `GITHUB_TOKEN`); the browser refreshes it as relative time.
+- Data: `src/plugins/blog-plugin.js` adds `number`, `pillar`, `pillars[].count`; helpers in `src/lib/blog.js`.
+- Pages: home, about, post (ejected `BlogPostPage`), list, topics, tag, archive (ejected). New `Plate`, `TopicGrid`.
+  Removed unused `BlogPostItem/Header` + `Footer` swizzles.
+- Assets: favicon/logo/icons/OG card regenerated; `build-images.sh` now also runs on Linux (chromium + magick).
+- Follow-ups: "Product design" pillar has no tags yet, so it shows "first posts soon". Only 1 post has a
+  `description:`, so the dek line rarely appears. Some posts' `last_updated` date is earlier than their publish date.
+
+---
+
 # mrpbennett.dev redesign
 
 Mockup: `docs/design/mockup.html` (open in a browser; toolbar switches Home/Post and light/dark).

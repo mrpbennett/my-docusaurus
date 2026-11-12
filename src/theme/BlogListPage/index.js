@@ -37,12 +37,12 @@ function BlogListPageContent({ metadata, items, sidebar }) {
   return (
     <BlogLayout sidebar={sidebar}>
       <PageHeader
-        command={page > 1 ? `ls -t ~/posts | page ${page}` : "ls -t ~/posts"}
-        title={page > 1 ? `Posts — page ${page} of ${totalPages}` : "Posts"}
+        eyebrow={page > 1 ? `Writing · page ${page} of ${totalPages}` : `Writing · ${totalCount} entries`}
+        title="Writing"
       >
         <p>
-          {totalCount} posts on the terminal, data, AI and my homelab. Browse
-          by <Link to="/blog/tags">tag</Link> or see the{" "}
+          Field notes on infrastructure, developer tools and product design.
+          Browse by <Link to="/blog/tags">topic</Link> or see the{" "}
           <Link to="/blog/archive">archive</Link>.
         </p>
       </PageHeader>

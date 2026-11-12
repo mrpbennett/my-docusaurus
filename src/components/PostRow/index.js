@@ -1,46 +1,33 @@
 import React from "react";
 import Link from "@docusaurus/Link";
+import { formatDate, formatNumber, isoDate, usePostSummary } from "@site/src/lib/blog";
 import styles from "./styles.module.css";
 
-// One post in a list: date, title, excerpt, reading time and tags. The whole
-// row is clickable via the title link's ::after overlay; tag links sit above
-// it so they stay independently clickable.
-// `headingLevel` keeps the outline valid: 2 directly under a page h1 (blog
-// lists), 3 under a section h2 (homepage).
-export default function PostRow({ post, as: Tag = "li", headingLevel = 3 }) {
+// One post in an index list: number, serif title (+ optional excerpt), first
+// tag and date. The whole row is clickable via the title link's ::after
+// overlay. `headingLevel` keeps the outline valid: 2 directly under a page h1
+// (blog lists), 3 under a section h2 (homepage).
+export default function PostRow({ post, as: Tag = "li", headingLevel = 3, showExcerpt = false }) {
   const Heading = `h${headingLevel}`;
-  const { title, permalink, date, description, readingTime, tags = [] } = post;
-  const isoDate = String(date).slice(0, 10);
+  const { title, permalink, date, description, tags = [] } = post;
+  const summary = usePostSummary(permalink);
+  const number = post.number ?? summary?.number;
 
   return (
     <Tag className={styles.row}>
-      <time className={styles.date} dateTime={isoDate}>
-        {isoDate}
-      </time>
-      <div>
+      <span className={styles.number}>{number ? formatNumber(number) : "—"}</span>
+      <div className={styles.main}>
         <Heading className={styles.title}>
           <Link to={permalink} className={styles.link}>
             {title}
           </Link>
         </Heading>
-        {description && <p className={styles.excerpt}>{description}</p>}
-        <div className={styles.meta}>
-          {readingTime !== undefined && (
-            <span>{Math.max(1, Math.ceil(readingTime))} min read</span>
-          )}
-          {tags.length > 0 && (
-            <ul className={styles.tags} aria-label="Tags">
-              {tags.map((tag) => (
-                <li key={tag.permalink}>
-                  <Link className={`tag-chip ${styles.tag}`} to={tag.permalink}>
-                    {tag.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        {showExcerpt && description && <p className={styles.excerpt}>{description}</p>}
       </div>
+      <span className={styles.tag}>{tags[0]?.label}</span>
+      <time className={styles.date} dateTime={isoDate(date)}>
+        {formatDate(date, { day: false })}
+      </time>
     </Tag>
   );
 }

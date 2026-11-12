@@ -1,0 +1,26 @@
+.year {
+  padding-block: var(--space-8);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.head :global(.mono) {
+  color: var(--c-text-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--c-rule);
+}

@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en-GB" data-theme="dark" data-palette="signal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mrpbennett.dev v2</title>
+<!-- Mockup only: production self-hosts these via @fontsource -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens ---------- */
+:root {
+  /* Palette A "Ink & Violet" (default) — cool stone paper, violet accent */
+  --bg: #f6f5f2;
+  --outer: #edece8;
+  --card: #ffffff;
+  --ink: #17171b;
+  --body: #26262b;
+  --soft: #3e3e46;
+  --muted: #65656e;
+  --line: #e0dfda;
+  --tag-bg: #ecebf0;
+  --hl: #e6e1f7;          /* lavender highlighter */
+  --hl-ink: #3a2d78;
+  --accent: #5b3fc4;      /* links-on-hover, code keywords, prompt */
+  --ok: #2f8a4c;          /* status dot only */
+  --code-bg: #efeef3;
+
+  --serif: "IBM Plex Serif", Georgia, serif;
+  --sans: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --wide: 1120px;
+  --content: 860px;
+  --measure: 680px;
+  --rail: 288px;
+}
+/* Dark — "Graphite": warm near-black, same hue family as the paper */
+:root[data-theme="dark"] {
+  --bg: #111114; --outer: #0c0c0e; --card: #18181c;
+  --ink: #eeeef1; --body: #d5d5da; --soft: #b6b6be; --muted: #90909a;
+  --line: #2a2a30; --tag-bg: #1f1f25;
+  --hl: #2a2447; --hl-ink: #d2c9f7; --accent: #ab96ff; --ok: #6bcf86;
+  --code-bg: #18181c;
+}
+/* Palette B "Graphite & Signal" — cool grey paper, safety-orange accent */
+:root[data-palette="signal"] {
+  --bg: #f4f5f6; --outer: #ebedef; --card: #ffffff;
+  --ink: #14171b; --body: #23272d; --soft: #3a3f47; --muted: #626872;
+  --line: #dde0e4; --tag-bg: #eaecef;
+  --hl: #ffe4d1; --hl-ink: #7a2e00; --accent: #b93e0a; --ok: #2f8a4c;
+  --code-bg: #eceef1;
+}
+:root[data-palette="signal"][data-theme="dark"] {
+  --bg: #0f1113; --outer: #0a0b0d; --card: #16191c;
+  --ink: #eef0f2; --body: #d3d7dc; --soft: #b0b6bd; --muted: #8b929b;
+  --line: #262a2f; --tag-bg: #1c2024;
+  --hl: #3a2416; --hl-ink: #ffcaa6; --accent: #ff8f55; --ok: #6bcf86;
+  --code-bg: #16191c;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--body);
+  font: 16px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background .2s, color .2s;
+}
+a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--accent); }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 400; color: var(--ink); letter-spacing: -.015em; line-height: 1.12; margin: 0; }
+p { margin: 0 0 1em; }
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 32px; }
+.mono { font-family: var(--mono); font-size: 12.5px; letter-spacing: .01em; }
+.eyebrow { font: 500 11.5px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.muted { color: var(--muted); }
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); margin-right: 8px; vertical-align: 1px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 18%, transparent); }
+mark { background: var(--hl); color: var(--hl-ink); padding: 0 .2em; }
+
+/* ---------- Mockup toolbar (not part of design) ---------- */
+.mock-bar { position: fixed; z-index: 50; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px; background: var(--ink); }
+.mock-bar button { font: 500 12px var(--mono); border: 0; padding: 8px 12px; background: transparent; color: var(--bg); cursor: pointer; }
+.mock-bar button[aria-pressed="true"] { background: var(--bg); color: var(--ink); }
+
+/* ---------- Header ---------- */
+.site-head { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; z-index: 10; }
+.site-head .wrap { display: flex; align-items: center; gap: 32px; height: 68px; }
+.brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+.brand b { font: 400 22px var(--serif); color: var(--ink); letter-spacing: -.02em; }
+.brand span { font: 12px var(--mono); color: var(--muted); }
+.nav { display: flex; gap: 24px; font-size: 14.5px; }
+.nav a { text-decoration: none; color: var(--soft); }
+.nav a[aria-current] { color: var(--ink); box-shadow: inset 0 -1px var(--ink); }
+.head-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); padding: 6px 10px; width: 200px; color: var(--muted); font-size: 13.5px; background: var(--card); }
+.search kbd { margin-left: auto; font: 11px var(--mono); border: 1px solid var(--line); padding: 0 5px; }
+.btn { font: 500 13.5px var(--sans); border: 1px solid var(--ink); padding: 7px 14px; background: var(--ink); color: var(--bg); text-decoration: none; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); }
+.menu { display: none; }
+.btn.ghost:hover { background: var(--ink); color: var(--bg); }
+
+/* ---------- Status strip (replaces Workspaces' sponsor strip) ---------- */
+.status { border-bottom: 1px solid var(--line); background: var(--outer); }
+.status .wrap { display: flex; gap: 28px; height: 34px; align-items: center; font: 12px var(--mono); color: var(--muted); overflow: hidden; white-space: nowrap; }
+.status b { color: var(--soft); font-weight: 500; }
+.commit { display: inline-flex; gap: 8px; align-items: baseline; text-decoration: none; color: var(--muted); min-width: 0; }
+.commit .ago { color: var(--accent); }
+.commit:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Home ---------- */
+.masthead { padding: 72px 0 56px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 64px; align-items: end; }
+.masthead h1 { font-size: clamp(40px, 5.4vw, 68px); font-weight: 300; letter-spacing: -.025em; line-height: 1.02; }
+.masthead h1 em { font-style: italic; }
+.masthead p { font-size: 17px; color: var(--soft); max-width: 40ch; }
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); }
+.pillar { padding: 18px 20px 22px 0; border-right: 1px solid var(--line); }
+.pillar + .pillar { padding-left: 20px; }
+.pillar:last-child { border-right: 0; }
+.pillar .eyebrow { color: var(--ink); }
+.pillar h3 { font-size: 22px; margin: 8px 0 6px; }
+.pillar p { font-size: 14.5px; color: var(--muted); margin: 0 0 10px; }
+.pillar .mono { color: var(--soft); }
+
+.section { padding: 56px 0; border-top: 1px solid var(--line); }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; gap: 16px; }
+.section-head h2 { font-size: 30px; }
+.section-head a { font-size: 14px; }
+
+.feature { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: stretch; }
+.feature-text { display: flex; flex-direction: column; }
+.feature-text h3 { font-size: 40px; font-weight: 300; letter-spacing: -.02em; margin: 14px 0 14px; }
+.feature-text p { color: var(--soft); font-size: 16.5px; }
+.feature-text .meta { margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); display: flex; gap: 18px; flex-wrap: wrap; }
+
+/* Typographic "plates" — covers for posts without photography */
+.plate { position: relative; aspect-ratio: 3/2; background: var(--card); border: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+.plate::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 24px 24px; opacity: .55; }
+.plate > * { position: relative; }
+a.plate { text-decoration: none; }
+.plate .glyph { font: 300 clamp(40px, 7vw, 92px)/1 var(--serif); color: var(--ink); letter-spacing: -.04em; }
+.plate pre { margin: 0; font: 12px/1.6 var(--mono); color: var(--soft); background: color-mix(in srgb, var(--card) 85%, transparent); padding: 10px 12px; border: 1px solid var(--line); }
+.plate pre .p { color: var(--accent); }
+.plate.tint { background: var(--hl); }
+.plate.tint::before { opacity: .25; }
+.plate .corner { display: flex; justify-content: space-between; }
+
+.recent { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.card { text-decoration: none; display: block; }
+.card .plate { aspect-ratio: 4/3; padding: 14px; }
+.card .plate .glyph { font-size: 44px; }
+.card h4 { font-size: 19px; margin: 14px 0 6px; line-height: 1.2; }
+.card:hover h4 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.card .mono { color: var(--muted); }
+
+.topics { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); background: var(--card); }
+.topic { padding: 20px; border-right: 1px solid var(--line); text-decoration: none; display: flex; flex-direction: column; gap: 28px; min-height: 150px; }
+.topic:last-child { border-right: 0; }
+.topic:hover { background: var(--tag-bg); }
+.topic b { font: 400 22px var(--serif); color: var(--ink); }
+.topic .row { display: flex; justify-content: space-between; margin-top: auto; }
+
+.index { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.index li a { display: grid; grid-template-columns: 72px 1fr 140px 96px; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); text-decoration: none; align-items: baseline; }
+.index li a:hover { background: linear-gradient(90deg, var(--tag-bg), transparent); }
+.index .t { font: 400 20px/1.25 var(--serif); color: var(--ink); }
+.index .mono { color: var(--muted); }
+.index .r { text-align: right; }
+
+.signup { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; background: var(--ink); color: var(--bg); padding: 48px; }
+.signup h2 { color: var(--bg); font-size: 36px; font-weight: 300; }
+.signup p { color: color-mix(in srgb, var(--bg) 72%, transparent); margin: 12px 0 0; }
+.signup .links { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.signup .btn { background: var(--bg); color: var(--ink); border-color: var(--bg); }
+.signup .btn.ghost { background: transparent; color: var(--bg); border-color: color-mix(in srgb, var(--bg) 40%, transparent); }
+
+/* ---------- Footer ---------- */
+.site-foot { border-top: 1px solid var(--line); margin-top: 72px; padding: 48px 0 32px; background: var(--outer); }
+.foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+.foot-grid h5 { margin: 0 0 12px; font: 500 11.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.foot-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14.5px; }
+.foot-grid ul a { text-decoration: none; color: var(--soft); }
+.foot-base { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 12px var(--mono); color: var(--muted); }
+
+/* ---------- Post ---------- */
+.post-head { padding: 56px 0 32px; max-width: var(--content); }
+.post-head .crumbs { display: flex; gap: 10px; align-items: center; }
+.post-head h1 { font-size: clamp(36px, 5vw, 60px); font-weight: 300; letter-spacing: -.025em; margin: 18px 0 18px; }
+.post-head .dek { font: 300 21px/1.45 var(--serif); color: var(--soft); max-width: 46ch; margin: 0; }
+.byline { display: flex; align-items: center; gap: 14px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; }
+.byline img { width: 36px; height: 36px; object-fit: cover; display: block; }
+.avatar { width: 36px; height: 36px; background: var(--hl); display: grid; place-items: center; font: 500 13px var(--mono); color: var(--hl-ink); }
+.byline .sep { color: var(--line); }
+.ai-chip { font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; padding: 3px 7px; border: 1px solid var(--line); color: var(--muted); }
+
+.post-hero { margin: 8px 0 0; }
+.post-hero .plate { aspect-ratio: 21/9; padding: 28px; }
+.post-hero .plate .glyph { font-size: clamp(56px, 9vw, 128px); }
+figcaption { font: 12px/1.55 var(--mono); color: var(--muted); margin-top: 10px; }
+
+.post-body { display: grid; grid-template-columns: minmax(0, 1fr) var(--rail); gap: 72px; padding-top: 48px; }
+.prose { max-width: var(--measure); font-size: 17.5px; line-height: 1.72; }
+.prose > p:first-of-type::first-letter { font: 300 64px/.8 var(--serif); float: left; padding: 8px 10px 0 0; color: var(--ink); }
+.prose h2 { font-size: 30px; margin: 2.2em 0 .6em; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.prose h3 { font-size: 22px; margin: 1.8em 0 .5em; }
+.prose code { font: .86em var(--mono); background: var(--tag-bg); padding: .1em .35em; }
+.prose blockquote { margin: 2em 0; padding: 0 0 0 24px; border-left: 2px solid var(--ink); font: 300 italic 24px/1.4 var(--serif); color: var(--ink); }
+.codeblock { margin: 1.6em 0; border: 1px solid var(--line); background: var(--code-bg); }
+.codeblock .bar { display: flex; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid var(--line); font: 11.5px var(--mono); color: var(--muted); }
+.codeblock pre { margin: 0; padding: 16px; font: 13.5px/1.65 var(--mono); color: var(--body); overflow-x: auto; }
+.codeblock .k { color: var(--accent); } .codeblock .c { color: var(--muted); } .codeblock .s { color: var(--soft); font-style: italic; }
+.callout { margin: 2em 0; padding: 18px 20px; background: var(--hl); color: var(--hl-ink); font-size: 15.5px; }
+.callout b { font: 500 11.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; display: block; margin-bottom: 6px; }
+
+.census { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); margin: 2.4em 0; }
+.census div { padding: 16px 16px 0 0; }
+.census b { font: 300 44px/1 var(--serif); color: var(--ink); display: block; letter-spacing: -.02em; }
+.census span { font-size: 13.5px; color: var(--muted); }
+
+/* Rail = Workspaces' gear list → a spec sheet */
+.rail { position: sticky; top: 92px; align-self: start; display: grid; gap: 28px; font-size: 14px; }
+.spec { border-top: 1px solid var(--ink); }
+.spec h5 { margin: 0; padding: 12px 0; font: 500 11.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink); display: flex; justify-content: space-between; }
+.spec h5 span { color: var(--muted); font-weight: 400; }
+.spec dl { margin: 0; display: grid; grid-template-columns: auto 1fr; }
+.spec dt, .spec dd { margin: 0; padding: 8px 0; border-top: 1px solid var(--line); }
+.spec dt { color: var(--muted); padding-right: 16px; }
+.spec dd { text-align: right; color: var(--ink); font-family: var(--mono); font-size: 12.5px; }
+.toc { list-style: none; margin: 0; padding: 0; }
+.toc li { border-top: 1px solid var(--line); }
+.toc a { display: block; padding: 8px 0; text-decoration: none; color: var(--soft); }
+.toc a.on { color: var(--ink); box-shadow: inset 2px 0 var(--ink); padding-left: 10px; }
+
+.next { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 64px; }
+.next a { border: 1px solid var(--line); padding: 20px; text-decoration: none; background: var(--card); }
+.next a:hover { border-color: var(--ink); }
+.next b { display: block; font: 400 20px/1.25 var(--serif); color: var(--ink); margin-top: 8px; }
+
+/* ---------- About ---------- */
+.about-head { padding: 72px 0 40px; max-width: var(--content); }
+.about-head h1 { font-size: clamp(44px, 6vw, 76px); font-weight: 300; letter-spacing: -.03em; }
+.about-head p { font: 300 22px/1.45 var(--serif); color: var(--soft); margin-top: 18px; max-width: 34ch; }
+.about-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 64px; padding: 48px 0; border-top: 1px solid var(--line); }
+.portrait { aspect-ratio: 4/5; background: var(--hl); overflow: hidden; margin: 0; }
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(.15) contrast(1.02); }
+.portrait-cap { margin-top: 10px; }
+.about-prose { font-size: 17.5px; line-height: 1.72; max-width: var(--measure); }
+.about-prose p:first-child { font: 300 24px/1.5 var(--serif); color: var(--ink); }
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); background: var(--card); }
+.three > div { padding: 24px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+.three > div:last-child { border-right: 0; }
+.three h3 { font-size: 24px; }
+.three p { color: var(--muted); font-size: 15px; margin: 0; }
+.three ul { list-style: none; padding: 0; margin: 0; font: 12.5px/1.9 var(--mono); color: var(--soft); }
+.three ul li::before { content: "— "; color: var(--muted); }
+.three .q { font: 300 italic 18px/1.45 var(--serif); color: var(--ink); border-left: 2px solid var(--ink); padding-left: 14px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); }
+.stats div { padding: 20px 20px 0 0; }
+.stats b { font: 300 56px/1 var(--serif); color: var(--ink); letter-spacing: -.03em; display: block; }
+.stats span { font-size: 14px; color: var(--muted); }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 120px 1fr; gap: 32px; padding: 20px 0; border-top: 1px solid var(--line); }
+.timeline li:last-child { border-bottom: 1px solid var(--line); }
+.timeline h4 { font-size: 20px; margin-bottom: 4px; }
+.timeline p { margin: 0; color: var(--muted); font-size: 15px; max-width: 60ch; }
+.uses { display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; }
+.contact { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.contact > div { border-top: 1px solid var(--ink); padding-top: 16px; }
+.contact h4 { font-size: 22px; margin-bottom: 6px; }
+.contact p { color: var(--muted); font-size: 15px; }
+
+[data-page] { display: none; }
+[data-page].on { display: block; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .masthead, .feature, .about-grid, .signup { grid-template-columns: 1fr; gap: 32px; }
+  .recent { grid-template-columns: repeat(2, 1fr); }
+  .topics { grid-template-columns: repeat(2, 1fr); }
+  .topic { border-bottom: 1px solid var(--line); }
+  .post-body { grid-template-columns: 1fr; gap: 40px; }
+  .rail { position: static; order: -1; }
+  .rail .toc-wrap { display: none; }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+  .search { display: none; }
+  .signup .links { justify-content: flex-start; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 16px; }
+  .nav { display: none; }
+  .menu { display: inline-block; }
+  .head-right > a.btn { display: none; }
+  .byline { flex-wrap: wrap; }
+  .byline .sep, .byline .role { display: none; }
+  .status .wrap { overflow-x: auto; }
+  .brand span { display: none; }
+  .pillars, .three, .contact, .uses { grid-template-columns: 1fr; }
+  .pillar, .pillar + .pillar { padding: 16px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .three > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .recent, .topics, .next { grid-template-columns: 1fr; }
+  .stats, .census { grid-template-columns: 1fr 1fr; }
+  .index li a { grid-template-columns: 1fr auto; }
+  .index li a .hide-sm { display: none; }
+  .timeline li { grid-template-columns: 1fr; gap: 4px; }
+  .signup { padding: 28px 20px; }
+  .post-hero .plate { aspect-ratio: 4/3; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#" data-go="home"><b>mrpbennett</b><span>.dev</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#" data-go="home" aria-current="page">Index</a>
+      <a href="#" data-go="post">Writing</a>
+      <a href="#">Topics</a>
+      <a href="#" data-go="about">About</a>
+    </nav>
+    <div class="head-right">
+      <div class="search">Search <kbd>⌘K</kbd></div>
+      <a class="btn ghost" href="#">RSS</a>
+      <button class="btn ghost menu" aria-label="Menu">Menu</button>
+    </div>
+  </div>
+</header>
+<div class="status" aria-label="Site status">
+  <div class="wrap">
+    <span><span class="dot"></span><b>homelab</b> 3 nodes · k8s v1.37 · Talos v1.14.5</span>
+    <a class="commit" id="commit" href="https://github.com/mrpbennett/home-ops/commits/main"><b>home-ops</b> last commit <b class="ago">2 days ago</b></a>
+    <span>now <b>learning Go</b></span>
+    <span>writing from <b>Dorset, UK</b></span>
+  </div>
+</div>
+
+<!-- ============ HOME ============ -->
+<main data-page="home" class="on">
+  <div class="wrap">
+    <section class="masthead">
+      <div>
+        <p class="eyebrow">Field notes · since 2024</p>
+        <h1 style="margin-top:16px">Notes from the terminal, the cluster &amp; the <em>space between</em> them.</h1>
+      </div>
+      <div>
+        <p>I'm Paul, a Lead Solutions Engineer in AdTech. I write about infrastructure I run myself, the tools I live in, and how good products get made.</p>
+        <a href="#" data-go="about">More about me →</a>
+      </div>
+    </section>
+
+    <div class="pillars">
+      <div class="pillar">
+        <span class="eyebrow">01 · Infrastructure</span>
+        <h3>The cluster</h3>
+        <p>Kubernetes, Talos, GitOps, storage and the observability around it.</p>
+        <span class="mono">14 posts</span>
+      </div>
+      <div class="pillar">
+        <span class="eyebrow">02 · Developer</span>
+        <h3>The toolbox</h3>
+        <p>Terminal setups, editors, CLI tools, Python, SQL, Go and AI workflow.</p>
+        <span class="mono">11 posts</span>
+      </div>
+      <div class="pillar">
+        <span class="eyebrow">03 · Product design</span>
+        <h3>The craft</h3>
+        <p>Why tools feel good, interface decisions, and making tech easy to follow.</p>
+        <span class="mono">3 posts</span>
+      </div>
+    </div>
+
+    <section class="section" style="margin-top:56px">
+      <div class="section-head"><h2>Latest</h2><span class="mono muted">No. 028</span></div>
+      <article class="feature">
+        <a href="#" data-go="post" class="plate tint" aria-hidden="true" tabindex="-1">
+          <div class="corner"><span class="eyebrow" style="color:var(--hl-ink)">Developer · terminal</span><span class="mono" style="color:var(--hl-ink)">028</span></div>
+          <div class="glyph">~/2026</div>
+          <pre><span class="p">❯</span> ghostty +list-themes | head -1
+<span class="p">❯</span> zellij attach main</pre>
+        </a>
+        <div class="feature-text">
+          <span class="eyebrow">No. 028 · 08 Oct 2026</span>
+          <h3><a href="#" data-go="post" style="text-decoration:none">Terminal setup, 2026</a></h3>
+          <p>A year after switching to Omarchy: the shell, multiplexer, editor and the small scripts that hold it all together, and what I dropped along the way.</p>
+          <div class="meta mono muted"><span>9 min read</span><span>Ghostty · Zellij · Helix · Yazi</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Recently</h2><a href="#">All writing →</a></div>
+      <div class="recent">
+        <a class="card" href="#" data-go="post">
+          <div class="plate"><span class="eyebrow">Infra</span><div class="glyph">talos</div></div>
+          <h4>Managing Talos machine config with patches, mise and hunk</h4>
+          <span class="mono">027 · Oct 2026 · 7 min</span>
+        </a>
+        <a class="card" href="#" data-go="post">
+          <div class="plate"><span class="eyebrow">Infra</span><div class="glyph">alert</div></div>
+          <h4>Fixing Discord alerts on kube-prometheus-stack</h4>
+          <span class="mono">026 · Oct 2026 · 5 min</span>
+        </a>
+        <a class="card" href="#" data-go="post">
+          <div class="plate tint"><span class="eyebrow" style="color:var(--hl-ink)">Infra</span><div class="glyph">s3</div></div>
+          <h4>Setting up SeaweedFS</h4>
+          <span class="mono">025 · Sep 2026 · 11 min</span>
+        </a>
+        <a class="card" href="#" data-go="post">
+          <div class="plate"><span class="eyebrow">Developer</span><div class="glyph">cli</div></div>
+          <h4>My list of my favourite CLI tools</h4>
+          <span class="mono">024 · Mar 2026 · 6 min</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Topics</h2><a href="#">Every tag →</a></div>
+      <div class="topics">
+        <a class="topic" href="#"><span class="eyebrow">Infra</span><b>Homelab</b><div class="row mono muted"><span>9 posts</span><span>→</span></div></a>
+        <a class="topic" href="#"><span class="eyebrow">Infra</span><b>Kubernetes</b><div class="row mono muted"><span>5 posts</span><span>→</span></div></a>
+        <a class="topic" href="#"><span class="eyebrow">Developer</span><b>Terminal</b><div class="row mono muted"><span>7 posts</span><span>→</span></div></a>
+        <a class="topic" href="#"><span class="eyebrow">Developer</span><b>AI</b><div class="row mono muted"><span>3 posts</span><span>→</span></div></a>
+        <a class="topic" href="#"><span class="eyebrow">Developer</span><b>Go &amp; SQL</b><div class="row mono muted"><span>4 posts</span><span>→</span></div></a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>The index</h2><span class="mono muted">28 entries</span></div>
+      <ol class="index">
+        <li><a href="#" data-go="post"><span class="mono">028</span><span class="t">Terminal setup, 2026</span><span class="mono hide-sm">terminal</span><span class="mono r">Oct 2026</span></a></li>
+        <li><a href="#" data-go="post"><span class="mono">027</span><span class="t">Managing Talos machine config with patches, mise and hunk</span><span class="mono hide-sm">homelab</span><span class="mono r">Oct 2026</span></a></li>
+        <li><a href="#" data-go="post"><span class="mono">026</span><span class="t">Fixing Discord alerts on kube-prometheus-stack</span><span class="mono hide-sm">homelab</span><span class="mono r">Oct 2026</span></a></li>
+        <li><a href="#" data-go="post"><span class="mono">025</span><span class="t">Setting up SeaweedFS</span><span class="mono hide-sm">homelab</span><span class="mono r">Sep 2026</span></a></li>
+        <li><a href="#" data-go="post"><span class="mono">024</span><span class="t">My list of my favourite CLI tools</span><span class="mono hide-sm">terminal</span><span class="mono r">Mar 2026</span></a></li>
+        <li><a href="#" data-go="post"><span class="mono">023</span><span class="t">My current AI workflow</span><span class="mono hide-sm">ai</span><span class="mono r">Mar 2026</span></a></li>
+        <li><a href="#" data-go="post"><span class="mono">022</span><span class="t">Managing Kubernetes secrets the GitOps way with Vault and VSO</span><span class="mono hide-sm">kubernetes</span><span class="mono r">Feb 2026</span></a></li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <div class="signup">
+        <div>
+          <h2>Get the next field note.</h2>
+          <p>New posts every few weeks. No newsletter, no tracking pixels — just a feed.</p>
+        </div>
+        <div class="links">
+          <a class="btn" href="#">RSS feed</a>
+          <a class="btn ghost" href="#">Atom</a>
+          <a class="btn ghost" href="#">GitHub</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ POST ============ -->
+<main data-page="post">
+  <div class="wrap">
+    <header class="post-head">
+      <div class="crumbs"><span class="eyebrow">No. 028</span><span class="eyebrow">·</span><span class="eyebrow" style="color:var(--ink)">Developer / Terminal</span></div>
+      <h1>Terminal setup, 2026</h1>
+      <p class="dek">A year on Omarchy: what stayed, what went, and the handful of scripts that make the whole thing feel like one tool.</p>
+      <div class="byline">
+        <img src="https://avatars.githubusercontent.com/u/1844080?v=4" alt="" width="36" height="36">
+        <span><b style="color:var(--ink);font-weight:500">Paul Bennett</b><br><span class="muted role">Lead Solutions Engineer</span></span>
+        <span class="sep">|</span>
+        <span class="mono muted">08 Oct 2026 · 9 min read</span>
+        <span class="ai-chip">AI-assisted</span>
+      </div>
+    </header>
+
+    <figure class="post-hero" style="margin:0">
+      <div class="plate tint">
+        <div class="corner"><span class="eyebrow" style="color:var(--hl-ink)">fig. 01</span><span class="mono" style="color:var(--hl-ink)">ghostty · 3440×1440</span></div>
+        <div class="glyph">~/2026</div>
+        <pre><span class="p">❯</span> fastfetch --logo none
+OS      Arch Linux (Omarchy 3.1)
+WM      Hyprland 0.52
+Shell   zsh 5.9  ·  Term  ghostty 1.2</pre>
+      </div>
+      <figcaption>The desk, as it is today. Screenshots replace this plate when a post has them.</figcaption>
+    </figure>
+
+    <div class="post-body">
+      <article class="prose">
+        <p>Every year I write down how my terminal is set up, mostly so future me can work out why something is the way it is. This year the theme is subtraction: fewer plugins, fewer configs, and more defaults that I've decided are good enough.</p>
+        <p>The short version: <mark>Ghostty, Zellij, Helix and Yazi</mark>, glued together with a couple of hundred lines of shell.</p>
+        <h2>The shell</h2>
+        <p>I'm still on zsh, but the plugin manager is gone. Starship handles the prompt, <code>atuin</code> handles history, and that's it.</p>
+        <div class="codeblock">
+          <div class="bar"><span>~/.zshrc</span><span>copy</span></div>
+<pre><span class="c"># history that syncs across machines</span>
+<span class="k">eval</span> <span class="s">"$(atuin init zsh)"</span>
+<span class="k">eval</span> <span class="s">"$(starship init zsh)"</span>
+<span class="k">export</span> EDITOR=hx</pre>
+        </div>
+        <blockquote>The best config is the one you can rebuild from memory on a fresh machine.</blockquote>
+        <h2>By the numbers</h2>
+        <div class="census">
+          <div><b>212</b><span>lines of dotfiles, down from 900</span></div>
+          <div><b>4</b><span>tools I open every day</span></div>
+          <div><b>0</b><span>zsh plugins</span></div>
+        </div>
+        <div class="callout"><b>Note</b>All of this lives in a public dotfiles repo, managed with mise and stow.</div>
+        <h2>Multiplexer</h2>
+        <p>Zellij won, for the reasons I covered in <a href="#">Zellij vs tmux</a>. Floating panes for one-off commands sold me on it.</p>
+
+        <nav class="next" aria-label="More posts">
+          <a href="#"><span class="eyebrow">← Previous · 027</span><b>Managing Talos machine config with patches, mise and hunk</b></a>
+          <a href="#" style="text-align:right"><span class="eyebrow">Related · terminal</span><b>Zellij vs tmux: my terminal multiplexer journey</b></a>
+        </nav>
+      </article>
+
+      <aside class="rail" aria-label="Post details">
+        <section class="spec toc-wrap">
+          <h5>Contents</h5>
+          <ul class="toc">
+            <li><a href="#" class="on">The shell</a></li>
+            <li><a href="#">By the numbers</a></li>
+            <li><a href="#">Multiplexer</a></li>
+            <li><a href="#">Editor</a></li>
+            <li><a href="#">What I dropped</a></li>
+          </ul>
+        </section>
+        <section class="spec">
+          <h5>Filed under</h5>
+          <dl><dt>Pillar</dt><dd>Developer</dd><dt>Tags</dt><dd>terminal · dotfiles</dd><dt>Updated</dt><dd>2026-10-12</dd></dl>
+        </section>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- ============ ABOUT ============ -->
+<main data-page="about">
+  <div class="wrap">
+    <header class="about-head">
+      <p class="eyebrow">About</p>
+      <h1 style="margin-top:16px">Paul Bennett</h1>
+      <p>I run my own infrastructure, and I write down how it works.</p>
+    </header>
+
+    <section class="about-grid">
+      <div>
+        <figure class="portrait"><img src="https://avatars.githubusercontent.com/u/1844080?v=4" alt="Paul Bennett" width="460" height="575"></figure>
+        <p class="portrait-cap mono muted">Dorset, UK · husband, dog dad, biker</p>
+      </div>
+      <div class="about-prose">
+        <p>I'm a Lead Solutions Engineer in AdTech. My job is turning complicated systems into things people can understand and use.</p>
+        <p>I live in the terminal and write mostly Python and SQL. I'm learning Go, and I spend a lot of my spare time building things with AI and breaking (then fixing) a Kubernetes homelab.</p>
+        <p>This site is a set of field notes: the tools I use, the problems I've worked through, and why I think some tools feel better than others.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>What I write about</h2></div>
+      <div class="three">
+        <div>
+          <span class="eyebrow">01 · Infrastructure</span>
+          <h3>The cluster</h3>
+          <p>A Talos cluster on Proxmox, run GitOps-style with Argo CD.</p>
+          <ul><li>Talos · Proxmox</li><li>Argo CD · Vault</li><li>SeaweedFS · Prometheus</li></ul>
+          <a href="#" style="margin-top:auto">Read infrastructure →</a>
+        </div>
+        <div>
+          <span class="eyebrow">02 · Developer</span>
+          <h3>The toolbox</h3>
+          <p>The editor, shell and languages I use every day, and how I work with AI.</p>
+          <ul><li>Ghostty · Zellij · Helix</li><li>Python · SQL · Go</li><li>Claude Code</li></ul>
+          <a href="#" style="margin-top:auto">Read developer →</a>
+        </div>
+        <div>
+          <span class="eyebrow">03 · Product design</span>
+          <h3>The craft</h3>
+          <p class="q">"Why does this tool feel good to use, and can I make mine feel like that?"</p>
+          <a href="#" style="margin-top:auto">Read product →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>By the numbers</h2></div>
+      <div class="stats">
+        <div><b>28</b><span>posts published</span></div>
+        <div><b>3</b><span>nodes in the homelab</span></div>
+        <div><b>3</b><span>years writing here</span></div>
+        <div><b>212</b><span>lines of dotfiles</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Changelog</h2><span class="mono muted">git log --oneline</span></div>
+      <ol class="timeline">
+        <li><span class="mono muted">2026</span><div><h4>v3 — this redesign</h4><p>A calmer, editorial look built around three pillars: infrastructure, developer and product.</p></div></li>
+        <li><span class="mono muted">2025</span><div><h4>The homelab goes Talos</h4><p>Rebuilt the cluster on Talos Linux in Proxmox and moved everything to GitOps.</p></div></li>
+        <li><span class="mono muted">2024</span><div><h4>First post</h4><p>Started writing things down, mostly Go slices and SQL.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>How I use AI</h2></div>
+      <div class="callout" style="max-width:var(--measure);margin:0"><b>Disclosure</b>Some content here is created with AI assistance, for drafting, editing and code examples. I review, test and edit everything. Posts where AI played a meaningful part carry an <span class="ai-chip" style="color:var(--hl-ink);border-color:currentColor">AI-assisted</span> label.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Get in touch</h2></div>
+      <div class="contact">
+        <div><h4>Say hello</h4><p>Questions about a post, or something I got wrong.</p><a href="#">pbennett.uk@outlook.com</a></div>
+        <div><h4>Follow along</h4><p>Code and dotfiles live on GitHub.</p><a href="#">github.com/mrpbennett</a></div>
+        <div><h4>Elsewhere</h4><p>Occasional posts and links.</p><a href="#">X</a> · <a href="#">LinkedIn</a> · <a href="#">RSS</a></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#"><b>mrpbennett</b><span>.dev</span></a>
+        <p class="muted" style="margin-top:10px;max-width:34ch;font-size:14.5px">Field notes on infrastructure, developer tools and product design.</p>
+      </div>
+      <div><h5>Explore</h5><ul><li><a href="#">Index</a></li><li><a href="#">Writing</a></li><li><a href="#">Archive</a></li><li><a href="#">About</a></li></ul></div>
+      <div><h5>Pillars</h5><ul><li><a href="#">Infrastructure</a></li><li><a href="#">Developer</a></li><li><a href="#">Product design</a></li></ul></div>
+      <div><h5>Elsewhere</h5><ul><li><a href="#">GitHub</a></li><li><a href="#">X</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">RSS</a></li></ul></div>
+    </div>
+    <div class="foot-base"><span>© 2026 Paul Bennett</span><span>Some content is AI-assisted · <a href="#" data-go="about">Read more</a></span><span>Built with Docusaurus · Back to top ↑</span></div>
+  </div>
+</footer>
+
+<div class="mock-bar" role="toolbar" aria-label="Mockup controls">
+  <button data-page-btn="home" aria-pressed="true">Home</button>
+  <button data-page-btn="post" aria-pressed="false">Post</button>
+  <button data-page-btn="about" aria-pressed="false">About</button>
+  <button id="theme" aria-pressed="true">Light</button>
+</div>
+
+<script>
+const show = (p) => {
+  document.querySelectorAll('[data-page]').forEach(m => m.classList.toggle('on', m.dataset.page === p));
+  document.querySelectorAll('[data-page-btn]').forEach(b => b.setAttribute('aria-pressed', b.dataset.pageBtn === p));
+  document.querySelectorAll('.nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.go === p));
+  scrollTo(0, 0);
+};
+document.querySelectorAll('[data-page-btn]').forEach(b => b.onclick = () => show(b.dataset.pageBtn));
+document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); show(a.dataset.go); }));
+document.getElementById('theme').onclick = (e) => {
+  const dark = document.documentElement.dataset.theme !== 'dark';
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  e.target.setAttribute('aria-pressed', dark);
+  e.target.textContent = dark ? 'Light' : 'Dark';
+};
+// Live last commit for home-ops. Production: fetched at build time (no flash), refreshed here.
+const ago = (d) => {
+  const s = (Date.now() - new Date(d)) / 1000, r = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  for (const [u, n] of [['year', 31536e3], ['month', 2592e3], ['day', 864e2], ['hour', 3600], ['minute', 60]])
+    if (s >= n) return r.format(-Math.floor(s / n), u);
+  return 'just now';
+};
+fetch('https://api.github.com/repos/mrpbennett/home-ops/commits/main')
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(c => {
+    const el = document.getElementById('commit');
+    el.querySelector('.ago').textContent = ago(c.commit.committer.date);
+  }).catch(() => {}); // keep build-time value on failure / rate limit
+// e.g. mockup-v2.html#post-dark  or  #home-light-b
+const [hp, ht] = location.hash.slice(1).split('-');
+if (hp) show(hp);
+if (ht === 'light') document.getElementById('theme').click();
+</script>
+</body>
+</html>

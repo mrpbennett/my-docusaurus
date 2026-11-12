@@ -1,15 +1,32 @@
-.cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.group {
+  padding-block: var(--space-12);
+  border-top: 1px solid var(--c-border);
 }
 
-/* Bigger chips on the dedicated tags page */
-.cloud a {
-  height: 32px;
-  padding: 0 12px;
-  font-size: 14px;
+.head {
+  margin-bottom: var(--space-6);
+}
+
+.head :global(.eyebrow) {
+  margin: 0 0 var(--space-2);
+  color: var(--c-heading);
+}
+
+.title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--step-2);
+}
+
+.description {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--c-text-muted);
+}
+
+.empty {
+  margin: 0;
+  padding: 20px;
+  border: 1px dashed var(--c-border-strong);
+  font: 400 12.5px var(--font-mono);
+  color: var(--c-text-muted);
 }

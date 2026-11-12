@@ -4,21 +4,61 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import catppuccin from "./src/prism/catppuccin.js";
+import graphite from "./src/prism/graphite.js";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// [family, file stem, CSS weight, styles]. Files live in /static/fonts.
 const fontFaces = [
-  ["Inter", "inter-latin-wght", "100 900"],
-  ["JetBrains Mono", "jetbrains-mono-latin-wght", "100 800"],
+  ["IBM Plex Sans", "ibm-plex-sans-latin-wght", "100 700", ["normal", "italic"]],
+  ["IBM Plex Serif", "ibm-plex-serif-latin-300", "300", ["normal", "italic"]],
+  ["IBM Plex Serif", "ibm-plex-serif-latin-400", "400", ["normal", "italic"]],
+  ["IBM Plex Mono", "ibm-plex-mono-latin-400", "400", ["normal"]],
+  ["IBM Plex Mono", "ibm-plex-mono-latin-500", "500", ["normal"]],
 ]
-  .flatMap(([family, file, weight]) =>
-    ["normal", "italic"].map(
+  .flatMap(([family, file, weight, styles]) =>
+    styles.map(
       (style) =>
         `@font-face{font-family:"${family}";font-style:${style};font-weight:${weight};font-display:swap;src:url(/fonts/${file}-${style}.woff2) format("woff2")}`,
     ),
   )
   .join("");
+
+// Topic groups shown on the homepage, tags page and post rail. Each tag
+// belongs to at most one pillar; posts take the pillar of their first tag
+// that has one (see src/plugins/blog-plugin.js).
+const PILLARS = [
+  {
+    id: "infrastructure",
+    label: "Infrastructure",
+    title: "The cluster",
+    description: "Kubernetes, Talos, GitOps, storage and the observability around it.",
+    tags: ["homelab", "kubernetes", "devops"],
+  },
+  {
+    id: "developer",
+    label: "Developer",
+    title: "The toolbox",
+    description: "Terminal setups, editors, CLI tools, Python, SQL, Go and AI workflow.",
+    tags: ["terminal", "ai", "go", "sql", "databases", "trino", "editor", "neovim", "linux", "omarchy"],
+  },
+  {
+    id: "product",
+    label: "Product design",
+    title: "The craft",
+    description: "Why some tools feel good to use, interface decisions, and making tech easy to follow.",
+    tags: [],
+  },
+];
+
+// The strip under the navbar. Edit by hand when the cluster changes; the
+// home-ops last-commit time is fetched (src/plugins/status-plugin.js).
+const STATUS = {
+  homelab: { nodes: 3, kubernetes: "v1.37", talos: "v1.14.5" },
+  repo: "mrpbennett/home-ops",
+  now: "Cloud Associate Engineer",
+  location: "Dorset, UK",
+};
 
 const SITE_URL = "https://mrpbennett.dev";
 const DESCRIPTION =
@@ -48,7 +88,7 @@ const PERSON = {
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "mrpbennett.dev",
-  customFields: { person: PERSON },
+  customFields: { person: PERSON, pillars: PILLARS, status: STATUS },
   headTags: [
     {
       tagName: "script",
@@ -64,7 +104,7 @@ const config = {
       innerHTML: fontFaces,
     },
     // Preload the two fonts used above the fold so text doesn't reflow on load
-    ...["inter-latin-wght-normal", "jetbrains-mono-latin-wght-normal"].map(
+    ...["ibm-plex-sans-latin-wght-normal", "ibm-plex-serif-latin-300-normal"].map(
       (font) => ({
         tagName: "link",
         attributes: {
@@ -164,33 +204,34 @@ const config = {
         { name: "twitter:creator", content: "@mrpbennett" },
         { property: "og:site_name", content: "mrpbennett.dev" },
         { property: "og:locale", content: "en_GB" },
-        { name: "theme-color", content: "#1e1e2e" },
+        { name: "theme-color", content: "#0f1113" },
       ],
       colorMode: {
         defaultMode: "dark",
         respectPrefersColorScheme: false,
       },
       navbar: {
-        title: "mrpbennett.dev",
+        // Wordmark only; ".dev" is added in CSS (.navbar__title::after)
+        title: "mrpbennett",
         hideOnScroll: false,
-        logo: {
-          alt: "mrpbennett.dev home",
-          src: "img/logo.svg",
-          width: 26,
-          height: 26,
-        },
         items: [
-          { to: "/", label: "Home", position: "left", activeBaseRegex: "^/$" },
+          { to: "/", label: "Index", position: "left", activeBaseRegex: "^/$" },
           {
             to: "/blog",
-            label: "Posts",
+            label: "Writing",
             position: "left",
             // Highlight for posts and archive, but not the tags pages
             activeBaseRegex: "^/blog(?!/tags)",
           },
-          { to: "/blog/tags", label: "Tags", position: "left" },
+          { to: "/blog/tags", label: "Topics", position: "left" },
           { to: "/about", label: "About", position: "left" },
           { type: "search", position: "right" },
+          {
+            href: "pathname:///blog/rss.xml",
+            label: "RSS",
+            position: "right",
+            className: "navbar-rss",
+          },
           {
             href: "https://github.com/mrpbennett",
             position: "right",
@@ -203,12 +244,22 @@ const config = {
         style: "light",
         links: [
           {
-            title: "Site",
+            title: "Explore",
             items: [
-              { label: "Posts", to: "/blog" },
-              { label: "Tags", to: "/blog/tags" },
+              { label: "Index", to: "/" },
+              { label: "Writing", to: "/blog" },
+              { label: "Topics", to: "/blog/tags" },
               { label: "Archive", to: "/blog/archive" },
               { label: "About", to: "/about" },
+            ],
+          },
+          {
+            title: "Topics",
+            items: [
+              { label: "Homelab", to: "/blog/tags/homelab" },
+              { label: "Kubernetes", to: "/blog/tags/kubernetes" },
+              { label: "Terminal", to: "/blog/tags/terminal" },
+              { label: "AI", to: "/blog/tags/ai" },
             ],
           },
           {
@@ -236,8 +287,8 @@ const config = {
         copyright: `<span>© ${new Date().getFullYear()} Paul Bennett</span><span class="footer-ai-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>Some content is created with AI assistance. <a href="/about#ai">Read more<span class="sr-only"> about how I use AI</span></a></span><a class="footer-top-link" href="#__docusaurus">Back to top ↑</a>`,
       },
       prism: {
-        theme: catppuccin,
-        darkTheme: catppuccin,
+        theme: graphite,
+        darkTheme: graphite,
         additionalLanguages: [
           "bash",
           "sql",
@@ -270,6 +321,7 @@ const config = {
   ],
 
   plugins: [
+    "./src/plugins/status-plugin.js",
     [
       "./src/plugins/blog-plugin.js",
       {
