@@ -12,12 +12,12 @@ const CONTACT_EMAIL = "pbennett.uk@outlook.com";
 // What each pillar covers, in tools. Keep to things there are posts about.
 const PILLAR_DETAIL = {
   infrastructure: {
-    text: "A Talos cluster on Proxmox, run GitOps-style with Argo CD.",
-    tools: ["Talos · Proxmox", "Argo CD · Vault", "SeaweedFS · Prometheus"],
+    text: "A Talos cluster on Bare Metal, using GitOps with Argo CD.",
+    tools: ["Talos · ArgoCD", "Keycloak · Vault", "AlertManager· Prometheus"],
   },
   developer: {
-    text: "The editor, shell and languages I use every day, and how I work with AI.",
-    tools: ["Ghostty · Zellij · Helix", "Python · SQL · Go", "Claude Code"],
+    text: "The editor, terminal and languages I use every day, and how I work with AI.",
+    tools: ["Ghostty · LazyVim", "Python · SQL · Go", "Claude Code · Herdr"],
   },
   product: {
     quote: "Why does this tool feel good to use, and can I make mine feel like that?",

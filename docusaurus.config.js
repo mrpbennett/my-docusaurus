@@ -47,7 +47,7 @@ const PILLARS = [
     label: "Product design",
     title: "The craft",
     description: "Why some tools feel good to use, interface decisions, and making tech easy to follow.",
-    tags: [],
+    tags: ["product"],
   },
 ];
 
