@@ -7,7 +7,6 @@ import Heading from "@theme/Heading";
 import BlogLayout from "@theme/BlogLayout";
 import PageHeader from "@site/src/components/PageHeader";
 import PostRow from "@site/src/components/PostRow";
-import styles from "./styles.module.css";
 
 // blogPosts arrive newest first; Map keeps the years in that order
 function postsByYear(blogPosts) {
@@ -30,14 +29,14 @@ export default function BlogArchive({ archive }) {
           <p>Everything, by year.</p>
         </PageHeader>
         {years.map(([year, posts]) => (
-          <section key={year} className={styles.year} aria-labelledby={`y${year}`}>
-            <div className={styles.head}>
-              <Heading as="h2" id={`y${year}`} className={styles.title}>
+          <section key={year} className="py-8" aria-labelledby={`y${year}`}>
+            <div className="mb-4 flex items-baseline justify-between">
+              <Heading as="h2" id={`y${year}`} className="m-0 text-2xl">
                 {year}
               </Heading>
-              <span className="mono">{posts.length} posts</span>
+              <span className="mono text-muted">{posts.length} posts</span>
             </div>
-            <ol className={styles.rows}>
+            <ol className="m-0 list-none border-t border-rule p-0">
               {posts.map((post) => (
                 <PostRow key={post.permalink} post={post} />
               ))}

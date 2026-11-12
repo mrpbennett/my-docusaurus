@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "@docusaurus/Link";
-import styles from "./styles.module.css";
 
 // Posts opt in with front matter:
 //   ai_assisted: true
@@ -32,7 +31,10 @@ export function SparkIcon({ size = 12 }) {
 // Small pill under the post title; jumps to the disclosure at the end.
 export function AiLabel() {
   return (
-    <a className={styles.label} href={`#${DISCLOSURE_ID}`}>
+    <a
+      className="inline-flex min-h-6 items-center gap-1.5 border border-line px-2 font-mono text-[11px] leading-none font-medium tracking-wide text-muted uppercase no-underline hover:border-rule hover:text-heading hover:no-underline [&_svg]:text-accent"
+      href={`#${DISCLOSURE_ID}`}
+    >
       <SparkIcon />
       AI-assisted
     </a>
@@ -44,10 +46,10 @@ export function AiDisclosure({ note }) {
   return (
     <aside
       id={DISCLOSURE_ID}
-      className={styles.disclosure}
+      className="mt-12 flex gap-3 border-l-2 border-accent bg-tint px-6 py-4 text-[15px] leading-[1.6] text-tint-ink [&_a]:text-inherit [&_p]:m-0"
       aria-label="AI assistance disclosure"
     >
-      <span className={styles.icon}>
+      <span className="mt-[3px] flex-none">
         <SparkIcon size={16} />
       </span>
       <p>

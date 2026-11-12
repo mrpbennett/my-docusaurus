@@ -13,6 +13,144 @@
  * reserved for the status dot. Every text pair is >= 4.5:1 in both modes.
  */
 
+/* ── Tailwind ─────────────────────────────────────────────────────────────────
+   Utilities only: no preflight (it fights Infima) and no default theme (the
+   theme below *is* the design system). Imported unlayered so utilities win
+   over Infima's element selectors by specificity. */
+@import "tailwindcss/utilities.css" source(none);
+@source "../";
+@source "../../docusaurus.config.js";
+/* `container` is Infima's page wrapper; don't let Tailwind's own utility of
+   the same name (breakpoint max-widths) override it */
+@source not inline("container");
+
+/* Colours point at the semantic tokens below, so every utility follows the
+   colour mode on its own: `text-heading` is ink in light and near-white in
+   dark, with no `dark:` prefix needed. */
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-raised: var(--c-bg-raised);
+  --color-sunken: var(--c-bg-sunken);
+  --color-line: var(--c-border);
+  --color-line-strong: var(--c-border-strong);
+  --color-rule: var(--c-rule);
+  --color-text: var(--c-text);
+  --color-soft: var(--c-text-soft);
+  --color-muted: var(--c-text-muted);
+  --color-heading: var(--c-heading);
+  --color-accent: var(--c-accent);
+  --color-tint: var(--c-accent-soft);
+  --color-tint-ink: var(--c-accent-ink);
+  --color-ok: var(--c-ok);
+  --color-chip: var(--c-chip-bg);
+  --color-code: var(--c-code-bg);
+  --color-transparent: transparent;
+}
+
+@theme {
+  --font-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --spacing: 0.25rem;
+
+  /* Same breakpoints as Infima: lg is where the navbar collapses */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 997px;
+
+  --text-2xs: 11.5px;
+  --text-xs: 12.5px;
+  --text-sm: 14px;
+  --text-base: 1rem;
+  --text-md: 1.0625rem;
+  --text-prose: 1.09375rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.375rem;
+  --text-lead: 1.3rem;
+  --text-2xl: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  --text-3xl: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
+  --text-4xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);
+
+  --tracking-tightest: -0.04em;
+  --tracking-tighter: -0.025em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.06em;
+  --tracking-wider: 0.08em;
+
+  --container-measure: 680px;
+  --container-header: 860px;
+  --container-content: 1120px;
+}
+
+/* Explicit dark: variant tied to Docusaurus' colour-mode toggle (rarely
+   needed, see the colour note above) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Mono label above headings and in metadata. Colour is a variable so a
+   parent can retint it, e.g. [--eyebrow-color:var(--c-accent-ink)]. */
+@utility eyebrow {
+  font: 500 11.5px/1.4 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eyebrow-color, var(--c-text-muted));
+}
+
+@utility mono {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+/* Faint engineering-paper grid (Plate covers) */
+@utility bg-grid {
+  background-image: linear-gradient(var(--c-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Buttons: solid ink, and ghost. Colours are variables so a context can
+   restyle them without competing utilities, e.g. on the ink CTA panel:
+   [--btn-bg:var(--c-bg)] [--btn-fg:var(--c-heading)]. */
+@utility btn {
+  --_bg: var(--btn-bg, var(--c-heading));
+  --_fg: var(--btn-fg, var(--c-bg));
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--btn-border, var(--_bg));
+  background: var(--_fill, var(--_bg));
+  color: var(--_text, var(--_fg));
+  font: 500 14px var(--font-sans);
+  text-decoration: none;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+    opacity var(--dur) var(--ease);
+
+  &:hover {
+    background: var(--_fill-hover, var(--_bg));
+    color: var(--_text-hover, var(--_fg));
+    text-decoration: none;
+    opacity: var(--_hover-opacity, 0.88);
+  }
+}
+
+@utility btn-ghost {
+  --_fill: transparent;
+  --_text: var(--_bg);
+  --_fill-hover: var(--_bg);
+  --_text-hover: var(--_fg);
+  --_hover-opacity: 1;
+}
+
+
 /* Fonts: @font-face lives in docusaurus.config.js headTags (self-hosted from
    /static/fonts, preloaded, kept out of webpack so URLs match the preload). */
 
@@ -66,13 +204,8 @@
   --c-code-bg: var(--g-code);
   --c-prompt: var(--g-accent);
 
-  --font-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
-    monospace;
-
-  /* Fluid type scale */
+  /* --font-serif / --font-sans / --font-mono come from @theme above.
+     Fluid type scale (also exposed as text-2xl…text-4xl) */
   --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.85rem);
   --step-0: 1rem;
   --step-1: clamp(1.2rem, 1.1rem + 0.4vw, 1.375rem);
@@ -306,31 +439,7 @@ main li > a:not([class]) {
   font-weight: 600;
 }
 
-/* Shared helpers for our own components */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Small caps-style mono label used above headings and in metadata */
-.eyebrow {
-  font: 500 11.5px/1.4 var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--c-text-muted);
-}
-
-.mono {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-}
+/* Shared helpers (sr-only, eyebrow, mono, btn) are Tailwind utilities above */
 
 .ps1 {
   color: var(--c-prompt);
@@ -368,37 +477,6 @@ main li > a:not([class]) {
   border: 1px dashed currentColor;
   padding: 0 4px;
   margin-left: 4px;
-}
-
-/* Buttons: solid ink and ghost */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 0 14px;
-  border: 1px solid var(--c-heading);
-  background: var(--c-heading);
-  color: var(--c-bg);
-  font: 500 14px var(--font-sans);
-  text-decoration: none;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
-}
-
-.btn:hover {
-  color: var(--c-bg);
-  text-decoration: none;
-  opacity: 0.88;
-}
-
-.btn--ghost {
-  background: transparent;
-  color: var(--c-heading);
-}
-
-.btn--ghost:hover {
-  background: var(--c-heading);
-  color: var(--c-bg);
-  opacity: 1;
 }
 
 /* ── Navbar ───────────────────────────────────────────────────────────────── */

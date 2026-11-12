@@ -11,7 +11,6 @@ import SearchMetadata from "@theme/SearchMetadata";
 import PageHeader from "@site/src/components/PageHeader";
 import TopicGrid from "@site/src/components/TopicGrid";
 import { useBlogData } from "@site/src/lib/blog";
-import styles from "./styles.module.css";
 
 export default function BlogTagsListPage({ tags, sidebar }) {
   const { pillars, tags: summaries } = useBlogData();
@@ -41,20 +40,22 @@ export default function BlogTagsListPage({ tags, sidebar }) {
           <p>Infrastructure, developer tools and product design, most-written-about first.</p>
         </PageHeader>
         {groups.map((group, index) => (
-          <section key={group.id} className={styles.group} aria-labelledby={group.id}>
-            <div className={styles.head}>
-              <p className="eyebrow">
+          <section key={group.id} className="border-t border-line py-12" aria-labelledby={group.id}>
+            <div className="mb-6">
+              <p className="eyebrow mt-0 mb-2 [--eyebrow-color:var(--c-heading)]">
                 {String(index + 1).padStart(2, "0")} · {group.label}
               </p>
-              <Heading as="h2" id={group.id} className={styles.title}>
+              <Heading as="h2" id={group.id} className="mt-0 mb-2 text-2xl">
                 {group.title ?? group.label}
               </Heading>
-              <p className={styles.description}>{group.description}</p>
+              <p className="m-0 max-w-[60ch] text-muted">{group.description}</p>
             </div>
             {group.tags.length > 0 ? (
               <TopicGrid tags={group.tags} eyebrowFor={() => group.label} />
             ) : (
-              <p className={styles.empty}>First posts coming soon.</p>
+              <p className="m-0 border border-dashed border-line-strong p-5 font-mono text-xs text-muted">
+                First posts coming soon.
+              </p>
             )}
           </section>
         ))}

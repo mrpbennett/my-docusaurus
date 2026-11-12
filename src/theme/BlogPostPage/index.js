@@ -29,7 +29,10 @@ import {
   usePillar,
   usePostSummary,
 } from "@site/src/lib/blog";
-import styles from "./styles.module.css";
+
+const RAIL_SECTION = "border-t border-rule";
+const RAIL_TITLE =
+  "m-0 py-3 font-mono text-2xs font-medium tracking-wider text-heading uppercase";
 
 // Posts rarely list `authors`; fall back to the site owner
 function useByline(authors) {
@@ -54,27 +57,31 @@ function PostHeader({ summary, pillar }) {
   const tag = metadata.tags[0];
 
   return (
-    <header className={styles.header}>
-      <p className={styles.crumbs}>
+    <header className="max-w-header pb-8">
+      <p className="m-0 flex flex-wrap gap-2">
         {summary && <span className="eyebrow">No. {formatNumber(summary.number)}</span>}
         {(pillar || tag) && (
           <>
             {summary && <span className="eyebrow" aria-hidden="true">·</span>}
-            <span className={clsx("eyebrow", styles.crumbStrong)}>
+            <span className="eyebrow [--eyebrow-color:var(--c-heading)]">
               {[pillar?.label, tag?.label].filter(Boolean).join(" / ")}
             </span>
           </>
         )}
       </p>
-      <h1 className={styles.title}>{title}</h1>
-      {frontMatter.description && <p className={styles.dek}>{frontMatter.description}</p>}
-      <div className={styles.byline}>
-        <img className={styles.avatar} src={byline.image} alt="" width="36" height="36" />
-        <span className={styles.author}>
+      <h1 className="my-4 text-3xl leading-[1.04]">{title}</h1>
+      {frontMatter.description && (
+        <p className="m-0 max-w-[46ch] font-serif text-lead leading-[1.45] font-light text-soft">
+          {frontMatter.description}
+        </p>
+      )}
+      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-line pt-4 text-sm">
+        <img className="size-9 bg-tint object-cover" src={byline.image} alt="" width="36" height="36" />
+        <span className="flex flex-col pr-4 leading-[1.35] sm:border-r sm:border-line max-sm:pr-0 [&_b]:font-medium [&_b]:text-heading [&>span]:text-muted max-sm:[&>span]:hidden">
           <b>{byline.name}</b>
           <span>{byline.title}</span>
         </span>
-        <span className={styles.meta}>
+        <span className="font-mono text-xs text-muted">
           <time dateTime={isoDate(date)}>{formatDate(date)}</time> ·{" "}
           {readingMinutes(readingTime)} min read
         </span>
@@ -90,11 +97,11 @@ function FiledUnder({ pillar }) {
   const updated = updatedDate(frontMatter);
 
   return (
-    <section className={styles.railSection} aria-labelledby="filed-under">
-      <h2 id="filed-under" className={styles.railTitle}>
+    <section className={RAIL_SECTION} aria-labelledby="filed-under">
+      <h2 id="filed-under" className={RAIL_TITLE}>
         Filed under
       </h2>
-      <dl className={styles.spec}>
+      <dl className="m-0 grid grid-cols-[auto_minmax(0,1fr)] [&_a]:text-heading [&>dd]:m-0 [&>dd]:border-t [&>dd]:border-line [&>dd]:py-2 [&>dd]:text-right [&>dd]:font-mono [&>dd]:text-xs [&>dd]:leading-[1.6] [&>dd]:text-heading [&>dt]:m-0 [&>dt]:border-t [&>dt]:border-line [&>dt]:py-2 [&>dt]:pr-4 [&>dt]:text-muted">
         {pillar && (
           <>
             <dt>Pillar</dt>
@@ -153,7 +160,7 @@ function BlogPostPageContent({ sidebar, children }) {
   return (
     <BlogLayout sidebar={sidebar}>
       <ContentVisibility metadata={metadata} />
-      <article className={styles.post}>
+      <article>
         <PostHeader summary={summary} pillar={pillar} />
         <Plate
           size="hero"
@@ -161,29 +168,32 @@ function BlogPostPageContent({ sidebar, children }) {
           glyph={tag ? `~/${tag}` : "~/notes"}
           corner={[pillar?.label ?? "Field note", summary && `No. ${formatNumber(summary.number)}`]}
         />
-        <div className={styles.body}>
-          <div className={styles.content}>
+        <div className="grid grid-cols-1 gap-12 pt-12 lg:grid-cols-[minmax(0,1fr)_var(--rail-width)] lg:gap-18">
+          <div className="min-w-0">
             {showToc && (
               <TOCCollapsible
                 toc={toc}
                 minHeadingLevel={tocMinHeadingLevel}
                 maxHeadingLevel={tocMaxHeadingLevel}
-                className={styles.mobileToc}
+                className="mb-8 lg:hidden"
               />
             )}
             <BlogPostItemContent>{children}</BlogPostItemContent>
           </div>
-          <aside className={styles.rail} aria-label="About this post">
+          <aside
+            className="grid content-start gap-8 text-sm lg:sticky lg:top-[calc(var(--ifm-navbar-height)+1.5rem)] lg:max-h-[calc(100vh-var(--ifm-navbar-height)-3rem)] lg:self-start lg:overflow-y-auto lg:[scrollbar-width:thin]"
+            aria-label="About this post"
+          >
             {showToc && (
-              <section className={clsx(styles.railSection, styles.railToc)} aria-labelledby="toc-title">
-                <h2 id="toc-title" className={styles.railTitle}>
+              <section className={clsx(RAIL_SECTION, "max-lg:hidden")} aria-labelledby="toc-title">
+                <h2 id="toc-title" className={RAIL_TITLE}>
                   Contents
                 </h2>
                 <TOC
                   toc={toc}
                   minHeadingLevel={tocMinHeadingLevel}
                   maxHeadingLevel={tocMaxHeadingLevel}
-                  className={styles.toc}
+                  className="static max-h-none overflow-visible"
                 />
               </section>
             )}
@@ -192,7 +202,7 @@ function BlogPostPageContent({ sidebar, children }) {
         </div>
       </article>
       {(nextItem || prevItem) && (
-        <div className={styles.paginator}>
+        <div className="max-w-measure">
           <BlogPostPaginator nextItem={nextItem} prevItem={prevItem} />
         </div>
       )}

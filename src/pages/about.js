@@ -1,12 +1,11 @@
 import React from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
-import Heading from "@theme/Heading";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import PageHeader from "@site/src/components/PageHeader";
+import Section from "@site/src/components/Section";
 import { SparkIcon } from "@site/src/components/AiDisclosure";
 import { isoDate, useBlogData } from "@site/src/lib/blog";
-import styles from "./about.module.css";
 
 const CONTACT_EMAIL = "pbennett.uk@outlook.com";
 
@@ -77,22 +76,6 @@ const CONTACT = [
   },
 ];
 
-function Section({ id, title, aside, children }) {
-  return (
-    <section className={styles.section} aria-labelledby={id}>
-      <div className={styles.sectionHead}>
-        {/* Heading registers the id with the broken-anchor checker and offsets
-            in-page jumps for the sticky navbar */}
-        <Heading as="h2" id={id} className={styles.sectionTitle}>
-          {title}
-        </Heading>
-        {aside}
-      </div>
-      {children}
-    </section>
-  );
-}
-
 export default function About() {
   const { person, status } = useDocusaurusContext().siteConfig.customFields;
   const { pillars, posts, postCount, tags } = useBlogData();
@@ -110,18 +93,24 @@ export default function About() {
       title="About"
       description="About Paul Bennett, a Lead Solutions Engineer in AdTech based in Dorset, UK, who writes about running a Kubernetes homelab, developer tools and product design."
     >
-      <main className={`container ${styles.page}`}>
+      <main className="container pt-14">
         <PageHeader eyebrow="About" title="Paul Bennett">
           <p>I run my own infrastructure, and I write down how it works.</p>
         </PageHeader>
 
-        <section className={styles.intro} aria-label="Who I am">
-          <figure className={styles.portrait}>
-            <img src={person.image} alt="Paul Bennett" width="460" height="460" />
-            <figcaption className="mono">{status.location} · husband, dog dad, biker</figcaption>
+        <section className="grid gap-8 border-t border-line py-12 lg:grid-cols-[1fr_1.6fr] lg:gap-16" aria-label="Who I am">
+          <figure className="m-0 max-w-[420px]">
+            <img
+              className="block aspect-[4/5] h-auto w-full bg-tint object-cover"
+              src={person.image}
+              alt="Paul Bennett"
+              width="460"
+              height="460"
+            />
+            <figcaption className="mono mt-2.5 text-muted">{status.location} · husband, dog dad, biker</figcaption>
           </figure>
-          <div className={styles.prose}>
-            <p className={styles.lede}>
+          <div className="max-w-measure text-prose leading-[1.72]">
+            <p className="font-serif text-[1.5rem] leading-[1.5] font-light text-heading">
               I'm a Lead Solutions Engineer in AdTech. My job is turning complicated systems into
               things people can understand and use.
             </p>
@@ -138,25 +127,32 @@ export default function About() {
         </section>
 
         <Section id="topics" title="What I write about">
-          <ul className={styles.three}>
+          <ul className="m-0 grid list-none border border-line bg-raised p-0 md:grid-cols-3">
             {pillars.map((pillar, index) => {
               const detail = PILLAR_DETAIL[pillar.id] ?? {};
               return (
-                <li key={pillar.id}>
+                <li
+                  key={pillar.id}
+                  className="m-0 flex flex-col gap-3 border-b border-line p-6 last:border-b-0 md:border-b-0 md:[&+&]:border-l md:[&+&]:border-line"
+                >
                   <span className="eyebrow">
                     {String(index + 1).padStart(2, "0")} · {pillar.label}
                   </span>
-                  <h3 className={styles.threeTitle}>{pillar.title}</h3>
-                  {detail.text && <p className={styles.threeText}>{detail.text}</p>}
-                  {detail.quote && <blockquote className={styles.quote}>“{detail.quote}”</blockquote>}
+                  <h3 className="m-0 text-[1.5rem]">{pillar.title}</h3>
+                  {detail.text && <p className="m-0 text-[15px] text-muted">{detail.text}</p>}
+                  {detail.quote && (
+                    <blockquote className="m-0 border-l-2 border-rule pl-3.5 font-serif text-[1.125rem] leading-[1.45] font-light text-heading italic">
+                      “{detail.quote}”
+                    </blockquote>
+                  )}
                   {detail.tools && (
-                    <ul className={styles.tools}>
+                    <ul className="m-0 list-none p-0 font-mono text-xs leading-[1.9] text-soft [&>li]:before:text-muted [&>li]:before:content-['—_']">
                       {detail.tools.map((tool) => (
                         <li key={tool}>{tool}</li>
                       ))}
                     </ul>
                   )}
-                  <Link className={styles.threeLink} to={`/blog/tags#${pillar.id}`}>
+                  <Link className="mt-auto pt-2 underline" to={`/blog/tags#${pillar.id}`}>
                     {pillar.count > 0 ? `Read ${pillar.label.toLowerCase()} →` : "First posts soon →"}
                   </Link>
                 </li>
@@ -166,24 +162,29 @@ export default function About() {
         </Section>
 
         <Section id="numbers" title="By the numbers">
-          <dl className={styles.stats}>
+          <dl className="m-0 grid grid-cols-2 border-t border-rule md:grid-cols-4">
             {stats.map(({ value, label }) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
+              <div key={label} className="flex flex-col-reverse justify-end pt-5 pr-5">
+                <dt className="text-sm font-normal text-muted">{label}</dt>
+                <dd className="m-0 font-serif text-[3.5rem] leading-none font-light tracking-[-0.03em] text-heading">
+                  {value}
+                </dd>
               </div>
             ))}
           </dl>
         </Section>
 
         <Section id="changelog" title="Changelog" aside={<span className="mono">git log --oneline</span>}>
-          <ol className={styles.timeline}>
+          <ol className="m-0 list-none p-0">
             {CHANGELOG.map((entry) => (
-              <li key={entry.title}>
-                <span className="mono">{entry.year}</span>
+              <li
+                key={entry.title}
+                className="m-0 grid gap-x-8 gap-y-1 border-t border-line py-5 last:border-b md:grid-cols-[120px_1fr]"
+              >
+                <span className="mono leading-[2] text-muted">{entry.year}</span>
                 <div>
-                  <h3 className={styles.timelineTitle}>{entry.title}</h3>
-                  <p>
+                  <h3 className="mt-0 mb-1 text-lg">{entry.title}</h3>
+                  <p className="m-0 max-w-[60ch] text-[15px] text-muted">
                     {entry.text}
                     {entry.link && (
                       <>
@@ -199,8 +200,8 @@ export default function About() {
         </Section>
 
         <Section id="ai" title="How I use AI">
-          <div className={styles.aiCard}>
-            <span className={styles.aiIcon}>
+          <div className="flex max-w-measure gap-4 border-l-2 border-accent bg-tint p-6 text-tint-ink [&_p:last-child]:mb-0">
+            <span className="mt-1 flex-none">
               <SparkIcon size={16} />
             </span>
             <div>
@@ -219,12 +220,12 @@ export default function About() {
         </Section>
 
         <Section id="contact" title="Get in touch">
-          <ul className={styles.contact}>
+          <ul className="m-0 grid list-none gap-6 p-0 md:grid-cols-3">
             {CONTACT.map(({ title, text, links }) => (
-              <li key={title}>
-                <h3 className={styles.contactTitle}>{title}</h3>
-                <p>{text}</p>
-                <p className={styles.contactLinks}>
+              <li key={title} className="m-0 border-t border-rule pt-4">
+                <h3 className="mt-0 mb-1.5 text-xl">{title}</h3>
+                <p className="mt-0 mb-2 text-[15px] text-muted">{text}</p>
+                <p className="mt-0 mb-2 text-[15px] [&_a]:text-heading [&_a]:wrap-anywhere">
                   {links.map(({ label, href }, index) => (
                     <React.Fragment key={href}>
                       {index > 0 && <span aria-hidden="true"> · </span>}

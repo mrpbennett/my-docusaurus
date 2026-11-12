@@ -39,6 +39,16 @@ muted `#6b6960`, sage `#dbe7d0`, IBM Plex Serif/Sans, 0 radius).
   trino, editor, neovim, linux, omarchy · Product design = none yet (shown honestly as "first posts soon").
 - No new frontmatter. Covers are generated plates (post number / `~/tag`), or `image:` if a post sets one.
 
+## Tailwind conversion (2026-11-12, branch `redesign-field-notes`)
+- [x] Tailwind v4 via `src/plugins/tailwind-plugin.js` (PostCSS). Utilities only: no preflight, no default theme.
+- [x] Theme = design tokens in `src/css/custom.css` (`@theme inline` colours → `--c-*`, so no `dark:` needed).
+      `dark:` variant tied to `[data-theme=dark]`. Custom utilities: `eyebrow`, `mono`, `bg-grid`, `btn`, `btn-ghost`.
+- [x] All 13 `*.module.css` converted to classes in JSX; new shared `Section` component.
+- [x] Kept as plain CSS: Infima/Docusaurus-rendered parts (navbar, prose, code, admonitions, TOC, pagination, footer).
+- [x] Verified: build clean, URLs identical, pixel diff vs pre-Tailwind ≈ only the removed "now" status item.
+- Gotchas: Docusaurus 3.9 puts Infima in `@layer docusaurus.*`, so unlayered utilities win. Tailwind's own
+  `container` utility clashed with Infima's `.container` → `@source not inline("container")`.
+
 ## Review (2026-11-12)
 Implemented, uncommitted (awaiting Paul's approval). `npm run build` clean (no broken links), the URL set is
 identical to the previous build (52 pages), no browser console errors on the main pages, and screenshots checked

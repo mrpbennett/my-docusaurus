@@ -56,7 +56,6 @@ const PILLARS = [
 const STATUS = {
   homelab: { nodes: 3, kubernetes: "v1.37", talos: "v1.14.5" },
   repo: "mrpbennett/home-ops",
-  now: "Cloud Associate Engineer",
   location: "Dorset, UK",
 };
 
@@ -321,6 +320,7 @@ const config = {
   ],
 
   plugins: [
+    "./src/plugins/tailwind-plugin.js",
     "./src/plugins/status-plugin.js",
     [
       "./src/plugins/blog-plugin.js",

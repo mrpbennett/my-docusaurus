@@ -4,9 +4,7 @@
 // their own header / body / rail grid (see ../BlogPostPage), so `toc` is
 // ignored here.
 import React from "react";
-import clsx from "clsx";
 import Layout from "@theme/Layout";
-import styles from "./styles.module.css";
 
 export default function BlogLayout(props) {
   // eslint-disable-next-line no-unused-vars
@@ -14,7 +12,7 @@ export default function BlogLayout(props) {
 
   return (
     <Layout {...layoutProps}>
-      <main className={clsx("container", styles.wrap)}>{children}</main>
+      <main className="container pt-14 pb-8">{children}</main>
     </Layout>
   );
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { usePluginData } from "@docusaurus/useGlobalData";
 import { formatDate } from "@site/src/lib/blog";
-import styles from "./styles.module.css";
 
 const UNITS = [
   ["year", 31536e3],
@@ -40,7 +39,7 @@ function useLastCommit(repo, buildValue) {
         const date = commit?.commit?.committer?.date;
         if (date) setState({ date, relative: true });
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => controller.abort();
   }, [repo, buildValue]);
 
@@ -49,36 +48,39 @@ function useLastCommit(repo, buildValue) {
 
 export default function StatusStrip() {
   const { siteConfig } = useDocusaurusContext();
-  const { homelab, repo, now, location } = siteConfig.customFields.status;
+  const { homelab, repo, location } = siteConfig.customFields.status;
   const { lastCommit } = usePluginData("status-plugin");
   const commit = useLastCommit(repo, lastCommit);
 
   return (
-    <div className={styles.strip}>
-      <ul className={styles.inner} aria-label="Site status">
+    <div className="border-b border-line bg-sunken">
+      <ul
+        className="mx-auto my-0 flex min-h-[34px] max-w-content list-none items-center gap-6 overflow-x-auto px-[var(--gutter)] py-0 font-mono text-[12px] whitespace-nowrap text-muted [scrollbar-width:none] [&_b]:font-medium [&_b]:text-soft [&_li]:m-0"
+        aria-label="Site status"
+      >
         <li>
-          <span className={styles.dot} aria-hidden="true" />
+          <span
+            className="mr-2 inline-block size-[7px] rounded-full bg-ok align-[1px] shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-ok)_18%,transparent)]"
+            aria-hidden="true"
+          />
           <b>homelab</b> {homelab.nodes} nodes · k8s {homelab.kubernetes} · Talos{" "}
           {homelab.talos}
         </li>
         {commit.date && (
           <li>
             <a
-              className={styles.commit}
+              className="group text-inherit no-underline hover:text-heading hover:no-underline"
               href={`https://github.com/${repo}/commits`}
               rel="noopener"
             >
               <b>home-ops</b> last commit{" "}
-              <time className={styles.ago} dateTime={commit.date}>
+              <time className="text-accent group-hover:underline" dateTime={commit.date}>
                 {commit.relative ? timeAgo(commit.date) : formatDate(commit.date)}
               </time>
             </a>
           </li>
         )}
-        <li>
-          now <b>{now}</b>
-        </li>
-        <li className={styles.optional}>
+        <li className="max-sm:hidden">
           writing from <b>{location}</b>
         </li>
       </ul>
