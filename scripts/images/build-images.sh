@@ -6,7 +6,9 @@ set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
 out="$here/../../static/img"
-chrome="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
+mac_chrome="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+if [[ -x "$mac_chrome" ]]; then default_chrome="$mac_chrome"; else default_chrome="$(command -v chromium || command -v google-chrome-stable || true)"; fi
+chrome="${CHROME:-$default_chrome}"
 
 render() { # <source.html> <size WxH> <output.png>
   "$chrome" --headless=new --disable-gpu --hide-scrollbars \
@@ -17,9 +19,13 @@ render() { # <source.html> <size WxH> <output.png>
 render og-card.html 1200,630 "$out/og-card.png"
 
 # Headless Chrome won't lay out narrower than ~500px, so render the icon once
-# at 512 and downscale with macOS sips.
+# at 512 and downscale (macOS sips, or ImageMagick elsewhere).
 render icon.html 512,512 "$out/icon-512.png"
-resize() { sips -z "$1" "$1" "$out/icon-512.png" --out "$2" >/dev/null; }
+if command -v sips >/dev/null; then
+  resize() { sips -z "$1" "$1" "$out/icon-512.png" --out "$2" >/dev/null; }
+else
+  resize() { magick "$out/icon-512.png" -resize "$1x$1" "$2"; }
+fi
 resize 192 "$out/icon-192.png"
 resize 180 "$out/apple-touch-icon.png"
 resize 32 "$here/.favicon-32.png"

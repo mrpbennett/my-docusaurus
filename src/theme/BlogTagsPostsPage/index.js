@@ -1,6 +1,6 @@
 // Swizzled (ejected) from @docusaurus/theme-classic BlogTagsPostsPage.
-// Changes: header uses the shared PageHeader; tag is the title and the count
-// and description sit underneath.
+// Changes: header uses the shared PageHeader; tag is the title, the count is
+// the eyebrow and the description sits underneath.
 import React from "react";
 import clsx from "clsx";
 import {
@@ -34,11 +34,13 @@ function BlogTagsPostsPageContent({ tag, items, sidebar, listMetadata }) {
   return (
     <BlogLayout sidebar={sidebar}>
       {tag.unlisted && <Unlisted />}
-      <PageHeader command={`ls ~/tags/${tag.label}`} title={`#${tag.label}`}>
+      <PageHeader
+        eyebrow={`Topic · ${tag.count} ${tag.count === 1 ? "post" : "posts"}`}
+        title={tag.label}
+      >
         <p>
-          {tag.count} {tag.count === 1 ? "post" : "posts"}
-          {tag.description ? ` · ${tag.description}` : ""} ·{" "}
-          <Link href={tag.allTagsPath}>All tags</Link>
+          {tag.description ? `${tag.description}. ` : ""}
+          <Link href={tag.allTagsPath}>All topics</Link>
         </p>
       </PageHeader>
       <BlogPostItems items={items} />
