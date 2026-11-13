@@ -40,7 +40,7 @@ I found real drift when I first diffed my nodes: a kube-proxy metrics setting wa
 
 Instead of patching live nodes, **generate each node's complete config from scratch**, then apply it with `talosctl apply-config`, which replaces the node's config wholesale:
 
-```
+```text
 talosctl gen config (base)
   + patches/all-nodes.yaml    (shared by every node)
   + patches/kube-cp-N.yaml    (hostname, IP, VIP for one node)
@@ -57,7 +57,7 @@ So yes: **one big shared file is the right approach**. You just apply it differe
 
 ## Repo layout
 
-```
+```text
 servers/talos-cluster/
 ├── mise.toml              # tools + tasks (this post)
 ├── schematic.yaml         # Image Factory schematic (system extensions)
@@ -210,7 +210,7 @@ mise run talos:diff 2    # just kube-cp-2
 
 This is my favourite task. It renders, fetches each node's **live** config, diffs the two, and opens the result in [hunk](https://hunk.dev), a review-first terminal diff viewer with split view and syntax highlighting. Before hunk opens, it also prints the dry run's verdict for each node, so I know up front whether a change will reboot anything:
 
-```
+```text
 kube-cp-1: Applied configuration without a reboot (skipped in dry-run).
 kube-cp-2: Applied configuration without a reboot (skipped in dry-run).
 kube-cp-3: Applied configuration without a reboot (skipped in dry-run).
@@ -261,7 +261,7 @@ So the rule is: **after a `talos:apply` that touches `KubeProxyConfig`, `KubeCor
 Two small details:
 
 - **The version** comes from the same `[vars]` block as `talos:render`, so the two can't disagree.
-- **The `--dry-run` flag** uses `${usage_dry_run:+--dry-run}`. Before trusting that, I checked how mise sets boolean flags: the variable is **unset** when the flag is left off, not set to `"false"`. If it had been `"false"`, the `:+` expansion would have added `--dry-run` on every run, and a "real" sync would quietly have done only a preview.
+- **The `--dry-run` flag** uses `${usage_dry_run:+--dry-run}`. Before trusting that, I checked how mise sets boolean flags: the variable is **unset** when the flag is left off, not set to `"false"`. If it had been `"false"`, the `:+` expansion would have added `--dry-run` on every run, and a 'real' sync would quietly have done only a preview.
 
 ### `talos:secrets`: recover a lost `secrets.yaml`
 

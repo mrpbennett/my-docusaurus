@@ -44,10 +44,10 @@ const PILLARS = [
   },
   {
     id: "product",
-    label: "Product design",
+    label: "Perspectives",
     title: "The craft",
-    description: "Why some tools feel good to use, interface decisions, and making tech easy to follow.",
-    tags: ["product"],
+    description: "Why some tools feel good to use, interface decisions, making tech easy to follow, my opinions and the habits behind how I work.",
+    tags: ["product", "opinion"],
   },
 ];
 

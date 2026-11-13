@@ -29,7 +29,7 @@ herdr is the backbone of my AI-powered terminal workflow. It's a terminal worksp
 
 ![herdr](./imgs/herdr.png)
 
-Instead of juggling separate terminal windows for every project or agent, herdr lets me keep everything in one place. I can run multiple agents side by side, monitor their status, switch between projects, and detach without interrupting their work. I also have remote machines in my homelab, so being able to [remote attach over SSH](https://herdr.dev/docs/persistence-remote/#remote-attach-over-ssh) is another big selling point.
+Instead of juggling separate terminal windows for every project or agent, herdr lets me keep everything in one place. I can run multiple agents side by side, monitor their status, switch between projects and detach without interrupting their work. I also have remote machines in my homelab, so being able to [remote attach over SSH](https://herdr.dev/docs/persistence-remote/#remote-attach-over-ssh) is another big selling point.
 
 It's as easy as running:
 
@@ -85,7 +85,7 @@ Searching my whole command history with a simple `alt+r` or the up arrow has sav
 
 ### Kubernetes
 
-As a Kubernetes homelabber I use `kubectl` a lot, but sometimes it's nice to have a UI, or should I say a TUI. I was a long-time [k9s](https://k9scli.io/) user, but I've recently switched to [sofka](https://sofka.rs/). It's another tool written in Rust, and it feels a lot quicker. As the website's title states, "The cluster tells you it's broken. sofka tells you why." It's pretty compelling.
+As a Kubernetes homelabber I use `kubectl` a lot, but sometimes it's nice to have a UI, or should I say a TUI. I was a long-time [k9s](https://k9scli.io/) user, but I've recently switched to [sofka](https://sofka.rs/). It's another tool written in Rust, and it feels a lot quicker. As the website's title states, 'The cluster tells you it's broken. sofka tells you why.' It's pretty compelling.
 
 ![sofka showing a live table of pods across all namespaces, with status, restarts, age, CPU and memory columns and a keybinding menu above](./imgs/sofka.jpg)
 
@@ -105,7 +105,7 @@ My shell is `zsh`. I got used to it when macOS switched its default shell from b
 
 #### Prompt
 
-I use [starship](https://starship.rs/) for my prompt. It's another tool written in Rust, it's fast, and it works across shells, so the same config follows me wherever I go. I keep mine pretty minimal: the directory on the left, the Git branch and status on the right, and a `➜` on the line below so I always have the full width of the terminal to type in.
+I use [starship](https://starship.rs/) for my prompt. It's another tool written in Rust, it's fast, and it works across shells, so the same config follows me wherever I go. I keep mine pretty minimal: the directory on the left, the Git branch and status on the right and a `➜` on the line below so I always have the full width of the terminal to type in.
 
 ![Starship prompt showing the current directory on the left, and a house emoji with the portland Kubernetes context, namespace and Git branch on the right](./imgs/prompt.png)
 

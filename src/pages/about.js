@@ -91,7 +91,7 @@ export default function About() {
   return (
     <Layout
       title="About"
-      description="About Paul Bennett, a Lead Solutions Engineer in AdTech based in Dorset, UK, who writes about running a Kubernetes homelab, developer tools and product design."
+      description="About Paul Bennett, a Lead Solutions Engineer in AdTech based in Dorset, UK, who writes about running a Kubernetes homelab, developer tools and the opinions behind them."
     >
       <main className="container pt-14">
         <PageHeader eyebrow="About" title="Paul Bennett">
@@ -206,14 +206,14 @@ export default function About() {
             </span>
             <div>
               <p>
-                Some of the content on this site is created with AI assistance, and I'd rather be
-                upfront about it. I use AI tools to help with drafting, editing and writing code
-                examples.
+                I write the posts myself, from my own notes, commands and mistakes. I use AI as a
+                proofreader: it checks spelling and grammar, and makes small edits to clumsy
+                sentences. It doesn't decide what I think or what I did.
               </p>
               <p>
-                I review, test and edit everything before publishing. Posts where AI played a
-                meaningful part are marked <strong>AI-assisted</strong> under the title, with a
-                short note at the end.
+                Occasionally AI helps with more than that, such as turning my rough notes into a
+                first draft. I review, test and edit everything before publishing. Those posts are
+                marked <strong>AI-assisted</strong> under the title, with a short note at the end.
               </p>
             </div>
           </div>

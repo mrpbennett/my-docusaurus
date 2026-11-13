@@ -50,3 +50,7 @@ product:
   label: product
   permalink: /product
   description: Posts about building products and the decisions behind them
+opinion:
+  label: opinion
+  permalink: /opinion
+  description: Posts where I say what I think

@@ -11,14 +11,14 @@ last_updated:
   date: 2026-06-23
 ---
 
-Since finding the site [terminaltrove](https://terminaltrove.com/) I have realised that I have accumulated a lot of CLI tools. Tools that help me in my workflow day to day or tools that are just awesome to use.
+Since finding the site [terminaltrove](https://terminaltrove.com/), I have realised that I have accumulated a lot of CLI tools. Tools that help me in my workflow day to day or tools that are just awesome to use.
 
-Below are a list of ones that I find _useful_
+Below is a list of ones that I find _useful_.
 
 <!--truncate-->
 
 [Note]
-Any thing missing, let me know. I am always on the look for new CLI / TUI tools.
+Anything missing, let me know. I am always on the lookout for new CLI / TUI tools.
 
 ## The Must Haves
 
@@ -50,10 +50,10 @@ Any thing missing, let me know. I am always on the look for new CLI / TUI tools.
 ## The Rest
 
 - [bucky](https://github.com/mrpbennett/bucky) - My **very own** S3/SFTP/GCP TUI
-- [mole](https://github.com/tw93/Mole) - CLI for Deep cleaning and optimizing your Mac.
+- [mole](https://github.com/tw93/Mole) - CLI for Deep cleaning and optimising your Mac.
 - [csvlens](https://github.com/YS-L/csvlens) - Command line csv viewer
 - [carapace](https://github.com/carapace-sh/carapace-bin) - CLI tool for multi-shell completion.
 - [posting](https://github.com/darrenburns/posting) - A modern API client that lives in your terminal.
 - [jnv](https://github.com/ynqa/jnv) - Interactive JSON filter using jq
 
-Please do let me know if I have missed anything, you can find me on X at [@mrpbennett](https://x.com/mrpbennett)
+Please do let me know if I have missed anything. You can find me on X at [@mrpbennett](https://x.com/mrpbennett)

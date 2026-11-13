@@ -37,7 +37,7 @@ export default function BlogTagsListPage({ tags, sidebar }) {
       <SearchMetadata tag="blog_tags_list" />
       <BlogLayout sidebar={sidebar}>
         <PageHeader eyebrow={`Topics · ${tags.length} tags`} title="Topics">
-          <p>Infrastructure, developer tools and product design, most-written-about first.</p>
+          <p>Infrastructure, developer tools and my perspectives, most-written-about first.</p>
         </PageHeader>
         {groups.map((group, index) => (
           <section key={group.id} className="border-t border-line py-12" aria-labelledby={group.id}>

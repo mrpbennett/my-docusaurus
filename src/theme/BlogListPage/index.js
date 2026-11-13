@@ -41,7 +41,7 @@ function BlogListPageContent({ metadata, items, sidebar }) {
         title="Writing"
       >
         <p>
-          Field notes on infrastructure, developer tools and product design.
+          Field notes on infrastructure, developer tools and the opinions behind them.
           Browse by <Link to="/blog/tags">topic</Link> or see the{" "}
           <Link to="/blog/archive">archive</Link>.
         </p>

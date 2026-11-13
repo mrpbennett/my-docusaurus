@@ -10,7 +10,7 @@ last_updated:
   date: 2026-02-24
 ---
 
-Terminal multiplexers are one of those tools that, once you start using them, you wonder how you ever survived without one. Whether you're managing a homelab, running long-lived data engineering pipelines, or just tired of juggling dozens of terminal tabs, a multiplexer changes the game entirely.
+Terminal multiplexers are one of those tools that, once you start using them, you wonder how you ever survived without one. Whether you're managing a homelab, running long-lived data engineering pipelines or just tired of juggling dozens of terminal tabs, a multiplexer changes the game entirely.
 
 <!--truncate-->
 
@@ -18,13 +18,13 @@ In this post I'm going to walk through both **Zellij** and **Tmux** — two of t
 
 ## What's a Terminal Multiplexer, Anyway?
 
-If you're new to the concept: a terminal multiplexer lets you split a single terminal window into multiple panes, manage named sessions that persist even after you disconnect, and generally treat your terminal like a proper workspace rather than a throwaway window.
+If you're new to the concept: a terminal multiplexer lets you split a single terminal window into multiple panes, manage named sessions that persist even after you disconnect and generally treat your terminal like a proper workspace rather than a throwaway window.
 
 This is invaluable when you're SSH'd into a remote machine, running a Kubernetes cluster, or just want a reproducible terminal layout that's waiting for you every time you sit down.
 
 ## Tmux — The Old Guard
 
-Tmux has been around since 2007 and is the de facto standard. It's available in virtually every package manager, battle-tested, and has an enormous community behind it. If you've ever inherited a server setup from someone else, there's a good chance Tmux was already installed.
+Tmux has been around since 2007 and is the de facto standard. It's available in virtually every package manager, is battle-tested and has an enormous community behind it. If you've ever inherited a server setup from someone else, there's a good chance Tmux was already installed.
 
 I came to Tmux the way most people do — it was just already there. Every server I SSH'd into had it installed, every tutorial referenced it, and when I started reading about how [Anthropic](https://www.anthropic.com/) lets Claude spin up agents inside Tmux sessions, that sealed it: this was the tool I should actually learn properly.
 
@@ -142,14 +142,14 @@ run '~/.tmux/plugins/tpm/tpm'
 
 With my current Tmux config, I have tried to mirror as many key bindings as possible from Zellij and LazyVim to make the transition more manageable. Let's break some down:
 
-```
+```text
 bind | split-window -h -c "#{pane_current_path}"    # split window right
 bind - split-window -v -c "#{pane_current_path}"    # split window down
 ```
 
 The above are what I use within LazyVim to split my panes after pressing my leader key. Which means pane splitting for me is no longer a pain — I felt `%` wasn't ergonomic anyway.
 
-```
+```text
 bind x kill-pane
 bind r command-prompt -I "#W" "rename-window '%%'"
 bind s command-prompt -p "Session name:" "new-session -s '%%'"
@@ -453,13 +453,13 @@ pane_frames false
 
 ```
 
-The above is my current default for Zellij just cleans up a few things and add some key mappings that don't conflict with navigation in LazyVim
+The above is my current default for Zellij. It just cleans up a few things and adds some key mappings that don't conflict with navigation in LazyVim.
 
 ## Why I Haven't Picked (Yet)
 
 Which one fits into my workflow? I am still deciding. I think I prefer Zellij, however Tmux seems to be so popular that it's worth sticking with and giving a proper go. I like both — the thing that draws me to Zellij is the plug-and-play experience. Mirroring key bindings across both tools means I don't get into much of a fuss when switching between them, which is genuinely helpful.
 
-What I love about Zellij over Tmux is the use of modes — Tab, Pane, Session, and so on. Having these dedicated modes helps with navigation and usage. Whereas Tmux requires a leader key, and finding one that is ergonomic and fits within a broader workflow is proving hard. I have settled on `Ctrl-s` for now — it's accessible and doesn't stomp on anything critical.
+What I love about Zellij over Tmux is the use of modes — Tab, Pane, Session, and so on. Having these dedicated modes helps with navigation and usage, whereas Tmux requires a leader key, and finding one that is ergonomic and fits within a broader workflow is proving hard. I have settled on `Ctrl-s` for now — it's accessible and doesn't stomp on anything critical.
 
 In terms of performance I haven't noticed much difference between the two. I'm not a power user; I generally use these tools to keep sessions alive and split panes while working in different tabs for different tasks.
 
@@ -467,6 +467,6 @@ For now I'll continue working with both until I've settled on one. One of the ma
 
 ## Wrapping Up
 
-Both tools will serve you well — the "right" answer really comes down to whether you value the massive ecosystem and scriptability of Tmux, or the modern UX and Rust-powered ergonomics of Zellij.
+Both tools will serve you well — the 'right' answer really comes down to whether you value the massive ecosystem and scriptability of Tmux, or the modern UX and Rust-powered ergonomics of Zellij.
 
 If you're just getting started, I'd say try Zellij first — the discoverability alone will save you hours of frustration. Once you've got a feel for what a multiplexer can do, come back to Tmux with fresh eyes. You might find, like me, that you want both in your toolkit.

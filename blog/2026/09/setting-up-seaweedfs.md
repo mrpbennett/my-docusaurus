@@ -14,25 +14,25 @@ last_updated:
 
 When it comes to homelab and storage there are many options, and for a long while MinIO was the default answer. Spin up a container, point your apps at it, done. It just worked, so nobody really questioned it.
 
-After Apr 25, 2026 MinIO ceased development, the homelab community decided to look else where. That announcement kicked off a fair bit of scrambling in the self-hosted world, myself included, since I had MinIO backing a fair chunk of my S3-compatible storage. After a bit of digging around and reading through what other people had landed on, [SeaweedFS](https://seaweedfs.com/) kept coming up as the natural replacement, so I figured it was worth giving it a proper go.
+On 25 April 2026 MinIO ceased development, so the homelab community decided to look elsewhere. That announcement kicked off a fair bit of scrambling in the self-hosted world, myself included, since I had MinIO backing a fair chunk of my S3-compatible storage. After a bit of digging around and reading through what other people had landed on, [SeaweedFS](https://seaweedfs.com/) kept coming up as the natural replacement, so I figured it was worth giving it a proper go.
 
-There were a couple of other names floating around too, Garage and Ceph's RGW mainly, but both felt like more than I needed for a homelab. Garage is great if you're spreading storage across a handful of geographically separate nodes, and Ceph is Ceph, powerful but a lot of moving parts for what is essentially "give my apps an S3 bucket". SeaweedFS's `mini` mode hit the sweet spot of one binary, one process, S3-compatible, and no cluster babysitting required.
+There were a couple of other names floating around too, Garage and Ceph's RGW mainly, but both felt like more than I needed for a homelab. Garage is great if you're spreading storage across a handful of geographically separate nodes, and Ceph is Ceph, powerful but a lot of moving parts for what is essentially 'give my apps an S3 bucket'. SeaweedFS's `mini` mode hit the sweet spot of one binary, one process, S3-compatible, and no cluster babysitting required.
 
 <!-- truncate -->
 
 ## Setting up SeaweedFS
 
-For this example, we will be setting this up in a Ubuntu VM. I have setup SeaweedFS on Kubernetes before but i thought this would be a good change and keeps things off my cluster. Keeping it on its own VM also means if I want to tear it down and rebuild from scratch, I'm not touching anything else running in the cluster.
+For this example, we will be setting this up in an Ubuntu VM. I have set up SeaweedFS on Kubernetes before, but I thought this would be a good change and keeps things off my cluster. Keeping it on its own VM also means if I want to tear it down and rebuild from scratch, I'm not touching anything else running in the cluster.
 
-First we need to create a VM for this I used [community-scripts.org](https://community-scripts.org/scripts?type=vm&preview=ubuntu-vm) for ease of use, it saves you clicking through the Proxmox wizard every single time. I'm using Proxmox here and you simply paste this
+First we need to create a VM. For this I used [community-scripts.org](https://community-scripts.org/scripts?type=vm&preview=ubuntu-vm) for ease of use, it saves you clicking through the Proxmox wizard every single time. I'm using Proxmox here and you simply paste this
 
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/ubuntu-vm.sh)"
 ```
 
-Into your PVE shell and follow along, I gave my VM 200Gb of storage, 2 cores and 4GB of ram. That's plenty for a homelab bucket or two, bump it up if you're planning on throwing anything serious at it. Once the VM is setup and you have access via SSH. It's time to install SeaweedFS.
+Into your PVE shell and follow along, I gave my VM 200GB of storage, 2 cores and 4GB of RAM. That's plenty for a homelab bucket or two, bump it up if you're planning on throwing anything serious at it. Once the VM is set up and you have access via SSH, it's time to install SeaweedFS.
 
-First lets install the binary
+First let's install the binary
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/seaweedfs/seaweedfs/master/install.sh | bash
@@ -62,13 +62,13 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now seaweedfs
 ```
 
-The `mini` mode is what makes this so painless for a homelab setup, it bundles the master, volume server, filer and S3 API into a single process rather than making you stitch them together yourself. And with a quick status check we can confirm it's running
+The `mini` mode is what makes this so painless for a homelab setup. It bundles the master, volume server, filer and S3 API into a single process rather than making you stitch them together yourself. And with a quick status check we can confirm it's running
 
 ```bash
 systemctl status seaweedfs
 ```
 
-If that comes back green you're good to go, SeaweedFS is now running with an S3-compatible endpoint and an Admin UI ready and waiting. Time to actually put a bucket in it.
+If that comes back green you're good to go. SeaweedFS is now running with an S3-compatible endpoint and an Admin UI ready and waiting. Time to actually put a bucket in it.
 
 ## Migrating data off MinIO
 
@@ -82,7 +82,7 @@ and it copies everything across, checksums included. Worth doing a `rclone check
 
 ## Creating an S3 user
 
-SeaweedFS ships its own interactive shell, which is where you'll do most of your day to day admin. Drop into it and create a bucket along with a user who has access to it
+SeaweedFS ships its own interactive shell, which is where you'll do most of your day-to-day admin. Drop into it and create a bucket along with a user who has access to it
 
 ```bash
 weed shell
@@ -110,7 +110,7 @@ For most of my homelab apps, `readwrite` scoped to a single bucket is more than 
 
 ## Accessing the endpoints
 
-Once everything is setup you can access the UI by `http://<vm-ip>:23646` as well as the S3 connection on port `8333` here is how I would use it to connect to a bucket.
+Once everything is set up you can access the UI at `http://<vm-ip>:23646` as well as the S3 connection on port `8333`. Here is how I would use it to connect to a bucket.
 
 ```bash
 aws --endpoint-url http://<vm-ip>:8333 s3 ls s3://cloudnativepg-backup --profile seaweedfs
@@ -126,4 +126,4 @@ There's also no TLS out of the box, the S3 endpoint and Admin UI are both plain 
 
 ## Wrapping up
 
-A few weeks in and SeaweedFS has quietly been doing its job, which is really all I want from storage. CloudnativePG backups land where they're supposed to, my other apps didn't notice the endpoint change once I swapped the credentials over, and I haven't had to think about it since. Losing MinIO felt like a bigger deal at the time than it turned out to be, if anything, `mini` mode is a simpler setup than MinIO ever was for a single-VM homelab use case. If you're in the same boat, give it a proper go before assuming you need to replicate your old setup one-for-one.
+A few weeks in and SeaweedFS has quietly been doing its job, which is really all I want from storage. CloudnativePG backups land where they're supposed to, my other apps didn't notice the endpoint change once I swapped the credentials over, and I haven't had to think about it since. Losing MinIO felt like a bigger deal at the time than it turned out to be. If anything, `mini` mode is a simpler setup than MinIO ever was for a single-VM homelab use case. If you're in the same boat, give it a proper go before assuming you need to replicate your old setup one-for-one.

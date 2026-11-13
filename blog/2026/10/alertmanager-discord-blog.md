@@ -32,21 +32,21 @@ This post walks through what was wrong, how I fixed it, how I tested it, and the
 
 An alert's journey looks like this:
 
-```
+```text
 Prometheus rule fires
   -> Alertmanager receives it
     -> route matches (by labels)
       -> receiver sends to Discord webhook
 ```
 
-When "nothing arrives," the instinct is to check the webhook URL or the Discord channel. I did the opposite and checked each stage in order, starting with the stage everything depends on: _is Alertmanager actually running?_
+When 'nothing arrives', the instinct is to check the webhook URL or the Discord channel. I did the opposite and checked each stage in order, starting with the stage everything depends on: _is Alertmanager actually running?_
 
 ```bash
 kubectl get pods -A | grep -i alertmanager      # nothing
 kubectl get alertmanager -n monitoring
 ```
 
-```
+```text
 NAME                                 VERSION   REPLICAS   READY   RECONCILED   AVAILABLE
 kube-prometheus-stack-alertmanager   v0.29.0   1          0       False        False
 ```
@@ -57,7 +57,7 @@ The `Alertmanager` custom resource existed, but `READY 0` and `RECONCILED False`
 
 `kubectl describe alertmanager` shows the reason in its status conditions:
 
-```
+```text
 Reason: ReconciliationFailed
 Message: provision alertmanager configuration: failed to initialize from secret:
   yaml: unmarshal errors:
@@ -84,7 +84,7 @@ alertmanager:
 
 This is a very common pattern for `webhook_url_file` with Slack and others. It's easy to assume it works for Discord too. It doesn't, at least not through the operator.
 
-> **Lesson 1:** When using the Prometheus Operator, "valid Alertmanager config" and "config the operator accepts" are not the same thing. Always check `kubectl describe alertmanager` (the `Reconciled` condition) and the operator logs, not just the Alertmanager pod.
+> **Lesson 1:** When using the Prometheus Operator, 'valid Alertmanager config' and 'config the operator accepts' are not the same thing. Always check `kubectl describe alertmanager` (the `Reconciled` condition) and the operator logs, not just the Alertmanager pod.
 
 > **Lesson 2:** A broken Alertmanager config fails _silently from your point of view_. Nothing alerts you that your alerting is down. More on fixing that at the end.
 
@@ -118,7 +118,7 @@ alertmanager:
 
 ### Step 2: tell the operator not to scope routes to one namespace
 
-This is the gotcha that would have bitten me later. By default, the operator **adds a `namespace="<AlertmanagerConfig's namespace>"` matcher** to every route in an `AlertmanagerConfig`. My AlertmanagerConfig lives in `monitoring`, so it would only match alerts _from_ the `monitoring` namespace. An alert from Longhorn, CNPG, or anything else would silently fall through to the null receiver.
+This is the gotcha that would have bitten me later. By default, the operator **adds a `namespace="<AlertmanagerConfig's namespace>"` matcher** to every route in an `AlertmanagerConfig`. My AlertmanagerConfig lives in `monitoring`, so it would only match alerts _from_ the `monitoring` namespace. An alert from Longhorn, CNPG or anything else would silently fall through to the null receiver.
 
 Fix it in the Alertmanager spec:
 
@@ -182,7 +182,7 @@ spec:
 
 Notes worth knowing:
 
-- Order matters. Routes are evaluated top to bottom and the first match wins (unless `continue: true`). The "swallow" routes must come **before** the generic `severity=critical` route.
+- Order matters. Routes are evaluated top to bottom and the first match wins (unless `continue: true`). The 'swallow' routes must come **before** the generic `severity=critical` route.
 - Matchers on `AlertmanagerConfig` are structured (`name`/`value`/`matchType`), not the `severity = "critical"` string syntax you use in plain Alertmanager config.
 - The operator renames receivers to `<namespace>/<config-name>/<receiver>` in the merged config, e.g. `monitoring/discord/discord-warning`. Don't be surprised when you see that in the UI.
 - The CRD version is `v1alpha1`. Check that your installed CRD actually has `discordConfigs`: it's missing from older operator versions.
@@ -201,7 +201,7 @@ I pushed the change and nothing happened. It turned out the live `ApplicationSet
 kubectl apply --server-side -f appsets/kube-prometheus-helm/appset-helm-kube-prometheus.yaml
 ```
 
-If you generate your Applications from ApplicationSets, consider an app-of-apps that manages the ApplicationSets too, or you'll hit the same "I pushed but nothing changed" confusion. If an Application shows `Synced` but the content is stale, check where its spec comes from.
+If you generate your Applications from ApplicationSets, consider an app-of-apps that manages the ApplicationSets too, or you'll hit the same 'I pushed but nothing changed' confusion. If an Application shows `Synced` but the content is stale, check where its spec comes from.
 
 ---
 
@@ -236,7 +236,7 @@ curl -s http://127.0.0.1:19093/api/v2/alerts/groups
 curl -s http://127.0.0.1:19093/metrics | grep -E 'alertmanager_notifications(_failed)?_total.*discord'
 ```
 
-```
+```text
 alertmanager_notifications_total{integration="discord"} 9
 alertmanager_notifications_failed_total{integration="discord",reason="clientError"} 0
 alertmanager_notifications_failed_total{integration="discord",reason="serverError"} 0
@@ -265,7 +265,7 @@ kubectl get servicemonitor,podmonitor -A
 kubectl get prometheusrule -A
 ```
 
-The default `kube-prometheus-stack` rules cover Kubernetes itself (nodes, kubelet, API server, etcd, pods). They know nothing about the _applications_ you run. I had metrics for Longhorn, CNPG, and Loki flowing into Prometheus with **no alerts defined on any of them**. I also had no metrics at all for cert-manager and Argo CD.
+The default `kube-prometheus-stack` rules cover Kubernetes itself (nodes, kubelet, API server, etcd, pods). They know nothing about the _applications_ you run. I had metrics for Longhorn, CNPG and Loki flowing into Prometheus with **no alerts defined on any of them**. I also had no metrics at all for cert-manager and Argo CD.
 
 ### Make sure Prometheus actually selects your rules and monitors
 
@@ -380,11 +380,11 @@ Cheap, no config change, and it catches the scenario that matters (Vault restart
 
 **3. Talos (and other minimal distros) trigger permanent `*Down` / `TargetDown` noise.** Talos binds the kube-proxy, kube-controller-manager and kube-scheduler metrics endpoints to localhost, so Prometheus can't scrape them from the pod network and those targets are down forever. The chart's `KubeProxyDown` etc. alerts fire permanently, and `TargetDown` fires for each of them. I silenced the specific `*Down` alerts, but the better fix is to change the bind addresses in the Talos machine config so you also get real control-plane metrics. Either way, **permanent noise trains you to ignore the channel**, which is how real alerts get missed.
 
-**4. Route by severity, but think about inhibition.** Inhibit rules stop lower-severity alerts firing while a higher one already covers the same thing. The chart default (critical suppresses warning/info with the same `alertname` and `namespace`) is a good start. Consider adding one for "node is down," otherwise one dead node generates a flood of pod-level alerts.
+**4. Route by severity, but think about inhibition.** Inhibit rules stop lower-severity alerts firing while a higher one already covers the same thing. The chart default (critical suppresses warning/info with the same `alertname` and `namespace`) is a good start. Consider adding one for 'node is down'; otherwise one dead node generates a flood of pod-level alerts.
 
-**5. Pick `for:` durations deliberately.** Too short and you get flapping pages for transient blips; too long and you hear about outages late. My rule of thumb: `1m` for "it's definitely broken" (faulted volume), `5-15m` for "might be self-healing" (pod not ready), `30m+` for things that legitimately take time (replica rebuilds, out-of-sync apps).
+**5. Pick `for:` durations deliberately.** Too short and you get flapping pages for transient blips; too long and you hear about outages late. My rule of thumb: `1m` for 'it\'s definitely broken' (faulted volume), `5-15m` for 'might be self-healing' (pod not ready), `30m+` for things that legitimately take time (replica rebuilds, out-of-sync apps).
 
-**6. Match thresholds to your actual schedules.** My CNPG backup rule fires at 8 days because backups run weekly. Copying a "no backup in 26 hours" rule from a blog (including this one) onto a weekly schedule would page every day.
+**6. Match thresholds to your actual schedules.** My CNPG backup rule fires at 8 days because backups run weekly. Copying a 'no backup in 26 hours' rule from a blog (including this one) onto a weekly schedule would page every day.
 
 **7. Expect some alerts to fire immediately.** After enabling Argo CD metrics, two apps that had been quietly OutOfSync for days (`airflow`, `kubevirt-cdi`) were suddenly visible. That's the system working: new monitoring surfaces old problems. Budget a bit of time to either fix them or consciously silence them.
 
@@ -414,4 +414,4 @@ Cheap, no config change, and it catches the scenario that matters (Vault restart
 
 The root cause was one unsupported field in a config block, but the real failure was that nothing told me my alerting was down. The fix took an hour; noticing took two days. If you take one thing away: **monitor the monitor.** Everything else here is detail.
 
-The full set of manifests (the AlertmanagerConfig, the PrometheusRules, and the Helm value changes) lives in my home-ops repo, and the rules are deliberately split one file per component so they're easy to adapt.
+The full set of manifests (the AlertmanagerConfig, the PrometheusRules and the Helm value changes) lives in my home-ops repo, and the rules are deliberately split one file per component so they're easy to adapt.

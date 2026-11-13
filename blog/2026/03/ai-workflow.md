@@ -28,7 +28,7 @@ Here are the main tools I have been reaching for lately to get consistently bett
 
 **[superpowers](https://github.com/superpowers-sh/superpowers)**
 
-This is a skill and context system for Claude Code that has become the backbone of how I work with agents. The core problem it solves is context rot — the slow degradation in output quality that happens as a conversation gets longer, muddier, and further from the original intent.
+This is a skill and context system for Claude Code that has become the backbone of how I work with agents. The core problem it solves is context rot — the slow degradation in output quality that happens as a conversation gets longer, muddier and further from the original intent.
 
 What I like about superpowers is that it gives the agent a library of specialised skills to draw on. Rather than relying on a general system prompt and hoping the model figures out the right approach, you invoke a skill that already knows what good looks like for that kind of task. Planning a feature, debugging a tricky issue, doing a thorough code review — there is a skill for each, and they wire in the right structure automatically.
 
@@ -48,7 +48,7 @@ Ponytail is one of those tools that makes you wonder how you tolerated the alter
 
 The idea is a decision ladder the agent runs before writing any code. Does this need to exist at all? Is it already in the codebase? Does the stdlib do it? Can it be one line? Only if none of those rungs hold does it write something new. The result is that you stop getting over-engineered solutions to simple problems, stop accumulating unnecessary abstractions, and stop having agents add layers of scaffolding for use cases that will never arrive.
 
-The motto is "the best code is the code you never wrote", and once you have worked with an agent that actually operates that way, it is hard to go back. It is not about being careless — validation, security, and error handling at real boundaries are never on the chopping block. It is about defaulting to simplicity everywhere else.
+The motto is 'the best code is the code you never wrote', and once you have worked with an agent that actually operates that way, it is hard to go back. It is not about being careless — validation, security and error handling at real boundaries are never on the chopping block. It is about defaulting to simplicity everywhere else.
 
 **[agency-agents](https://github.com/msitarzewski/agency-agents)**
 
@@ -60,13 +60,13 @@ It really does live up to that description. I have found some of the agents to b
 
 This is where I think specialised agents shine. A general-purpose coding assistant can do a lot, but a purpose-built agent with a clear role often gives you a much stronger first draft. If I am writing docs, I would rather hand that off to something tuned for documentation. If I am reviewing product copy, a marketing-focused agent often has better instincts than a raw coding model.
 
-A simple example: say I have hacked together a project over a weekend and the code works, but the docs are a mess. Instead of asking my main coding assistant to context-switch into "documentation mode", I can hand the repo summary to a content-focused agent and let it produce a cleaner first pass. It is a small change, but it keeps each tool doing the thing it is best at.
+A simple example: say I have hacked together a project over a weekend and the code works, but the docs are a mess. Instead of asking my main coding assistant to context-switch into 'documentation mode', I can hand the repo summary to a content-focused agent and let it produce a cleaner first pass. It is a small change, but it keeps each tool doing the thing it is best at.
 
 **[worktrunk](https://worktrunk.dev/)**
 
 Worktrunk has a bunch of quality-of-life features that make working with multiple parallel changes much less painful. If you have ever used git worktrees directly from the CLI, you will know they are powerful but not always especially pleasant. Personally, I found the raw workflow a bit cumbersome.
 
-Worktrunk smooths that out. It makes creating, jumping between, and cleaning up worktrees feel much more ergonomic, which matters a lot once you start using AI agents in parallel.
+Worktrunk smooths that out. It makes creating, jumping between and cleaning up worktrees feel much more ergonomic, which matters a lot once you start using AI agents in parallel.
 
 One really practical use case is when I want to explore multiple ideas at once. I might have one worktree for a feature branch, another for a risky refactor, and another where I let an agent experiment with a different approach entirely. That separation is brilliant because it stops one bad experiment from polluting the rest of the work.
 
@@ -81,7 +81,7 @@ The rough flow for me usually looks like this:
 3. Let `codegraph` handle codebase orientation so the agent is not burning context on discovery before it even starts.
 4. Trust `ponytail` to keep the output tight — no unnecessary abstractions, no scaffolding for hypothetical future requirements.
 5. Spin up a dedicated agent, or a more specialised one from `agency-agents`, depending on what the work actually calls for.
-6. Do everything in an isolated worktree using `worktrunk` so I can compare, throw away, or merge changes cleanly.
+6. Do everything in an isolated worktree using `worktrunk` so I can compare, throw away or merge changes cleanly.
 
 That combination has made AI feel much more useful to me. Not because any one tool is magic, but because the workflow has a bit more structure. The better I get at setting context, isolating work, and keeping output quality high, the better the results tend to be.
 

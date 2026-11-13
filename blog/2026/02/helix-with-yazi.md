@@ -9,7 +9,7 @@ last_updated:
   date: 2026-02-09
 ---
 
-Look, I love Helix. It's fast, it's modal, and it doesn't make me feel like I'm piloting a 747 just to edit some code. But you know what it was missing? A solid file manager integration that didn't require me to spawn Zellij or tmux just to browse directories without leaving my editor.
+Look, I love Helix. It's fast, it's modal and it doesn't make me feel like I'm piloting a 747 just to edit some code. But you know what it was missing? A solid file manager integration that didn't require me to spawn Zellij or tmux just to browse directories without leaving my editor.
 
 <!-- truncate -->
 
@@ -54,7 +54,7 @@ Let me break down what's happening here because it's legitimately clever:
    - `\x1b[?1049h` switches to the alternate screen buffer (the same thing full-screen TUIs use)
    - `\x1b[?2004h` enables bracketed paste mode
 
-   These codes basically tell the terminal "hey, we're done with the interactive stuff now" and prevent Helix from getting confused about terminal state.
+   These codes basically tell the terminal 'hey, we're done with the interactive stuff now' and prevent Helix from getting confused about terminal state.
 
 4. **Open the chosen file** - Read whatever Yazi wrote to the temp file and open it in Helix.
 
@@ -62,7 +62,7 @@ Let me break down what's happening here because it's legitimately clever:
 
 ## Bonus: Image and Video Previews
 
-Because Yazi is actually insane (in a good way), you can preview images and videos directly in your terminal while browsing files. Just make sure your terminal supports it (kitty, wezterm, or anything with sixel support).
+Because Yazi is actually insane (in a good way), you can preview images and videos directly in your terminal while browsing files. Just make sure your terminal supports it (kitty, wezterm or anything with sixel support).
 
 ## Extra Tweaks for the Power Users
 

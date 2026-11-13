@@ -35,7 +35,7 @@ DataGrip does everything: schema browsing, autocomplete, result grids, saved que
 
 - **Slow to start.** I'd open DataGrip to run one quick query and then wait for it to finish loading.
 - **Heavy on resources.** It took a large share of memory and CPU just by being open, and everything else got slower while it ran.
-- **Laggy while working.** Indexing, introspection and UI lag made the slow moments happen while I was trying to work.
+- **Laggy while working.** Indexing, introspection and UI lag always seemed to hit while I was trying to work.
 
 <!-- SCREENSHOT/STAT: optional, e.g. DataGrip memory usage vs Neovim in btop -->
 
@@ -50,7 +50,7 @@ The resource usage was the obvious pain point. The constant switching was worse.
 5. Copy a value out and go back to the terminal.
 6. Repeat a few dozen times a day.
 
-Every round trip broke my concentration. My certain vim motions didn't work, my keymaps didn't work, and my editor setup wasn't there. I was effectively running two editors, and one of them was much heavier than the other.
+Every round trip broke my concentration. My vim motions didn't work, my keymaps didn't work, and my editor setup wasn't there. I was effectively running two editors, and one of them was much heavier than the other.
 
 ### What I actually wanted
 
@@ -71,17 +71,17 @@ And one hard requirement: **I never want to leave the terminal.**
 
 ### Why build rather than adopt?
 
-There are already database plugins for Neovim, and the repo description says as much: _"Yes Another One…"_. I tried the existing options, but none of them felt like the workflow I wanted, or were missing certain features. Building my own was also a good excuse to learn Lua properly, which was a goal in its own right.
+There are already database plugins for Neovim, and the repo description says as much: _"Yes Another One…"_. I tried the existing options, but none of them felt like the workflow I wanted, or they were missing features I needed. Building my own was also a good excuse to learn Lua properly, which was a goal in its own right.
 
-I was a previous big [vim-dadbod](https://github.com/tpope/vim-dadbod) user, and although it was really good, certain features did not work for me. For example, the main reason I wanted to build Orbit was to use it within Trino as well as have the ability to use my saved queries.
+I was a big [vim-dadbod](https://github.com/tpope/vim-dadbod) user, and although it was really good, certain features didn't work for me. For example, the main reason I wanted to build Orbit was to use it with Trino as well as have the ability to use my saved queries.
 
 ### How it was built
 
-Orbit was built with AI agents, using [Matt Pocock's skills](https://github.com/mattpocock/skills) to guide the process. I was the product owner. I decided what got built, in what order, and what "done" meant. The agents did much of the implementation, and I used them to learn how the Lua worked. I'll write about that workflow separately, but one habit is worth mentioning here: big decisions were written down as **Architecture Decision Records (ADRs)**. Several of them come up below.
+Orbit was built with AI agents, using [Matt Pocock's skills](https://github.com/mattpocock/skills) to guide the process. I was the product owner. I decided what got built, in what order, and what 'done' meant. The agents did much of the implementation, and I used them to learn how the Lua worked. I'll write about that workflow separately, but one habit is worth mentioning here: big decisions were written down as **Architecture Decision Records (ADRs)**. Several of them come up below.
 
 ### Design principle 1: use the clients you already have
 
-The most important early decision was that **Orbit doesn't ship database drivers**. It runs the command-line clients you already have installed: `psql`, `mysql`, `sqlite3`, `trino`, `redis-cli`, `vsql` and `sqlcmd`. Each database gets a small "Connector" that knows how to talk to its CLI and parse the output.
+The most important early decision was that **Orbit doesn't ship database drivers**. It runs the command-line clients you already have installed: `psql`, `mysql`, `sqlite3`, `trino`, `redis-cli`, `vsql` and `sqlcmd`. Each database gets a small 'Connector' that knows how to talk to its CLI and parse the output.
 
 This kept Orbit lightweight:
 
@@ -107,7 +107,7 @@ The workflow is designed to feel like Vim:
 4. `<leader>E` runs the statement under the cursor, or the visual selection.
 5. Results appear in a reusable result grid at the bottom.
 
-Each query buffer has its **own connection profile**, so one buffer can point at Postgres and another at Trino without any global "current connection" to keep track of.
+Each query buffer has its **own connection profile**, so one buffer can point at Postgres and another at Trino without any global 'current connection' to keep track of.
 
 #### One Workspace
 
@@ -145,7 +145,7 @@ Once I was using Orbit every day, the gaps were obvious, and most of the later f
 - **Saved queries** ([ADR-0001](https://github.com/mrpbennett/orbit.nvim/blob/main/docs/adr/0001-named-saved-query-locations.md)). I keep queries for work and personal projects, so `saved_query_dirs` supports multiple named locations, each shown as its own tree in the sidebar. `:OrbitSave` saves the current buffer into one of them, and you can rename, move, preview and delete without leaving the sidebar.
 - **The Structure panel.** Some of my queries are several hundred lines of CTEs. `:OrbitStructure` opens a tree of every statement, CTE, query block and clause, and highlights where your cursor is. You can run the highlighted element directly.
 - **SQL Server, done twice.** SQL Server started on Microsoft's Go `sqlcmd` (ADR-0003). That didn't work for my environment, which needed domain authentication, so ADR-0004 replaced it with **selectable transports**: `sqlcmd` or a small Java helper using the jTDS JDBC driver. Writing the first decision down made the change easier, because the reasons for the original choice were recorded.
-- **`:OrbitDoctor`.** Because Orbit relies on clients you install yourself, "why won't it connect?" is usually a missing binary or an unset environment variable. Doctor checks profiles, executables, versions and password sources **without connecting** or running any SQL.
+- **`:OrbitDoctor`.** Because Orbit relies on clients you install yourself, 'why won\'t it connect?' is usually a missing binary or an unset environment variable. Doctor checks profiles, executables, versions and password sources **without connecting** or running any SQL.
 
 #### Saved queries
 
@@ -159,7 +159,7 @@ Once I was using Orbit every day, the gaps were obvious, and most of the later f
 
 After a run of feature releases, I did a deliberate refactoring pass at the end of September:
 
-- Replaced loose "adapters" with an explicit **Connector registry and contract**.
+- Replaced loose 'adapters' with an explicit **Connector registry and contract**.
 - Routed every statement run through **a single execution module**.
 - Unified SQL statement boundary detection, so execution, completion and the Structure panel all use the same tokenizer.
 - Made child-process creation **injectable**, so it can be tested without a real database.
@@ -194,7 +194,7 @@ From the first commit on 24 August 2026 to v0.3.1 on 21 September 2026, Orbit we
 
 ### Lessons from my first product
 
-1. **Build for a specific frustration.** "DataGrip is slow and I don't want to leave the terminal" was concrete enough to judge every feature against.
+1. **Build for a specific frustration.** 'DataGrip is slow and I don\'t want to leave the terminal' was concrete enough to judge every feature against.
 2. **List what you actually use, not what the incumbent offers.** The core feature list was six items long. Everything else came from using it.
 3. **Lean on existing tools.** Using the database CLIs instead of shipping drivers saved a lot of work, at the cost of parsing their output carefully.
 4. **Write decisions down.** The ADRs paid off when the SQL Server approach had to change.
